@@ -15,6 +15,7 @@
             "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47": {},
             "3ec388c6-9fbe-a946-57f7-a510659b9f12": {},
             "49667ca2-7f3b-e98c-020f-389ccdb6271e": {},
+            "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607": {},
             "4f08052c-ad39-cc20-3674-aeed55f44237": {},
             "50aec2e4-bb91-3847-481e-deecc69fdbe2": {},
             "54edd22d-deaf-6ced-5e5a-c81a3769d189": {},
@@ -196,6 +197,16 @@
                     },
                     {
                         "attributes": {},
+                        "guid": "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607",
+                        "registry": {
+                            "position": {
+                                "x": 83,
+                                "y": 178
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
                         "guid": "4f08052c-ad39-cc20-3674-aeed55f44237",
                         "registry": {
                             "position": {
@@ -281,16 +292,6 @@
                             "position": {
                                 "x": 968,
                                 "y": 659
-                            }
-                        }
-                    },
-                    {
-                        "attributes": {},
-                        "guid": "8bfa3fab-1979-1d1e-9d9b-04f39d670ae9",
-                        "registry": {
-                            "position": {
-                                "x": 488,
-                                "y": 179
                             }
                         }
                     },
@@ -473,8 +474,8 @@
                         "guid": "0635d6de-5602-9280-b897-99049813e802",
                         "registry": {
                             "position": {
-                                "x": 480,
-                                "y": 712
+                                "x": 481,
+                                "y": 610
                             }
                         }
                     },
@@ -503,8 +504,8 @@
                         "guid": "21274ba9-fc39-8e2f-ed9d-13529681ba57",
                         "registry": {
                             "position": {
-                                "x": 380,
-                                "y": 712
+                                "x": 365,
+                                "y": 614
                             }
                         }
                     },
@@ -553,8 +554,8 @@
                         "guid": "3ec388c6-9fbe-a946-57f7-a510659b9f12",
                         "registry": {
                             "position": {
-                                "x": 530,
-                                "y": 492
+                                "x": 497,
+                                "y": 411
                             }
                         }
                     },
@@ -565,6 +566,16 @@
                             "position": {
                                 "x": 690,
                                 "y": 402
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
+                        "guid": "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607",
+                        "registry": {
+                            "position": {
+                                "x": 83,
+                                "y": 178
                             }
                         }
                     },
@@ -650,21 +661,11 @@
                     },
                     {
                         "attributes": {},
-                        "guid": "8bfa3fab-1979-1d1e-9d9b-04f39d670ae9",
-                        "registry": {
-                            "position": {
-                                "x": 530,
-                                "y": 402
-                            }
-                        }
-                    },
-                    {
-                        "attributes": {},
                         "guid": "94a5f276-a492-010a-7442-bf35797d05e5",
                         "registry": {
                             "position": {
-                                "x": 380,
-                                "y": 642
+                                "x": 689,
+                                "y": 570
                             }
                         }
                     },
@@ -673,8 +674,8 @@
                         "guid": "94ff69c0-2d28-d84b-46db-89b8be5564b4",
                         "registry": {
                             "position": {
-                                "x": 144.00000000000003,
-                                "y": 895.3333333333334
+                                "x": 239,
+                                "y": 953
                             }
                         }
                     },
@@ -693,8 +694,8 @@
                         "guid": "c13508bc-41e4-a3f7-859e-99beda944552",
                         "registry": {
                             "position": {
-                                "x": 476,
-                                "y": 831.3333333333334
+                                "x": 472,
+                                "y": 880
                             }
                         }
                     },
@@ -713,8 +714,8 @@
                         "guid": "cacb9c98-21cf-49a6-7a01-c3edccc5416b",
                         "registry": {
                             "position": {
-                                "x": 80,
-                                "y": 682
+                                "x": 166,
+                                "y": 684
                             }
                         }
                     },
@@ -763,8 +764,8 @@
                         "guid": "ec9be6bf-f479-748c-6cff-2828bf42100d",
                         "registry": {
                             "position": {
-                                "x": 80,
-                                "y": 762
+                                "x": 60,
+                                "y": 929
                             }
                         }
                     },
@@ -783,8 +784,8 @@
                         "guid": "fd5d161b-dd9b-2a51-8987-bc7f84273bbc",
                         "registry": {
                             "position": {
-                                "x": 190,
-                                "y": 682
+                                "x": 10,
+                                "y": 609
                             }
                         }
                     },
@@ -804,10 +805,63 @@
         },
         "0635d6de-5602-9280-b897-99049813e802": {
             "attributes": {
-                "name": "regulator_configuration"
+                "band_center": 0,
+                "band_width": 0,
+                "connect_type": "",
+                "control": "",
+                "dwell_time": 0,
+                "lower_taps": 0,
+                "name": "regulator_configuration",
+                "raise_taps": 0,
+                "regulation": 0,
+                "tap_pos_A": 0,
+                "tap_pos_B": 0,
+                "tap_pos_C": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "tap_pos_C": {
+                        "type": "integer"
+                    },
+                    "tap_pos_A": {
+                        "type": "integer"
+                    },
+                    "regulation": {
+                        "type": "float"
+                    },
+                    "raise_taps": {
+                        "type": "integer"
+                    },
+                    "band_width": {
+                        "type": "float"
+                    },
+                    "connect_type": {
+                        "type": "string",
+                        "enum": [
+                            "WYE_WYE"
+                        ]
+                    },
+                    "band_center": {
+                        "type": "float"
+                    },
+                    "dwell_time": {
+                        "type": "float"
+                    },
+                    "lower_taps": {
+                        "type": "integer"
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "REMOTE_NODE"
+                        ]
+                    },
+                    "tap_pos_B": {
+                        "type": "integer"
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
@@ -829,23 +883,29 @@
             "meta": {
                 "children": {
                     "items": [
+                        "0635d6de-5602-9280-b897-99049813e802",
                         "1b8bb9d1-40cd-e22b-3eaa-a98287649464",
+                        "21274ba9-fc39-8e2f-ed9d-13529681ba57",
                         "2cc13368-6033-dd20-2b21-8d3a6db576c6",
                         "2cf57745-eec5-2a62-72de-a9f7637c7aa8",
                         "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47",
                         "3ec388c6-9fbe-a946-57f7-a510659b9f12",
                         "49667ca2-7f3b-e98c-020f-389ccdb6271e",
+                        "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607",
                         "4f08052c-ad39-cc20-3674-aeed55f44237",
                         "50aec2e4-bb91-3847-481e-deecc69fdbe2",
                         "54edd22d-deaf-6ced-5e5a-c81a3769d189",
                         "6499e351-586f-7e0b-df2c-992849b91aa0",
                         "68d10581-ab03-e600-0d03-c9799404bde8",
                         "8bfa3fab-1979-1d1e-9d9b-04f39d670ae9",
+                        "94a5f276-a492-010a-7442-bf35797d05e5",
                         "94ff69c0-2d28-d84b-46db-89b8be5564b4",
                         "a96c17cf-6b0d-3998-66d8-f02759b11c84",
                         "c13508bc-41e4-a3f7-859e-99beda944552",
+                        "cacb9c98-21cf-49a6-7a01-c3edccc5416b",
                         "d79800be-ebd6-d712-b3ae-8bf14690efb8",
                         "eabc7add-5b1f-2f13-08f7-27e7c2af344d",
+                        "ec9be6bf-f479-748c-6cff-2828bf42100d",
                         "f1138a29-7d9c-fc08-d50b-b535fafe2f61",
                         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1"
                     ],
@@ -856,7 +916,6 @@
                         -1,
                         -1,
                         -1,
-                        -1,
                         1,
                         -1,
                         -1,
@@ -865,10 +924,17 @@
                         -1,
                         1,
                         -1,
+                        1,
                         -1,
                         -1,
                         -1,
-                        1
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1
                     ],
                     "maxItems": [
                         -1,
@@ -877,7 +943,6 @@
                         -1,
                         -1,
                         -1,
-                        -1,
                         1,
                         -1,
                         -1,
@@ -886,10 +951,17 @@
                         -1,
                         1,
                         -1,
+                        1,
                         -1,
                         -1,
                         -1,
-                        1
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1
                     ]
                 }
             },
@@ -973,10 +1045,69 @@
                 "name": "regulator"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "pointers": {
+                    "from": {
+                        "items": [
+                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    },
+                    "to": {
+                        "items": [
+                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    },
+                    "sense_node": {
+                        "items": [
+                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    },
+                    "configuration": {
+                        "items": [
+                            "0635d6de-5602-9280-b897-99049813e802"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+                "configuration": null,
+                "from": null,
+                "sense_node": null,
+                "to": null
             },
             "registry": {
                 "position": {
@@ -1202,10 +1333,51 @@
         },
         "3ec388c6-9fbe-a946-57f7-a510659b9f12": {
             "attributes": {
-                "name": "market"
+                "fixed_price": 0,
+                "init_price": 0,
+                "init_stdev": 0,
+                "name": "auction",
+                "period": 0,
+                "special_mode": "",
+                "unit": "",
+                "verbose": true,
+                "warmup": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "init_stdev": {
+                        "type": "integer"
+                    },
+                    "warmup": {
+                        "type": "integer"
+                    },
+                    "special_mode": {
+                        "type": "string",
+                        "enum": [
+                            "BUYERS_ONLY"
+                        ]
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "MW"
+                        ]
+                    },
+                    "verbose": {
+                        "type": "boolean"
+                    },
+                    "fixed_price": {
+                        "type": "integer"
+                    },
+                    "init_price": {
+                        "type": "integer"
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
@@ -1247,6 +1419,44 @@
                 "position": {
                     "x": 81,
                     "y": 455
+                }
+            },
+            "sets": {},
+            "constraints": {}
+        },
+        "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607": {
+            "attributes": {
+                "file": "",
+                "interval": 0,
+                "limit": 0,
+                "name": "multi_recorder",
+                "property": ""
+            },
+            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "meta": {
+                "attributes": {
+                    "property": {
+                        "type": "string"
+                    },
+                    "interval": {
+                        "type": "integer"
+                    },
+                    "file": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
+            "pointers": {
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+            },
+            "registry": {
+                "position": {
+                    "x": 266,
+                    "y": 161
                 }
             },
             "sets": {},
@@ -1611,13 +1821,128 @@
         },
         "94a5f276-a492-010a-7442-bf35797d05e5": {
             "attributes": {
-                "name": "capacitor"
+                "capacitor_A": 0,
+                "capacitor_B": 0,
+                "capacitor_C": 0,
+                "control": "",
+                "control_level": "",
+                "dwell_time": 0,
+                "name": "capacitor",
+                "nominal_voltage": 0,
+                "phases": "",
+                "phases_connected": "",
+                "switchA": "",
+                "switchB": "",
+                "switchC": "",
+                "time_delay": 0,
+                "voltage_set_high": 0,
+                "voltage_set_low": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "switchB": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    },
+                    "nominal_voltage": {
+                        "type": "float"
+                    },
+                    "time_delay": {
+                        "type": "float"
+                    },
+                    "capacitor_C": {
+                        "type": "float"
+                    },
+                    "capacitor_A": {
+                        "type": "float"
+                    },
+                    "voltage_set_high": {
+                        "type": "float"
+                    },
+                    "phases_connected": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AN",
+                            "BN",
+                            "CN"
+                        ]
+                    },
+                    "phases": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ACN",
+                            "ABN",
+                            "AN",
+                            "BN",
+                            "CN"
+                        ]
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "VOLT"
+                        ]
+                    },
+                    "voltage_set_low": {
+                        "type": "float"
+                    },
+                    "capacitor_B": {
+                        "type": "float"
+                    },
+                    "control_level": {
+                        "type": "string",
+                        "enum": [
+                            "INDIVIDUAL",
+                            ""
+                        ]
+                    },
+                    "dwell_time": {
+                        "type": "float"
+                    },
+                    "switchA": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    },
+                    "switchC": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    }
+                },
+                "pointers": {
+                    "parent": {
+                        "items": [
+                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+                "parent": null
             },
             "registry": {
                 "position": {
@@ -1872,13 +2197,59 @@
         },
         "cacb9c98-21cf-49a6-7a01-c3edccc5416b": {
             "attributes": {
+                "air_temperature": 0,
+                "cooling_setpoint": 0,
+                "floor_area": 0,
+                "heating_setpoint": 0,
                 "name": "house"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "air_temperature": {
+                        "type": "integer"
+                    },
+                    "cooling_setpoint": {
+                        "type": "float"
+                    },
+                    "floor_area": {
+                        "type": "float"
+                    },
+                    "heating_setpoint": {
+                        "type": "float"
+                    }
+                },
+                "children": {
+                    "items": [
+                        "fd5d161b-dd9b-2a51-8987-bc7f84273bbc"
+                    ],
+                    "minItems": [
+                        1
+                    ],
+                    "maxItems": [
+                        1
+                    ]
+                },
+                "pointers": {
+                    "parent": {
+                        "items": [
+                            "eabc7add-5b1f-2f13-08f7-27e7c2af344d"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+                "parent": null
             },
             "registry": {
                 "position": {
@@ -2096,13 +2467,44 @@
         },
         "ec9be6bf-f479-748c-6cff-2828bf42100d": {
             "attributes": {
-                "name": "waterheater"
+                "location": "",
+                "name": "waterheater",
+                "water_demand": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "location": {
+                        "type": "string",
+                        "enum": [
+                            "INSIDE",
+                            "OUTSIDE"
+                        ]
+                    },
+                    "water_demand": {
+                        "type": "integer"
+                    }
+                },
+                "pointers": {
+                    "parent": {
+                        "items": [
+                            "cacb9c98-21cf-49a6-7a01-c3edccc5416b"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+                "parent": null
             },
             "registry": {
                 "position": {
@@ -2186,13 +2588,122 @@
         },
         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": {
             "attributes": {
-                "name": "controller"
+                "average_target": "",
+                "bid_mode": "",
+                "control_mode": "",
+                "demand": "",
+                "load": "",
+                "name": "controller",
+                "period": 0,
+                "ramp_high": 0,
+                "ramp_low": 0,
+                "range_high": 0,
+                "range_low": 0,
+                "setpoint": "",
+                "slider_setting": 0,
+                "standard_deviation_target": "",
+                "target": "",
+                "total": ""
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "standard_deviation_target": {
+                        "type": "string",
+                        "enum": [
+                            "current_price_stdev_30min"
+                        ]
+                    },
+                    "range_high": {
+                        "type": "integer"
+                    },
+                    "ramp_high": {
+                        "type": "integer"
+                    },
+                    "slider_setting": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "string",
+                        "enum": [
+                            "total_load"
+                        ]
+                    },
+                    "setpoint": {
+                        "type": "string",
+                        "enum": [
+                            "cooling_setpoint",
+                            "heating_setpoint"
+                        ]
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "bid_mode": {
+                        "type": "string",
+                        "enum": [
+                            "ON",
+                            "OFF"
+                        ]
+                    },
+                    "control_mode": {
+                        "type": "string",
+                        "enum": [
+                            "RAMP"
+                        ]
+                    },
+                    "target": {
+                        "type": "string",
+                        "enum": [
+                            "air_temperature"
+                        ]
+                    },
+                    "demand": {
+                        "type": "string",
+                        "enum": [
+                            "cooling_demand",
+                            "heating_demand"
+                        ]
+                    },
+                    "load": {
+                        "type": "string",
+                        "enum": [
+                            "hvac_load"
+                        ]
+                    },
+                    "ramp_low": {
+                        "type": "integer"
+                    },
+                    "range_low": {
+                        "type": "integer"
+                    },
+                    "average_target": {
+                        "type": "string",
+                        "enum": [
+                            "current_price_mean_30min"
+                        ]
+                    }
+                },
+                "pointers": {
+                    "market": {
+                        "items": [
+                            "3ec388c6-9fbe-a946-57f7-a510659b9f12"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+                "market": null
             },
             "registry": {
                 "position": {
@@ -2205,10 +2716,17 @@
         },
         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": {
             "attributes": {
-                "name": "climate"
+                "name": "climate",
+                "tmyfile": ""
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "tmyfile": {
+                        "type": "string"
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
@@ -2235,6 +2753,7 @@
         "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47": "u",
         "3ec388c6-9fbe-a946-57f7-a510659b9f12": "P",
         "49667ca2-7f3b-e98c-020f-389ccdb6271e": "m",
+        "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607": "M",
         "4f08052c-ad39-cc20-3674-aeed55f44237": "L",
         "50aec2e4-bb91-3847-481e-deecc69fdbe2": "F",
         "52552de1-9da9-cf4d-2c9c-6a681378e67d": "z",
