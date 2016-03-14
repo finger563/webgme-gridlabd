@@ -1,0 +1,13 @@
+{
+  "components": {
+    "plugins": {
+      "GLMGenerator": {
+        "src": "src\\plugins\\GLMGenerator",
+        "test": "test\\plugins\\GLMGenerator"
+      }
+    }
+  },
+  "dependencies": {
+    "plugins": {}
+  }
+}
