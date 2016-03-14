@@ -36,6 +36,7 @@
             "e574f575-2724-be4c-46b9-400bad15ecc7": {},
             "eabc7add-5b1f-2f13-08f7-27e7c2af344d": {},
             "ec9be6bf-f479-748c-6cff-2828bf42100d": {},
+            "f1138a29-7d9c-fc08-d50b-b535fafe2f61": {},
             "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": {},
             "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": {}
         },
@@ -415,6 +416,16 @@
                     },
                     {
                         "attributes": {},
+                        "guid": "f1138a29-7d9c-fc08-d50b-b535fafe2f61",
+                        "registry": {
+                            "position": {
+                                "x": 669,
+                                "y": 996
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
                         "guid": "fd5d161b-dd9b-2a51-8987-bc7f84273bbc",
                         "registry": {
                             "position": {
@@ -482,8 +493,8 @@
                         "guid": "1b8bb9d1-40cd-e22b-3eaa-a98287649464",
                         "registry": {
                             "position": {
-                                "x": 46.66666666666666,
-                                "y": 1067.3333333333335
+                                "x": 49,
+                                "y": 1069
                             }
                         }
                     },
@@ -759,6 +770,16 @@
                     },
                     {
                         "attributes": {},
+                        "guid": "f1138a29-7d9c-fc08-d50b-b535fafe2f61",
+                        "registry": {
+                            "position": {
+                                "x": 695,
+                                "y": 986
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
                         "guid": "fd5d161b-dd9b-2a51-8987-bc7f84273bbc",
                         "registry": {
                             "position": {
@@ -808,23 +829,28 @@
             "meta": {
                 "children": {
                     "items": [
+                        "1b8bb9d1-40cd-e22b-3eaa-a98287649464",
+                        "2cc13368-6033-dd20-2b21-8d3a6db576c6",
                         "2cf57745-eec5-2a62-72de-a9f7637c7aa8",
                         "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47",
                         "3ec388c6-9fbe-a946-57f7-a510659b9f12",
                         "49667ca2-7f3b-e98c-020f-389ccdb6271e",
                         "4f08052c-ad39-cc20-3674-aeed55f44237",
                         "50aec2e4-bb91-3847-481e-deecc69fdbe2",
+                        "54edd22d-deaf-6ced-5e5a-c81a3769d189",
                         "6499e351-586f-7e0b-df2c-992849b91aa0",
                         "68d10581-ab03-e600-0d03-c9799404bde8",
                         "8bfa3fab-1979-1d1e-9d9b-04f39d670ae9",
+                        "94ff69c0-2d28-d84b-46db-89b8be5564b4",
                         "a96c17cf-6b0d-3998-66d8-f02759b11c84",
                         "c13508bc-41e4-a3f7-859e-99beda944552",
                         "d79800be-ebd6-d712-b3ae-8bf14690efb8",
+                        "eabc7add-5b1f-2f13-08f7-27e7c2af344d",
+                        "f1138a29-7d9c-fc08-d50b-b535fafe2f61",
                         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1"
                     ],
                     "minItems": [
                         -1,
-                        1,
                         -1,
                         -1,
                         -1,
@@ -832,14 +858,20 @@
                         -1,
                         -1,
                         1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
                         1,
                         -1,
                         -1,
-                        -1
+                        -1,
+                        -1,
+                        1
                     ],
                     "maxItems": [
                         -1,
-                        1,
                         -1,
                         -1,
                         -1,
@@ -847,10 +879,17 @@
                         -1,
                         -1,
                         1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
                         1,
                         -1,
                         -1,
-                        -1
+                        -1,
+                        -1,
+                        1
                     ]
                 }
             },
@@ -869,10 +908,53 @@
         },
         "1b8bb9d1-40cd-e22b-3eaa-a98287649464": {
             "attributes": {
-                "name": "transformer_configuration"
+                "connect_type": "",
+                "impedence": "",
+                "install_type": "",
+                "name": "transformer_configuration",
+                "powerA_rating": 0,
+                "powerB_rating": 0,
+                "powerC_rating": 0,
+                "primary_voltage": 0,
+                "secondary_voltage": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "meta": {},
+            "meta": {
+                "attributes": {
+                    "powerC_rating": {
+                        "type": "integer"
+                    },
+                    "powerA_rating": {
+                        "type": "integer"
+                    },
+                    "connect_type": {
+                        "type": "string",
+                        "enum": [
+                            "SINGLE_PHASE_CENTER_TAPPED",
+                            "WYE_WYE"
+                        ]
+                    },
+                    "secondary_voltage": {
+                        "type": "float"
+                    },
+                    "primary_voltage": {
+                        "type": "float"
+                    },
+                    "impedence": {
+                        "type": "string"
+                    },
+                    "install_type": {
+                        "type": "string",
+                        "enum": [
+                            "POLETOP",
+                            "PADMOUNT"
+                        ]
+                    },
+                    "powerB_rating": {
+                        "type": "integer"
+                    }
+                }
+            },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
@@ -2031,6 +2113,77 @@
             "sets": {},
             "constraints": {}
         },
+        "f1138a29-7d9c-fc08-d50b-b535fafe2f61": {
+            "attributes": {
+                "name": "switch",
+                "phases": "",
+                "status": ""
+            },
+            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "meta": {
+                "attributes": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    },
+                    "phases": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ACN",
+                            "AN",
+                            "CN",
+                            "BCN"
+                        ]
+                    }
+                },
+                "pointers": {
+                    "from": {
+                        "items": [
+                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    },
+                    "to": {
+                        "items": [
+                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                        ],
+                        "minItems": [
+                            -1
+                        ],
+                        "maxItems": [
+                            1
+                        ],
+                        "max": 1,
+                        "min": 1
+                    }
+                }
+            },
+            "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
+            "pointers": {
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+                "from": null,
+                "to": null
+            },
+            "registry": {
+                "position": {
+                    "x": 1057,
+                    "y": 633
+                }
+            },
+            "sets": {},
+            "constraints": {}
+        },
         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": {
             "attributes": {
                 "name": "controller"
@@ -2105,6 +2258,7 @@
         "e574f575-2724-be4c-46b9-400bad15ecc7": "6",
         "eabc7add-5b1f-2f13-08f7-27e7c2af344d": "q",
         "ec9be6bf-f479-748c-6cff-2828bf42100d": "0",
+        "f1138a29-7d9c-fc08-d50b-b535fafe2f61": "oT",
         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": "c",
         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": "B"
     },
