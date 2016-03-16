@@ -1214,6 +1214,8 @@
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
             "registry": {
+                "SVGIcon": "svgs/generator.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 73,
                     "y": 122
@@ -1380,8 +1382,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 391,
-                    "y": 165
+                    "x": 390,
+                    "y": 117
                 }
             },
             "sets": {}
@@ -2170,6 +2172,8 @@
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
             "registry": {
+                "SVGIcon": "svgs/powerflow.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 83,
                     "y": 390
