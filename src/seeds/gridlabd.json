@@ -12,10 +12,10 @@
         "1df27b5d-adf1-09e0-813c-a94f27f0fa1f": {
             "0292e032-bf07-7d78-3d9e-2b455844402d": {},
             "12dadc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "19cfbf68-7628-0338-5b05-026fd5562a1c": {},
             "1c857ffb-28ff-64fa-26c1-ab3702fca322": {},
             "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf": {},
             "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff": {},
-            "5424ad1e-b46f-77aa-4b53-e63584e3a45e": {},
             "634d0133-33ab-b22d-aee0-086ce6f8d4ec": {},
             "66e57ffb-28ff-64fa-26c1-ab3702fca322": {},
             "7b2c92f0-f508-cc0f-1377-bb2635a4819e": {},
@@ -30,7 +30,7 @@
             "a6f41b0d-7740-37d4-1f0e-d6a2b7f3cf1c": {},
             "ab857ffb-28ff-64fa-26c1-ab3702fca322": {},
             "ae19824f-d5e5-6bae-ffa6-72982294af5c": {},
-            "caac6964-e774-8c2c-35b4-73a4cc7f8da5": {},
+            "cc6decb6-8262-b7c0-5286-cf93d28c43ae": {},
             "d133950c-195a-f85d-3747-bc6864c7f4ec": {},
             "d18253fd-cc6f-a1fb-8aec-d709a5805b35": {},
             "d4badc4d-d884-dda9-b954-4fdbe81669ea": {},
@@ -46,6 +46,7 @@
             "efbadc4d-d884-dda9-b954-4fdbe81669ea": {},
             "f4badc4d-d884-dda9-b954-4fdbe81669ea": {},
             "f6badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "f75d30f8-19aa-da3d-2c38-203a963f5419": {},
             "fbbadc4d-d884-dda9-b954-4fdbe81669ea": {}
         },
         "52552de1-9da9-cf4d-2c9c-6a681378e67d": {
@@ -1212,6 +1213,28 @@
             },
             "sets": {}
         },
+        "19cfbf68-7628-0338-5b05-026fd5562a1c": {
+            "attributes": {
+                "length": 360,
+                "phases": "ABC"
+            },
+            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+                "configuration": "0292e032-bf07-7d78-3d9e-2b455844402d",
+                "dst": "ab857ffb-28ff-64fa-26c1-ab3702fca322",
+                "src": "d4badc4d-d884-dda9-b954-4fdbe81669ea"
+            },
+            "registry": {
+                "position": {
+                    "x": 100,
+                    "y": 100
+                }
+            },
+            "sets": {}
+        },
         "1b8bb9d1-40cd-e22b-3eaa-a98287649464": {
             "attributes": {
                 "connect_type": "",
@@ -1380,7 +1403,7 @@
                     }
                 },
                 "pointers": {
-                    "from": {
+                    "src": {
                         "items": [
                             "c13508bc-41e4-a3f7-859e-99beda944552"
                         ],
@@ -1393,7 +1416,7 @@
                         "max": 1,
                         "min": 1
                     },
-                    "to": {
+                    "dst": {
                         "items": [
                             "c13508bc-41e4-a3f7-859e-99beda944552"
                         ],
@@ -1438,9 +1461,9 @@
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
                 "configuration": null,
-                "from": null,
+                "src": null,
                 "sense_node": null,
-                "to": null
+                "dst": null
             },
             "registry": {
                 "position": {
@@ -1514,7 +1537,7 @@
                     }
                 },
                 "pointers": {
-                    "from": {
+                    "src": {
                         "items": [
                             "54edd22d-deaf-6ced-5e5a-c81a3769d189"
                         ],
@@ -1527,7 +1550,7 @@
                         "max": 1,
                         "min": 1
                     },
-                    "to": {
+                    "dst": {
                         "items": [
                             "54edd22d-deaf-6ced-5e5a-c81a3769d189"
                         ],
@@ -1559,8 +1582,8 @@
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
                 "configuration": null,
-                "from": null,
-                "to": null
+                "src": null,
+                "dst": null
             },
             "registry": {
                 "position": {
@@ -1608,7 +1631,7 @@
                         "max": 1,
                         "min": 1
                     },
-                    "from": {
+                    "src": {
                         "items": [
                             "eb40717f-026c-65a9-73aa-32553b2e2a33"
                         ],
@@ -1621,7 +1644,7 @@
                         "max": 1,
                         "min": 1
                     },
-                    "to": {
+                    "dst": {
                         "items": [
                             "eb40717f-026c-65a9-73aa-32553b2e2a33"
                         ],
@@ -1640,8 +1663,8 @@
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
                 "configuration": null,
-                "from": null,
-                "to": null
+                "src": null,
+                "dst": null
             },
             "registry": {
                 "isAbstract": true,
@@ -1998,29 +2021,6 @@
             },
             "sets": {}
         },
-        "5424ad1e-b46f-77aa-4b53-e63584e3a45e": {
-            "attributes": {
-                "length": 960,
-                "name": "701-702",
-                "phases": "ABC"
-            },
-            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
-            "meta": {},
-            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
-            "pointers": {
-                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
-                "configuration": "634d0133-33ab-b22d-aee0-086ce6f8d4ec",
-                "from": "863adc4d-d884-dda9-b954-4fdbe81669ea",
-                "to": "d4badc4d-d884-dda9-b954-4fdbe81669ea"
-            },
-            "registry": {
-                "position": {
-                    "x": 282,
-                    "y": 556
-                }
-            },
-            "sets": {}
-        },
         "54edd22d-deaf-6ced-5e5a-c81a3769d189": {
             "attributes": {
                 "name": "triplex_node",
@@ -2286,8 +2286,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 542,
-                    "y": 556
+                    "x": 529,
+                    "y": 521
                 }
             },
             "sets": {}
@@ -2309,8 +2309,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 50,
-                    "y": 403
+                    "x": 244,
+                    "y": 622
                 }
             },
             "sets": {}
@@ -2638,7 +2638,7 @@
                     }
                 },
                 "pointers": {
-                    "from": {
+                    "src": {
                         "items": [
                             "c13508bc-41e4-a3f7-859e-99beda944552"
                         ],
@@ -2651,7 +2651,7 @@
                         "max": 1,
                         "min": 1
                     },
-                    "to": {
+                    "dst": {
                         "items": [
                             "54edd22d-deaf-6ced-5e5a-c81a3769d189"
                         ],
@@ -2683,8 +2683,8 @@
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
                 "configuration": null,
-                "from": null,
-                "to": null
+                "src": null,
+                "dst": null
             },
             "registry": {
                 "SVGIcon": "svgs/transformer.svg",
@@ -2883,8 +2883,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 1054,
-                    "y": 427
+                    "x": 404,
+                    "y": 790
                 }
             },
             "sets": {}
@@ -2958,6 +2958,8 @@
                 "base": "eb40717f-026c-65a9-73aa-32553b2e2a33"
             },
             "registry": {
+                "SVGIcon": "svgs/node.svg",
+                "decorator": "SVGDecorator",
                 "isAbstract": false,
                 "position": {
                     "x": 1064,
@@ -2980,29 +2982,6 @@
                 "position": {
                     "x": 84,
                     "y": 280
-                }
-            },
-            "sets": {}
-        },
-        "caac6964-e774-8c2c-35b4-73a4cc7f8da5": {
-            "attributes": {
-                "length": 400,
-                "name": "702-705",
-                "phases": "ABC"
-            },
-            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
-            "meta": {},
-            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
-            "pointers": {
-                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
-                "configuration": "e2c6a4fe-d6d6-04c5-f21b-9d35e64490ba",
-                "from": "d4badc4d-d884-dda9-b954-4fdbe81669ea",
-                "to": "e7badc4d-d884-dda9-b954-4fdbe81669ea"
-            },
-            "registry": {
-                "position": {
-                    "x": 282,
-                    "y": 616
                 }
             },
             "sets": {}
@@ -3069,6 +3048,28 @@
                 "position": {
                     "x": 674,
                     "y": 230
+                }
+            },
+            "sets": {}
+        },
+        "cc6decb6-8262-b7c0-5286-cf93d28c43ae": {
+            "attributes": {
+                "length": 960,
+                "phases": "ABC"
+            },
+            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+                "configuration": "634d0133-33ab-b22d-aee0-086ce6f8d4ec",
+                "dst": "d4badc4d-d884-dda9-b954-4fdbe81669ea",
+                "src": "863adc4d-d884-dda9-b954-4fdbe81669ea"
+            },
+            "registry": {
+                "position": {
+                    "x": 100,
+                    "y": 100
                 }
             },
             "sets": {}
@@ -3188,8 +3189,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 50,
-                    "y": 450
+                    "x": 453,
+                    "y": 624
                 }
             },
             "sets": {}
@@ -3439,8 +3440,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 50,
-                    "y": 600
+                    "x": 660,
+                    "y": 620
                 }
             },
             "sets": {}
@@ -3618,8 +3619,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 772,
-                    "y": 556
+                    "x": 759,
+                    "y": 521
                 }
             },
             "sets": {}
@@ -3700,7 +3701,7 @@
                     }
                 },
                 "pointers": {
-                    "from": {
+                    "src": {
                         "items": [
                             "c13508bc-41e4-a3f7-859e-99beda944552"
                         ],
@@ -3713,7 +3714,7 @@
                         "max": 1,
                         "min": 1
                     },
-                    "to": {
+                    "dst": {
                         "items": [
                             "c13508bc-41e4-a3f7-859e-99beda944552"
                         ],
@@ -3731,8 +3732,8 @@
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-                "from": null,
-                "to": null
+                "src": null,
+                "dst": null
             },
             "registry": {
                 "position": {
@@ -3784,6 +3785,28 @@
                 "position": {
                     "x": 50,
                     "y": 750
+                }
+            },
+            "sets": {}
+        },
+        "f75d30f8-19aa-da3d-2c38-203a963f5419": {
+            "attributes": {
+                "length": 400,
+                "phases": "ABC"
+            },
+            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+                "configuration": "e2c6a4fe-d6d6-04c5-f21b-9d35e64490ba",
+                "dst": "e7badc4d-d884-dda9-b954-4fdbe81669ea",
+                "src": "d4badc4d-d884-dda9-b954-4fdbe81669ea"
+            },
+            "registry": {
+                "position": {
+                    "x": 100,
+                    "y": 100
                 }
             },
             "sets": {}
@@ -3970,6 +3993,7 @@
         "0635d6de-5602-9280-b897-99049813e802": "X",
         "11e2ea0b-ff8a-0dae-c093-a252b6aa4660": "R",
         "12dadc4d-d884-dda9-b954-4fdbe81669ea": "Z4",
+        "19cfbf68-7628-0338-5b05-026fd5562a1c": "4x",
         "1b8bb9d1-40cd-e22b-3eaa-a98287649464": "S",
         "1c857ffb-28ff-64fa-26c1-ab3702fca322": "mO",
         "1df27b5d-adf1-09e0-813c-a94f27f0fa1f": "M",
@@ -3987,7 +4011,6 @@
         "4f08052c-ad39-cc20-3674-aeed55f44237": "L",
         "50aec2e4-bb91-3847-481e-deecc69fdbe2": "F",
         "52552de1-9da9-cf4d-2c9c-6a681378e67d": "z",
-        "5424ad1e-b46f-77aa-4b53-e63584e3a45e": "n",
         "54edd22d-deaf-6ced-5e5a-c81a3769d189": "D",
         "634d0133-33ab-b22d-aee0-086ce6f8d4ec": "gl",
         "6499e351-586f-7e0b-df2c-992849b91aa0": "o",
@@ -4014,8 +4037,8 @@
         "ae19824f-d5e5-6bae-ffa6-72982294af5c": "4",
         "c13508bc-41e4-a3f7-859e-99beda944552": "N",
         "ca747095-7252-7946-4d3d-e8f65e965dde": "A",
-        "caac6964-e774-8c2c-35b4-73a4cc7f8da5": "a",
         "cacb9c98-21cf-49a6-7a01-c3edccc5416b": "b",
+        "cc6decb6-8262-b7c0-5286-cf93d28c43ae": "P",
         "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "1",
         "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2": "E",
         "d133950c-195a-f85d-3747-bc6864c7f4ec": "L",
@@ -4041,6 +4064,7 @@
         "f1138a29-7d9c-fc08-d50b-b535fafe2f61": "oT",
         "f4badc4d-d884-dda9-b954-4fdbe81669ea": "H",
         "f6badc4d-d884-dda9-b954-4fdbe81669ea": "F",
+        "f75d30f8-19aa-da3d-2c38-203a963f5419": "6",
         "fbbadc4d-d884-dda9-b954-4fdbe81669ea": "N",
         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": "c",
         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": "B"
