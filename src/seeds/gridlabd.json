@@ -20,6 +20,7 @@
             "66e57ffb-28ff-64fa-26c1-ab3702fca322": {},
             "7b2c92f0-f508-cc0f-1377-bb2635a4819e": {},
             "85973e00-06c7-d9a4-313f-ad6414a274e4": {},
+            "863adc4d-d884-dda9-b954-4fdbe81669ea": {},
             "877fd4da-4e92-e084-4c5f-ba8d52284db8": {},
             "87e57ffb-28ff-64fa-26c1-ab3702fca322": {},
             "8ee57ffb-28ff-64fa-26c1-ab3702fca322": {},
@@ -29,6 +30,7 @@
             "a6f41b0d-7740-37d4-1f0e-d6a2b7f3cf1c": {},
             "ab857ffb-28ff-64fa-26c1-ab3702fca322": {},
             "ae19824f-d5e5-6bae-ffa6-72982294af5c": {},
+            "caac6964-e774-8c2c-35b4-73a4cc7f8da5": {},
             "d133950c-195a-f85d-3747-bc6864c7f4ec": {},
             "d18253fd-cc6f-a1fb-8aec-d709a5805b35": {},
             "d4badc4d-d884-dda9-b954-4fdbe81669ea": {},
@@ -79,6 +81,7 @@
             "e019c6ba-4908-18e9-df7a-78142b0d5c8b": {},
             "e574f575-2724-be4c-46b9-400bad15ecc7": {},
             "eabc7add-5b1f-2f13-08f7-27e7c2af344d": {},
+            "eb40717f-026c-65a9-73aa-32553b2e2a33": {},
             "ec9be6bf-f479-748c-6cff-2828bf42100d": {},
             "f1138a29-7d9c-fc08-d50b-b535fafe2f61": {},
             "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": {},
@@ -483,6 +486,16 @@
                     },
                     {
                         "attributes": {},
+                        "guid": "eb40717f-026c-65a9-73aa-32553b2e2a33",
+                        "registry": {
+                            "position": {
+                                "x": 779,
+                                "y": 945
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
                         "guid": "ec9be6bf-f479-748c-6cff-2828bf42100d",
                         "registry": {
                             "position": {
@@ -620,8 +633,8 @@
                         "guid": "32fdb84f-8369-d198-d062-41f0fa0a76de",
                         "registry": {
                             "position": {
-                                "x": 1032,
-                                "y": 186
+                                "x": 924,
+                                "y": 1081
                             }
                         }
                     },
@@ -847,6 +860,16 @@
                     },
                     {
                         "attributes": {},
+                        "guid": "eb40717f-026c-65a9-73aa-32553b2e2a33",
+                        "registry": {
+                            "position": {
+                                "x": 779,
+                                "y": 945
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
                         "guid": "ec9be6bf-f479-748c-6cff-2828bf42100d",
                         "registry": {
                             "position": {
@@ -916,10 +939,81 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "Type": {
+                    "tap_pos_C": {
+                        "type": "integer"
+                    },
+                    "tap_pos_A": {
+                        "type": "integer"
+                    },
+                    "regulation": {
+                        "type": "float"
+                    },
+                    "raise_taps": {
+                        "type": "integer"
+                    },
+                    "band_width": {
+                        "type": "float"
+                    },
+                    "connect_type": {
                         "type": "string",
                         "enum": [
-                            "A"
+                            "WYE_WYE"
+                        ]
+                    },
+                    "band_center": {
+                        "type": "float"
+                    },
+                    "dwell_time": {
+                        "type": "float"
+                    },
+                    "lower_taps": {
+                        "type": "integer"
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "REMOTE_NODE",
+                            "MANUAL",
+                            ""
+                        ]
+                    },
+                    "tap_pos_B": {
+                        "type": "integer"
+                    },
+                    "time_delay": {
+                        "type": "float"
+                    },
+                    "current_transducer_ratio": {
+                        "type": "integer"
+                    },
+                    "power_transducer_ratio": {
+                        "type": "integer"
+                    },
+                    "compensator_r_setting_A": {
+                        "type": "float"
+                    },
+                    "compensator_x_setting_A": {
+                        "type": "float"
+                    },
+                    "compensator_r_setting_B": {
+                        "type": "float"
+                    },
+                    "compensator_x_setting_B": {
+                        "type": "float"
+                    },
+                    "CT_phase": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AB",
+                            "AC",
+                            "AN",
+                            "BC",
+                            "BN",
+                            "CN"
                         ]
                     },
                     "PT_phase": {
@@ -937,82 +1031,11 @@
                             "CN"
                         ]
                     },
-                    "CT_phase": {
+                    "Type": {
                         "type": "string",
                         "enum": [
-                            "ABCN",
-                            "ABC",
-                            "ACN",
-                            "BCN",
-                            "AB",
-                            "AC",
-                            "AN",
-                            "BC",
-                            "BN",
-                            "CN"
+                            "A"
                         ]
-                    },
-                    "compensator_x_setting_B": {
-                        "type": "float"
-                    },
-                    "compensator_r_setting_B": {
-                        "type": "float"
-                    },
-                    "compensator_x_setting_A": {
-                        "type": "float"
-                    },
-                    "compensator_r_setting_A": {
-                        "type": "float"
-                    },
-                    "power_transducer_ratio": {
-                        "type": "integer"
-                    },
-                    "current_transducer_ratio": {
-                        "type": "integer"
-                    },
-                    "time_delay": {
-                        "type": "float"
-                    },
-                    "tap_pos_B": {
-                        "type": "integer"
-                    },
-                    "control": {
-                        "type": "string",
-                        "enum": [
-                            "REMOTE_NODE",
-                            "MANUAL",
-                            ""
-                        ]
-                    },
-                    "lower_taps": {
-                        "type": "integer"
-                    },
-                    "dwell_time": {
-                        "type": "float"
-                    },
-                    "band_center": {
-                        "type": "float"
-                    },
-                    "connect_type": {
-                        "type": "string",
-                        "enum": [
-                            "WYE_WYE"
-                        ]
-                    },
-                    "band_width": {
-                        "type": "float"
-                    },
-                    "raise_taps": {
-                        "type": "integer"
-                    },
-                    "regulation": {
-                        "type": "float"
-                    },
-                    "tap_pos_A": {
-                        "type": "integer"
-                    },
-                    "tap_pos_C": {
-                        "type": "integer"
                     }
                 }
             },
@@ -1066,6 +1089,7 @@
                         "cacb9c98-21cf-49a6-7a01-c3edccc5416b",
                         "d79800be-ebd6-d712-b3ae-8bf14690efb8",
                         "eabc7add-5b1f-2f13-08f7-27e7c2af344d",
+                        "eb40717f-026c-65a9-73aa-32553b2e2a33",
                         "ec9be6bf-f479-748c-6cff-2828bf42100d",
                         "f1138a29-7d9c-fc08-d50b-b535fafe2f61",
                         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1"
@@ -1087,6 +1111,7 @@
                         1,
                         -1,
                         1,
+                        -1,
                         -1,
                         -1,
                         -1,
@@ -1124,29 +1149,30 @@
                         -1,
                         -1,
                         -1,
+                        -1,
                         -1
                     ]
                 },
                 "attributes": {
-                    "iteration_limit": {
-                        "type": "integer"
-                    },
-                    "stylesheet": {
-                        "type": "string"
-                    },
-                    "pauseat": {
-                        "type": "string"
-                    },
-                    "relax_naming_rules": {
-                        "type": "integer"
-                    },
-                    "randomseed": {
+                    "profiler": {
                         "type": "integer"
                     },
                     "threadcount": {
                         "type": "integer"
                     },
-                    "profiler": {
+                    "randomseed": {
+                        "type": "integer"
+                    },
+                    "relax_naming_rules": {
+                        "type": "integer"
+                    },
+                    "pauseat": {
+                        "type": "string"
+                    },
+                    "stylesheet": {
+                        "type": "string"
+                    },
+                    "iteration_limit": {
                         "type": "integer"
                     }
                 }
@@ -1181,7 +1207,7 @@
             "registry": {
                 "position": {
                     "x": 50,
-                    "y": 750
+                    "y": 800
                 }
             },
             "sets": {}
@@ -1204,33 +1230,11 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "reactance": {
-                        "type": "float"
-                    },
-                    "resistance": {
-                        "type": "float"
-                    },
-                    "power_rating": {
+                    "powerC_rating": {
                         "type": "integer"
                     },
-                    "powerB_rating": {
+                    "powerA_rating": {
                         "type": "integer"
-                    },
-                    "install_type": {
-                        "type": "string",
-                        "enum": [
-                            "POLETOP",
-                            "PADMOUNT"
-                        ]
-                    },
-                    "impedence": {
-                        "type": "string"
-                    },
-                    "primary_voltage": {
-                        "type": "float"
-                    },
-                    "secondary_voltage": {
-                        "type": "float"
                     },
                     "connect_type": {
                         "type": "string",
@@ -1240,11 +1244,33 @@
                             "2"
                         ]
                     },
-                    "powerA_rating": {
+                    "secondary_voltage": {
+                        "type": "float"
+                    },
+                    "primary_voltage": {
+                        "type": "float"
+                    },
+                    "impedence": {
+                        "type": "string"
+                    },
+                    "install_type": {
+                        "type": "string",
+                        "enum": [
+                            "POLETOP",
+                            "PADMOUNT"
+                        ]
+                    },
+                    "powerB_rating": {
                         "type": "integer"
                     },
-                    "powerC_rating": {
+                    "power_rating": {
                         "type": "integer"
+                    },
+                    "resistance": {
+                        "type": "float"
+                    },
+                    "reactance": {
+                        "type": "float"
                     }
                 }
             },
@@ -1253,6 +1279,8 @@
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
             "registry": {
+                "SVGIcon": "svgs/configuration.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 914,
                     "y": 630
@@ -1454,6 +1482,8 @@
                 "base": "2cf57745-eec5-2a62-72de-a9f7637c7aa8"
             },
             "registry": {
+                "SVGIcon": "svgs/power_line.svg",
+                "decorator": "SVGDecorator",
                 "isAbstract": false,
                 "position": {
                     "x": 594,
@@ -1471,9 +1501,6 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "length": {
-                        "type": "integer"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1481,6 +1508,9 @@
                             "BS",
                             "CS"
                         ]
+                    },
+                    "length": {
+                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -1549,6 +1579,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "length": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1559,9 +1592,6 @@
                             "ABC",
                             "AN"
                         ]
-                    },
-                    "length": {
-                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -1580,7 +1610,7 @@
                     },
                     "from": {
                         "items": [
-                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                            "eb40717f-026c-65a9-73aa-32553b2e2a33"
                         ],
                         "minItems": [
                             -1
@@ -1593,7 +1623,7 @@
                     },
                     "to": {
                         "items": [
-                            "c13508bc-41e4-a3f7-859e-99beda944552"
+                            "eb40717f-026c-65a9-73aa-32553b2e2a33"
                         ],
                         "minItems": [
                             -1
@@ -1640,48 +1670,9 @@
                 "voltage_B": "",
                 "voltage_C": ""
             },
-            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "base": "eb40717f-026c-65a9-73aa-32553b2e2a33",
             "meta": {
                 "attributes": {
-                    "constant_impedence_C": {
-                        "type": "string"
-                    },
-                    "constant_impedence_B": {
-                        "type": "string"
-                    },
-                    "constant_impedence_A": {
-                        "type": "string"
-                    },
-                    "constant_current_C": {
-                        "type": "string"
-                    },
-                    "constant_current_B": {
-                        "type": "string"
-                    },
-                    "constant_current_A": {
-                        "type": "string"
-                    },
-                    "nominal_voltage": {
-                        "type": "string"
-                    },
-                    "constant_power_C": {
-                        "type": "string"
-                    },
-                    "constant_power_B": {
-                        "type": "string"
-                    },
-                    "constant_power_A": {
-                        "type": "string"
-                    },
-                    "voltage_C": {
-                        "type": "string"
-                    },
-                    "voltage_B": {
-                        "type": "string"
-                    },
-                    "voltage_A": {
-                        "type": "string"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1697,14 +1688,54 @@
                             "BN",
                             "CN"
                         ]
+                    },
+                    "voltage_A": {
+                        "type": "string"
+                    },
+                    "voltage_B": {
+                        "type": "string"
+                    },
+                    "voltage_C": {
+                        "type": "string"
+                    },
+                    "constant_power_A": {
+                        "type": "string"
+                    },
+                    "constant_power_B": {
+                        "type": "string"
+                    },
+                    "constant_power_C": {
+                        "type": "string"
+                    },
+                    "nominal_voltage": {
+                        "type": "string"
+                    },
+                    "constant_current_A": {
+                        "type": "string"
+                    },
+                    "constant_current_B": {
+                        "type": "string"
+                    },
+                    "constant_current_C": {
+                        "type": "string"
+                    },
+                    "constant_impedence_A": {
+                        "type": "string"
+                    },
+                    "constant_impedence_B": {
+                        "type": "string"
+                    },
+                    "constant_impedence_C": {
+                        "type": "string"
                     }
                 }
             },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "eb40717f-026c-65a9-73aa-32553b2e2a33"
             },
             "registry": {
+                "isAbstract": false,
                 "position": {
                     "x": 674,
                     "y": 178
@@ -1757,22 +1788,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "init_price": {
+                    "init_stdev": {
                         "type": "integer"
                     },
-                    "fixed_price": {
-                        "type": "integer"
-                    },
-                    "verbose": {
-                        "type": "boolean"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": [
-                            "MW"
-                        ]
-                    },
-                    "period": {
+                    "warmup": {
                         "type": "integer"
                     },
                     "special_mode": {
@@ -1781,10 +1800,22 @@
                             "BUYERS_ONLY"
                         ]
                     },
-                    "warmup": {
+                    "period": {
                         "type": "integer"
                     },
-                    "init_stdev": {
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "MW"
+                        ]
+                    },
+                    "verbose": {
+                        "type": "boolean"
+                    },
+                    "fixed_price": {
+                        "type": "integer"
+                    },
+                    "init_price": {
                         "type": "integer"
                     }
                 }
@@ -1810,14 +1841,14 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "ANSI_voltage_check": {
+                        "type": "boolean"
+                    },
                     "implicit_enduces": {
                         "type": "string",
                         "enum": [
                             "NONE"
                         ]
-                    },
-                    "ANSI_voltage_check": {
-                        "type": "boolean"
                     }
                 }
             },
@@ -1844,17 +1875,17 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "limit": {
-                        "type": "integer"
-                    },
-                    "file": {
+                    "property": {
                         "type": "string"
                     },
                     "interval": {
                         "type": "integer"
                     },
-                    "property": {
+                    "file": {
                         "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
                     }
                 }
             },
@@ -1879,10 +1910,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "resistance": {
+                    "geometric_mean_radius": {
                         "type": "float"
                     },
-                    "geometric_mean_radius": {
+                    "resistance": {
                         "type": "float"
                     }
                 }
@@ -1910,18 +1941,18 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "stoptime": {
-                        "type": "string"
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
                     "timezone": {
                         "type": "string",
                         "enum": [
                             "UTC0",
                             "EST+5EDT"
                         ]
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "stoptime": {
+                        "type": "string"
                     }
                 }
             },
@@ -1978,7 +2009,9 @@
             "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
             "pointers": {
                 "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
-                "configuration": "634d0133-33ab-b22d-aee0-086ce6f8d4ec"
+                "configuration": "634d0133-33ab-b22d-aee0-086ce6f8d4ec",
+                "from": "863adc4d-d884-dda9-b954-4fdbe81669ea",
+                "to": "d4badc4d-d884-dda9-b954-4fdbe81669ea"
             },
             "registry": {
                 "position": {
@@ -1997,6 +2030,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "nominal_voltage": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -2004,9 +2040,6 @@
                             "BS",
                             "CS"
                         ]
-                    },
-                    "nominal_voltage": {
-                        "type": "integer"
                     }
                 }
             },
@@ -2054,8 +2087,8 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "default_maximum_voltage_error": {
-                        "type": "float"
+                    "line_limits": {
+                        "type": "boolean"
                     },
                     "solver_method": {
                         "type": "string",
@@ -2063,8 +2096,8 @@
                             "FBS"
                         ]
                     },
-                    "line_limits": {
-                        "type": "boolean"
+                    "default_maximum_voltage_error": {
+                        "type": "float"
                     }
                 }
             },
@@ -2119,22 +2152,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "distance_AN": {
-                        "type": "float"
-                    },
-                    "distance_BC": {
-                        "type": "float"
-                    },
-                    "distance_AB": {
-                        "type": "float"
-                    },
-                    "distance_AC": {
+                    "distance_CN": {
                         "type": "float"
                     },
                     "distance_BN": {
                         "type": "float"
                     },
-                    "distance_CN": {
+                    "distance_AC": {
+                        "type": "float"
+                    },
+                    "distance_AB": {
+                        "type": "float"
+                    },
+                    "distance_BC": {
+                        "type": "float"
+                    },
+                    "distance_AN": {
                         "type": "float"
                     }
                 }
@@ -2164,22 +2197,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "weekdays": {
-                        "type": "string"
-                    },
-                    "hours": {
-                        "type": "string"
-                    },
-                    "minutes": {
-                        "type": "string"
-                    },
-                    "days": {
+                    "value": {
                         "type": "string"
                     },
                     "months": {
                         "type": "string"
                     },
-                    "value": {
+                    "days": {
+                        "type": "string"
+                    },
+                    "minutes": {
+                        "type": "string"
+                    },
+                    "hours": {
+                        "type": "string"
+                    },
+                    "weekdays": {
                         "type": "string"
                     }
                 }
@@ -2259,6 +2292,29 @@
             },
             "sets": {}
         },
+        "863adc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "701",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 50,
+                    "y": 403
+                }
+            },
+            "sets": {}
+        },
         "877fd4da-4e92-e084-4c5f-ba8d52284db8": {
             "attributes": {
                 "solver_method": "FBS"
@@ -2320,35 +2376,35 @@
             "base": "4f08052c-ad39-cc20-3674-aeed55f44237",
             "meta": {
                 "attributes": {
-                    "shield_resistance": {
-                        "type": "float"
+                    "neutral_strands": {
+                        "type": "integer"
                     },
-                    "shield_gmr": {
-                        "type": "float"
-                    },
-                    "neutral_diameter": {
-                        "type": "float"
-                    },
-                    "conductor_resistance": {
-                        "type": "float"
-                    },
-                    "conductor_gmr": {
-                        "type": "float"
-                    },
-                    "outer_diameter": {
-                        "type": "float"
-                    },
-                    "conductor_diameter": {
+                    "neutral_resistance": {
                         "type": "float"
                     },
                     "neutral_gmr": {
                         "type": "float"
                     },
-                    "neutral_resistance": {
+                    "conductor_diameter": {
                         "type": "float"
                     },
-                    "neutral_strands": {
-                        "type": "integer"
+                    "outer_diameter": {
+                        "type": "float"
+                    },
+                    "conductor_gmr": {
+                        "type": "float"
+                    },
+                    "conductor_resistance": {
+                        "type": "float"
+                    },
+                    "neutral_diameter": {
+                        "type": "float"
+                    },
+                    "shield_gmr": {
+                        "type": "float"
+                    },
+                    "shield_resistance": {
+                        "type": "float"
                     }
                 }
             },
@@ -2451,52 +2507,27 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "switchC": {
+                    "switchB": {
                         "type": "string",
                         "enum": [
                             "CLOSED",
                             "OPEN"
                         ]
                     },
-                    "switchA": {
-                        "type": "string",
-                        "enum": [
-                            "CLOSED",
-                            "OPEN"
-                        ]
-                    },
-                    "dwell_time": {
+                    "nominal_voltage": {
                         "type": "float"
                     },
-                    "control_level": {
-                        "type": "string",
-                        "enum": [
-                            "INDIVIDUAL",
-                            ""
-                        ]
-                    },
-                    "capacitor_B": {
+                    "time_delay": {
                         "type": "float"
                     },
-                    "voltage_set_low": {
+                    "capacitor_C": {
                         "type": "float"
                     },
-                    "control": {
-                        "type": "string",
-                        "enum": [
-                            "VOLT"
-                        ]
+                    "capacitor_A": {
+                        "type": "float"
                     },
-                    "phases": {
-                        "type": "string",
-                        "enum": [
-                            "ABCN",
-                            "ACN",
-                            "ABN",
-                            "AN",
-                            "BN",
-                            "CN"
-                        ]
+                    "voltage_set_high": {
+                        "type": "float"
                     },
                     "phases_connected": {
                         "type": "string",
@@ -2510,22 +2541,47 @@
                             "CN"
                         ]
                     },
-                    "voltage_set_high": {
+                    "phases": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ACN",
+                            "ABN",
+                            "AN",
+                            "BN",
+                            "CN"
+                        ]
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "VOLT"
+                        ]
+                    },
+                    "voltage_set_low": {
                         "type": "float"
                     },
-                    "capacitor_A": {
+                    "capacitor_B": {
                         "type": "float"
                     },
-                    "capacitor_C": {
+                    "control_level": {
+                        "type": "string",
+                        "enum": [
+                            "INDIVIDUAL",
+                            ""
+                        ]
+                    },
+                    "dwell_time": {
                         "type": "float"
                     },
-                    "time_delay": {
-                        "type": "float"
+                    "switchA": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
                     },
-                    "nominal_voltage": {
-                        "type": "float"
-                    },
-                    "switchB": {
+                    "switchC": {
                         "type": "string",
                         "enum": [
                             "CLOSED",
@@ -2631,6 +2687,8 @@
                 "to": null
             },
             "registry": {
+                "SVGIcon": "svgs/transformer.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 914,
                     "y": 580
@@ -2845,8 +2903,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 829,
-                    "y": 312
+                    "x": 855,
+                    "y": 282
                 }
             },
             "sets": {}
@@ -2861,13 +2919,20 @@
                 "voltage_B": "",
                 "voltage_C": ""
             },
-            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "base": "eb40717f-026c-65a9-73aa-32553b2e2a33",
             "meta": {
                 "attributes": {
-                    "nominal_voltage": {
+                    "bustype": {
+                        "type": "string",
+                        "enum": [
+                            "NONE",
+                            "SWING"
+                        ]
+                    },
+                    "voltage_C": {
                         "type": "string"
                     },
-                    "voltage_B": {
+                    "voltage_A": {
                         "type": "string"
                     },
                     "phases": {
@@ -2880,26 +2945,20 @@
                             "BCN"
                         ]
                     },
-                    "voltage_A": {
+                    "voltage_B": {
                         "type": "string"
                     },
-                    "voltage_C": {
+                    "nominal_voltage": {
                         "type": "string"
-                    },
-                    "bustype": {
-                        "type": "string",
-                        "enum": [
-                            "NONE",
-                            "SWING"
-                        ]
                     }
                 }
             },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
             "pointers": {
-                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+                "base": "eb40717f-026c-65a9-73aa-32553b2e2a33"
             },
             "registry": {
+                "isAbstract": false,
                 "position": {
                     "x": 1064,
                     "y": 580
@@ -2921,6 +2980,29 @@
                 "position": {
                     "x": 84,
                     "y": 280
+                }
+            },
+            "sets": {}
+        },
+        "caac6964-e774-8c2c-35b4-73a4cc7f8da5": {
+            "attributes": {
+                "length": 400,
+                "name": "702-705",
+                "phases": "ABC"
+            },
+            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+                "configuration": "e2c6a4fe-d6d6-04c5-f21b-9d35e64490ba",
+                "from": "d4badc4d-d884-dda9-b954-4fdbe81669ea",
+                "to": "e7badc4d-d884-dda9-b954-4fdbe81669ea"
+            },
+            "registry": {
+                "position": {
+                    "x": 282,
+                    "y": 616
                 }
             },
             "sets": {}
@@ -2947,17 +3029,17 @@
                     ]
                 },
                 "attributes": {
-                    "heating_setpoint": {
+                    "air_temperature": {
+                        "type": "integer"
+                    },
+                    "cooling_setpoint": {
                         "type": "float"
                     },
                     "floor_area": {
                         "type": "float"
                     },
-                    "cooling_setpoint": {
+                    "heating_setpoint": {
                         "type": "float"
-                    },
-                    "air_temperature": {
-                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -2982,6 +3064,8 @@
                 "parent": null
             },
             "registry": {
+                "SVGIcon": "svgs/house.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 674,
                     "y": 230
@@ -3104,8 +3188,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 54,
-                    "y": 403
+                    "x": 50,
+                    "y": 450
                 }
             },
             "sets": {}
@@ -3119,10 +3203,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "insulation_thickness": {
+                    "diameter": {
                         "type": "float"
                     },
-                    "diameter": {
+                    "insulation_thickness": {
                         "type": "float"
                     }
                 },
@@ -3200,8 +3284,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 53,
-                    "y": 602
+                    "x": 50,
+                    "y": 650
                 }
             },
             "sets": {}
@@ -3242,8 +3326,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 49,
-                    "y": 800
+                    "x": 50,
+                    "y": 850
                 }
             },
             "sets": {}
@@ -3332,8 +3416,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 55,
-                    "y": 504
+                    "x": 50,
+                    "y": 550
                 }
             },
             "sets": {}
@@ -3355,8 +3439,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 51,
-                    "y": 553
+                    "x": 50,
+                    "y": 600
                 }
             },
             "sets": {}
@@ -3412,6 +3496,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "nominal_voltage": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -3419,9 +3506,6 @@
                             "BS",
                             "CS"
                         ]
-                    },
-                    "nominal_voltage": {
-                        "type": "integer"
                     }
                 }
             },
@@ -3437,6 +3521,25 @@
             },
             "sets": {}
         },
+        "eb40717f-026c-65a9-73aa-32553b2e2a33": {
+            "attributes": {
+                "name": "line_object"
+            },
+            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "meta": {},
+            "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
+            "pointers": {
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+            },
+            "registry": {
+                "isAbstract": true,
+                "position": {
+                    "x": 671,
+                    "y": 127
+                }
+            },
+            "sets": {}
+        },
         "ec9be6bf-f479-748c-6cff-2828bf42100d": {
             "attributes": {
                 "location": "",
@@ -3446,15 +3549,15 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "water_demand": {
-                        "type": "integer"
-                    },
                     "location": {
                         "type": "string",
                         "enum": [
                             "INSIDE",
                             "OUTSIDE"
                         ]
+                    },
+                    "water_demand": {
+                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -3540,8 +3643,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 829,
-                    "y": 252
+                    "x": 849,
+                    "y": 186
                 }
             },
             "sets": {}
@@ -3563,8 +3666,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 51,
-                    "y": 453
+                    "x": 50,
+                    "y": 500
                 }
             },
             "sets": {}
@@ -3578,6 +3681,13 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -3586,13 +3696,6 @@
                             "AN",
                             "CN",
                             "BCN"
-                        ]
-                    },
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "CLOSED",
-                            "OPEN"
                         ]
                     }
                 },
@@ -3656,8 +3759,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 48,
-                    "y": 650
+                    "x": 50,
+                    "y": 700
                 }
             },
             "sets": {}
@@ -3679,8 +3782,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 51,
-                    "y": 704
+                    "x": 50,
+                    "y": 750
                 }
             },
             "sets": {}
@@ -3702,8 +3805,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 52,
-                    "y": 850
+                    "x": 50,
+                    "y": 900
                 }
             },
             "sets": {}
@@ -3730,22 +3833,54 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "average_target": {
+                    "standard_deviation_target": {
                         "type": "string",
                         "enum": [
-                            "current_price_mean_30min"
+                            "current_price_stdev_30min"
                         ]
                     },
-                    "range_low": {
+                    "range_high": {
                         "type": "integer"
                     },
-                    "ramp_low": {
+                    "ramp_high": {
                         "type": "integer"
                     },
-                    "load": {
+                    "slider_setting": {
+                        "type": "integer"
+                    },
+                    "total": {
                         "type": "string",
                         "enum": [
-                            "hvac_load"
+                            "total_load"
+                        ]
+                    },
+                    "setpoint": {
+                        "type": "string",
+                        "enum": [
+                            "cooling_setpoint",
+                            "heating_setpoint"
+                        ]
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "bid_mode": {
+                        "type": "string",
+                        "enum": [
+                            "ON",
+                            "OFF"
+                        ]
+                    },
+                    "control_mode": {
+                        "type": "string",
+                        "enum": [
+                            "RAMP"
+                        ]
+                    },
+                    "target": {
+                        "type": "string",
+                        "enum": [
+                            "air_temperature"
                         ]
                     },
                     "demand": {
@@ -3755,54 +3890,22 @@
                             "heating_demand"
                         ]
                     },
-                    "target": {
+                    "load": {
                         "type": "string",
                         "enum": [
-                            "air_temperature"
+                            "hvac_load"
                         ]
                     },
-                    "control_mode": {
-                        "type": "string",
-                        "enum": [
-                            "RAMP"
-                        ]
-                    },
-                    "bid_mode": {
-                        "type": "string",
-                        "enum": [
-                            "ON",
-                            "OFF"
-                        ]
-                    },
-                    "period": {
+                    "ramp_low": {
                         "type": "integer"
                     },
-                    "setpoint": {
-                        "type": "string",
-                        "enum": [
-                            "cooling_setpoint",
-                            "heating_setpoint"
-                        ]
-                    },
-                    "total": {
-                        "type": "string",
-                        "enum": [
-                            "total_load"
-                        ]
-                    },
-                    "slider_setting": {
+                    "range_low": {
                         "type": "integer"
                     },
-                    "ramp_high": {
-                        "type": "integer"
-                    },
-                    "range_high": {
-                        "type": "integer"
-                    },
-                    "standard_deviation_target": {
+                    "average_target": {
                         "type": "string",
                         "enum": [
-                            "current_price_stdev_30min"
+                            "current_price_mean_30min"
                         ]
                     }
                 },
@@ -3894,6 +3997,7 @@
         "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8": "T",
         "7b2c92f0-f508-cc0f-1377-bb2635a4819e": "e",
         "85973e00-06c7-d9a4-313f-ad6414a274e4": "z",
+        "863adc4d-d884-dda9-b954-4fdbe81669ea": "uX",
         "877fd4da-4e92-e084-4c5f-ba8d52284db8": "1",
         "87e57ffb-28ff-64fa-26c1-ab3702fca322": "i",
         "8a94277b-e6a4-b0fa-4331-189c6ee90592": "p",
@@ -3910,6 +4014,7 @@
         "ae19824f-d5e5-6bae-ffa6-72982294af5c": "4",
         "c13508bc-41e4-a3f7-859e-99beda944552": "N",
         "ca747095-7252-7946-4d3d-e8f65e965dde": "A",
+        "caac6964-e774-8c2c-35b4-73a4cc7f8da5": "a",
         "cacb9c98-21cf-49a6-7a01-c3edccc5416b": "b",
         "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "1",
         "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2": "E",
@@ -3928,6 +4033,7 @@
         "e7fb17de-ba96-9f06-a0f6-2829f1da62ce": "o",
         "e9badc4d-d884-dda9-b954-4fdbe81669ea": "A",
         "eabc7add-5b1f-2f13-08f7-27e7c2af344d": "q",
+        "eb40717f-026c-65a9-73aa-32553b2e2a33": "x",
         "ec9be6bf-f479-748c-6cff-2828bf42100d": "0",
         "edb17d62-17ec-da38-51d9-4f9bf0a03335": "Y",
         "eeed97e9-0231-5dd8-8175-cadd978db4e2": "l",
