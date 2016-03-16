@@ -9,6 +9,43 @@
         "guid": "03d36072-9e09-7866-cb4e-d0a36ff825f6"
     },
     "containment": {
+        "1df27b5d-adf1-09e0-813c-a94f27f0fa1f": {
+            "0292e032-bf07-7d78-3d9e-2b455844402d": {},
+            "12dadc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "1c857ffb-28ff-64fa-26c1-ab3702fca322": {},
+            "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf": {},
+            "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff": {},
+            "5424ad1e-b46f-77aa-4b53-e63584e3a45e": {},
+            "634d0133-33ab-b22d-aee0-086ce6f8d4ec": {},
+            "66e57ffb-28ff-64fa-26c1-ab3702fca322": {},
+            "7b2c92f0-f508-cc0f-1377-bb2635a4819e": {},
+            "85973e00-06c7-d9a4-313f-ad6414a274e4": {},
+            "877fd4da-4e92-e084-4c5f-ba8d52284db8": {},
+            "87e57ffb-28ff-64fa-26c1-ab3702fca322": {},
+            "8ee57ffb-28ff-64fa-26c1-ab3702fca322": {},
+            "8fcd6680-be2b-37fa-b039-7e7125fb0d5c": {},
+            "9e47cfc8-70d8-b744-7f86-4017187fd0b8": {},
+            "a6e57ffb-28ff-64fa-26c1-ab3702fca322": {},
+            "a6f41b0d-7740-37d4-1f0e-d6a2b7f3cf1c": {},
+            "ab857ffb-28ff-64fa-26c1-ab3702fca322": {},
+            "ae19824f-d5e5-6bae-ffa6-72982294af5c": {},
+            "d133950c-195a-f85d-3747-bc6864c7f4ec": {},
+            "d18253fd-cc6f-a1fb-8aec-d709a5805b35": {},
+            "d4badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "d8badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "e0badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "e129552e-cfd2-9779-65e9-25aef67c4774": {},
+            "e2c6a4fe-d6d6-04c5-f21b-9d35e64490ba": {},
+            "e6badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "e7badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "e9badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "edb17d62-17ec-da38-51d9-4f9bf0a03335": {},
+            "eeed97e9-0231-5dd8-8175-cadd978db4e2": {},
+            "efbadc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "f4badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "f6badc4d-d884-dda9-b954-4fdbe81669ea": {},
+            "fbbadc4d-d884-dda9-b954-4fdbe81669ea": {}
+        },
         "52552de1-9da9-cf4d-2c9c-6a681378e67d": {
             "0635d6de-5602-9280-b897-99049813e802": {},
             "11e2ea0b-ff8a-0dae-c093-a252b6aa4660": {},
@@ -17,6 +54,7 @@
             "2c33fa80-e6fe-800f-67f7-0a6cc60f1e73": {},
             "2cc13368-6033-dd20-2b21-8d3a6db576c6": {},
             "2cf57745-eec5-2a62-72de-a9f7637c7aa8": {},
+            "32fdb84f-8369-d198-d062-41f0fa0a76de": {},
             "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47": {},
             "3ec388c6-9fbe-a946-57f7-a510659b9f12": {},
             "49667ca2-7f3b-e98c-020f-389ccdb6271e": {},
@@ -46,10 +84,33 @@
             "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": {},
             "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": {}
         },
-        "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {}
+        "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {},
+        "e7fb17de-ba96-9f06-a0f6-2829f1da62ce": {}
     },
     "bases": {},
     "nodes": {
+        "0292e032-bf07-7d78-3d9e-2b455844402d": {
+            "attributes": {
+                "name": "7231"
+            },
+            "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+                "conductor_A": "d133950c-195a-f85d-3747-bc6864c7f4ec",
+                "conductor_B": "d133950c-195a-f85d-3747-bc6864c7f4ec",
+                "conductor_C": "d133950c-195a-f85d-3747-bc6864c7f4ec",
+                "spacing": "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff"
+            },
+            "registry": {
+                "position": {
+                    "x": 628,
+                    "y": 340
+                }
+            },
+            "sets": {}
+        },
         "03d36072-9e09-7866-cb4e-d0a36ff825f6": {
             "attributes": {
                 "name": "ROOT"
@@ -167,6 +228,16 @@
                             "position": {
                                 "x": 1190,
                                 "y": 980
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
+                        "guid": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+                        "registry": {
+                            "position": {
+                                "x": 1019,
+                                "y": 409
                             }
                         }
                     },
@@ -529,8 +600,8 @@
                         "guid": "2cc13368-6033-dd20-2b21-8d3a6db576c6",
                         "registry": {
                             "position": {
-                                "x": 460,
-                                "y": 1081.3333333333333
+                                "x": 501,
+                                "y": 1240
                             }
                         }
                     },
@@ -541,6 +612,16 @@
                             "position": {
                                 "x": 1171,
                                 "y": 942
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
+                        "guid": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+                        "registry": {
+                            "position": {
+                                "x": 1032,
+                                "y": 186
                             }
                         }
                     },
@@ -609,8 +690,8 @@
                         "guid": "54edd22d-deaf-6ced-5e5a-c81a3769d189",
                         "registry": {
                             "position": {
-                                "x": 258.66666666666663,
-                                "y": 1077.3333333333333
+                                "x": 311,
+                                "y": 1170
                             }
                         }
                     },
@@ -679,8 +760,8 @@
                         "guid": "94ff69c0-2d28-d84b-46db-89b8be5564b4",
                         "registry": {
                             "position": {
-                                "x": 239,
-                                "y": 953
+                                "x": 291,
+                                "y": 1040
                             }
                         }
                     },
@@ -699,8 +780,8 @@
                         "guid": "c13508bc-41e4-a3f7-859e-99beda944552",
                         "registry": {
                             "position": {
-                                "x": 472,
-                                "y": 880
+                                "x": 511,
+                                "y": 1040
                             }
                         }
                     },
@@ -729,8 +810,8 @@
                         "guid": "d79800be-ebd6-d712-b3ae-8bf14690efb8",
                         "registry": {
                             "position": {
-                                "x": 692,
-                                "y": 1098.6666666666665
+                                "x": 741,
+                                "y": 1190
                             }
                         }
                     },
@@ -779,8 +860,8 @@
                         "guid": "f1138a29-7d9c-fc08-d50b-b535fafe2f61",
                         "registry": {
                             "position": {
-                                "x": 695,
-                                "y": 986
+                                "x": 741,
+                                "y": 1080
                             }
                         }
                     },
@@ -809,29 +890,98 @@
         },
         "0635d6de-5602-9280-b897-99049813e802": {
             "attributes": {
+                "CT_phase": "",
+                "PT_phase": "",
+                "Type": "",
                 "band_center": 0,
                 "band_width": 0,
+                "compensator_r_setting_A": 0,
+                "compensator_r_setting_B": 0,
+                "compensator_x_setting_A": 0,
+                "compensator_x_setting_B": 0,
                 "connect_type": "",
                 "control": "",
+                "current_transducer_ratio": 0,
                 "dwell_time": 0,
                 "lower_taps": 0,
                 "name": "regulator_configuration",
+                "power_transducer_ratio": 0,
                 "raise_taps": 0,
                 "regulation": 0,
                 "tap_pos_A": 0,
                 "tap_pos_B": 0,
-                "tap_pos_C": 0
+                "tap_pos_C": 0,
+                "time_delay": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "Type": {
+                        "type": "string",
+                        "enum": [
+                            "A"
+                        ]
+                    },
+                    "PT_phase": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AB",
+                            "AC",
+                            "AN",
+                            "BC",
+                            "BN",
+                            "CN"
+                        ]
+                    },
+                    "CT_phase": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AB",
+                            "AC",
+                            "AN",
+                            "BC",
+                            "BN",
+                            "CN"
+                        ]
+                    },
+                    "compensator_x_setting_B": {
+                        "type": "float"
+                    },
+                    "compensator_r_setting_B": {
+                        "type": "float"
+                    },
+                    "compensator_x_setting_A": {
+                        "type": "float"
+                    },
+                    "compensator_r_setting_A": {
+                        "type": "float"
+                    },
+                    "power_transducer_ratio": {
+                        "type": "integer"
+                    },
+                    "current_transducer_ratio": {
+                        "type": "integer"
+                    },
+                    "time_delay": {
+                        "type": "float"
+                    },
                     "tap_pos_B": {
                         "type": "integer"
                     },
                     "control": {
                         "type": "string",
                         "enum": [
-                            "REMOTE_NODE"
+                            "REMOTE_NODE",
+                            "MANUAL",
+                            ""
                         ]
                     },
                     "lower_taps": {
@@ -880,6 +1030,7 @@
         },
         "11e2ea0b-ff8a-0dae-c093-a252b6aa4660": {
             "attributes": {
+                "iteration_limit": 2000,
                 "name": "Model",
                 "pauseat": "",
                 "profiler": 1,
@@ -897,6 +1048,7 @@
                         "21274ba9-fc39-8e2f-ed9d-13529681ba57",
                         "2cc13368-6033-dd20-2b21-8d3a6db576c6",
                         "2cf57745-eec5-2a62-72de-a9f7637c7aa8",
+                        "32fdb84f-8369-d198-d062-41f0fa0a76de",
                         "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47",
                         "3ec388c6-9fbe-a946-57f7-a510659b9f12",
                         "49667ca2-7f3b-e98c-020f-389ccdb6271e",
@@ -919,6 +1071,7 @@
                         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1"
                     ],
                     "minItems": [
+                        -1,
                         -1,
                         -1,
                         -1,
@@ -952,6 +1105,7 @@
                         -1,
                         -1,
                         -1,
+                        -1,
                         1,
                         -1,
                         -1,
@@ -974,6 +1128,9 @@
                     ]
                 },
                 "attributes": {
+                    "iteration_limit": {
+                        "type": "integer"
+                    },
                     "stylesheet": {
                         "type": "string"
                     },
@@ -1006,6 +1163,29 @@
             },
             "sets": {}
         },
+        "12dadc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "709",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 50,
+                    "y": 750
+                }
+            },
+            "sets": {}
+        },
         "1b8bb9d1-40cd-e22b-3eaa-a98287649464": {
             "attributes": {
                 "connect_type": "",
@@ -1015,12 +1195,24 @@
                 "powerA_rating": 0,
                 "powerB_rating": 0,
                 "powerC_rating": 0,
+                "power_rating": 0,
                 "primary_voltage": 0,
+                "reactance": 0,
+                "resistance": 0,
                 "secondary_voltage": 0
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "reactance": {
+                        "type": "float"
+                    },
+                    "resistance": {
+                        "type": "float"
+                    },
+                    "power_rating": {
+                        "type": "integer"
+                    },
                     "powerB_rating": {
                         "type": "integer"
                     },
@@ -1044,7 +1236,8 @@
                         "type": "string",
                         "enum": [
                             "SINGLE_PHASE_CENTER_TAPPED",
-                            "WYE_WYE"
+                            "WYE_WYE",
+                            "2"
                         ]
                     },
                     "powerA_rating": {
@@ -1067,12 +1260,97 @@
             },
             "sets": {}
         },
+        "1c857ffb-28ff-64fa-26c1-ab3702fca322": {
+            "attributes": {
+                "constant_power_A": "-35000.000000-18000.000000j",
+                "constant_power_B": "-35000.000000-18000.000000j",
+                "constant_power_C": "-90000.000000-45000.000000j",
+                "name": "8010",
+                "nominal_voltage": "4800",
+                "phases": "ABCD",
+                "voltage_A": "2400.000000 -1385.640646j",
+                "voltage_B": "-2400.000000 -1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "32fdb84f-8369-d198-d062-41f0fa0a76de"
+            },
+            "registry": {
+                "position": {
+                    "x": 1069,
+                    "y": 285
+                }
+            },
+            "sets": {}
+        },
+        "1df27b5d-adf1-09e0-813c-a94f27f0fa1f": {
+            "attributes": {
+                "name": "PV_IEEE_37Node"
+            },
+            "base": "11e2ea0b-ff8a-0dae-c093-a252b6aa4660",
+            "meta": {},
+            "parent": "03d36072-9e09-7866-cb4e-d0a36ff825f6",
+            "pointers": {
+                "base": "11e2ea0b-ff8a-0dae-c093-a252b6aa4660"
+            },
+            "registry": {
+                "position": {
+                    "x": 391,
+                    "y": 165
+                }
+            },
+            "sets": {}
+        },
+        "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf": {
+            "attributes": {
+                "conductor_diameter": 0.813,
+                "conductor_gmr": 0.026,
+                "conductor_resistance": 0.206,
+                "name": "7220",
+                "neutral_diameter": 0.081,
+                "neutral_gmr": 0.00262,
+                "neutral_resistance": 9.375,
+                "neutral_strands": 16,
+                "outer_diameter": 1.56
+            },
+            "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592"
+            },
+            "registry": {
+                "position": {
+                    "x": 280,
+                    "y": 286
+                }
+            },
+            "sets": {}
+        },
         "21274ba9-fc39-8e2f-ed9d-13529681ba57": {
             "attributes": {
-                "name": "regulator"
+                "name": "regulator",
+                "phases": ""
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
+                "attributes": {
+                    "phases": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "ABN",
+                            "AN",
+                            "BN",
+                            "CN"
+                        ]
+                    }
+                },
                 "pointers": {
                     "from": {
                         "items": [
@@ -1140,6 +1418,27 @@
                 "position": {
                     "x": 374,
                     "y": 620
+                }
+            },
+            "sets": {}
+        },
+        "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff": {
+            "attributes": {
+                "distance_AB": 0.5,
+                "distance_AC": 1,
+                "distance_BC": 0.5,
+                "name": "515"
+            },
+            "base": "68d10581-ab03-e600-0d03-c9799404bde8",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "68d10581-ab03-e600-0d03-c9799404bde8"
+            },
+            "registry": {
+                "position": {
+                    "x": 461,
+                    "y": 311
                 }
             },
             "sets": {}
@@ -1319,6 +1618,96 @@
                 "position": {
                     "x": 450,
                     "y": 481
+                }
+            },
+            "sets": {}
+        },
+        "32fdb84f-8369-d198-d062-41f0fa0a76de": {
+            "attributes": {
+                "constant_current_A": "",
+                "constant_current_B": "",
+                "constant_current_C": "",
+                "constant_impedence_A": "",
+                "constant_impedence_B": "",
+                "constant_impedence_C": "",
+                "constant_power_A": "",
+                "constant_power_B": "",
+                "constant_power_C": "",
+                "name": "load",
+                "nominal_voltage": "",
+                "phases": "",
+                "voltage_A": "",
+                "voltage_B": "",
+                "voltage_C": ""
+            },
+            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "meta": {
+                "attributes": {
+                    "constant_impedence_C": {
+                        "type": "string"
+                    },
+                    "constant_impedence_B": {
+                        "type": "string"
+                    },
+                    "constant_impedence_A": {
+                        "type": "string"
+                    },
+                    "constant_current_C": {
+                        "type": "string"
+                    },
+                    "constant_current_B": {
+                        "type": "string"
+                    },
+                    "constant_current_A": {
+                        "type": "string"
+                    },
+                    "nominal_voltage": {
+                        "type": "string"
+                    },
+                    "constant_power_C": {
+                        "type": "string"
+                    },
+                    "constant_power_B": {
+                        "type": "string"
+                    },
+                    "constant_power_A": {
+                        "type": "string"
+                    },
+                    "voltage_C": {
+                        "type": "string"
+                    },
+                    "voltage_B": {
+                        "type": "string"
+                    },
+                    "voltage_A": {
+                        "type": "string"
+                    },
+                    "phases": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABCD",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AB",
+                            "AC",
+                            "AN",
+                            "BC",
+                            "BN",
+                            "CN"
+                        ]
+                    }
+                }
+            },
+            "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
+            "pointers": {
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+            },
+            "registry": {
+                "position": {
+                    "x": 674,
+                    "y": 178
                 }
             },
             "sets": {}
@@ -1530,7 +1919,8 @@
                     "timezone": {
                         "type": "string",
                         "enum": [
-                            "UTC0"
+                            "UTC0",
+                            "EST+5EDT"
                         ]
                     }
                 }
@@ -1577,6 +1967,27 @@
             },
             "sets": {}
         },
+        "5424ad1e-b46f-77aa-4b53-e63584e3a45e": {
+            "attributes": {
+                "length": 960,
+                "name": "701-702",
+                "phases": "ABC"
+            },
+            "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8",
+                "configuration": "634d0133-33ab-b22d-aee0-086ce6f8d4ec"
+            },
+            "registry": {
+                "position": {
+                    "x": 282,
+                    "y": 556
+                }
+            },
+            "sets": {}
+        },
         "54edd22d-deaf-6ced-5e5a-c81a3769d189": {
             "attributes": {
                 "name": "triplex_node",
@@ -1607,6 +2018,28 @@
                 "position": {
                     "x": 914,
                     "y": 420
+                }
+            },
+            "sets": {}
+        },
+        "634d0133-33ab-b22d-aee0-086ce6f8d4ec": {
+            "attributes": {
+                "name": "7221"
+            },
+            "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+                "conductor_A": "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf",
+                "conductor_B": "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf",
+                "conductor_C": "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf",
+                "spacing": "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff"
+            },
+            "registry": {
+                "position": {
+                    "x": 628,
+                    "y": 280
                 }
             },
             "sets": {}
@@ -1643,6 +2076,32 @@
                 "position": {
                     "x": 83,
                     "y": 390
+                }
+            },
+            "sets": {}
+        },
+        "66e57ffb-28ff-64fa-26c1-ab3702fca322": {
+            "attributes": {
+                "constant_power_A": "",
+                "constant_power_B": "",
+                "constant_power_C": "-20000.000000-10000.000000j",
+                "name": "8130",
+                "nominal_voltage": "4800",
+                "phases": "ABCD",
+                "voltage_A": "2400.000000 -1385.640646j",
+                "voltage_B": "-2400.000000 -1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "32fdb84f-8369-d198-d062-41f0fa0a76de"
+            },
+            "registry": {
+                "position": {
+                    "x": 1070,
+                    "y": 476
                 }
             },
             "sets": {}
@@ -1756,6 +2215,94 @@
             },
             "sets": {}
         },
+        "7b2c92f0-f508-cc0f-1377-bb2635a4819e": {
+            "attributes": {
+                "bustype": "SWING",
+                "name": "799",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.000000-1385.640646j",
+                "voltage_B": "-2400.000000-1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 51,
+                    "y": 290
+                }
+            },
+            "sets": {}
+        },
+        "85973e00-06c7-d9a4-313f-ad6414a274e4": {
+            "attributes": {
+                "name": "799781",
+                "phases": "ABC"
+            },
+            "base": "21274ba9-fc39-8e2f-ed9d-13529681ba57",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "21274ba9-fc39-8e2f-ed9d-13529681ba57",
+                "configuration": "edb17d62-17ec-da38-51d9-4f9bf0a03335"
+            },
+            "registry": {
+                "position": {
+                    "x": 542,
+                    "y": 556
+                }
+            },
+            "sets": {}
+        },
+        "877fd4da-4e92-e084-4c5f-ba8d52284db8": {
+            "attributes": {
+                "solver_method": "FBS"
+            },
+            "base": "6499e351-586f-7e0b-df2c-992849b91aa0",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "6499e351-586f-7e0b-df2c-992849b91aa0"
+            },
+            "registry": {
+                "position": {
+                    "x": 670,
+                    "y": 101
+                }
+            },
+            "sets": {}
+        },
+        "87e57ffb-28ff-64fa-26c1-ab3702fca322": {
+            "attributes": {
+                "constant_power_A": "",
+                "constant_power_B": "",
+                "constant_power_C": "85000.000000+40000.000000j",
+                "name": "812",
+                "nominal_voltage": "4800",
+                "phases": "ABCD",
+                "voltage_A": "2400.000000 -1385.640646j",
+                "voltage_B": "-2400.000000 -1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "32fdb84f-8369-d198-d062-41f0fa0a76de"
+            },
+            "registry": {
+                "position": {
+                    "x": 1050,
+                    "y": 328
+                }
+            },
+            "sets": {}
+        },
         "8a94277b-e6a4-b0fa-4331-189c6ee90592": {
             "attributes": {
                 "conductor_diameter": 0,
@@ -1766,11 +2313,19 @@
                 "neutral_gmr": 0,
                 "neutral_resistance": 0,
                 "neutral_strands": 0,
-                "outer_diameter": 0
+                "outer_diameter": 0,
+                "shield_gmr": 0,
+                "shield_resistance": 0
             },
             "base": "4f08052c-ad39-cc20-3674-aeed55f44237",
             "meta": {
                 "attributes": {
+                    "shield_resistance": {
+                        "type": "float"
+                    },
+                    "shield_gmr": {
+                        "type": "float"
+                    },
                     "neutral_diameter": {
                         "type": "float"
                     },
@@ -1824,6 +2379,52 @@
                 "position": {
                     "x": 454,
                     "y": 280
+                }
+            },
+            "sets": {}
+        },
+        "8ee57ffb-28ff-64fa-26c1-ab3702fca322": {
+            "attributes": {
+                "constant_power_A": "140000.000000+70000.000000j",
+                "constant_power_B": "140000.000000+70000.000000j",
+                "constant_power_C": "350000.000000+175000.000000j",
+                "name": "801",
+                "nominal_voltage": "4800",
+                "phases": "ABCD",
+                "voltage_A": "2400.000000 -1385.640646j",
+                "voltage_B": "-2400.000000 -1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "32fdb84f-8369-d198-d062-41f0fa0a76de"
+            },
+            "registry": {
+                "position": {
+                    "x": 1049,
+                    "y": 226
+                }
+            },
+            "sets": {}
+        },
+        "8fcd6680-be2b-37fa-b039-7e7125fb0d5c": {
+            "attributes": {
+                "stoptime": "2100-01-01 0:00:00",
+                "timestamp": "2000-01-01 0:00:00",
+                "timezone": "EST+5EDT"
+            },
+            "base": "50aec2e4-bb91-3847-481e-deecc69fdbe2",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "50aec2e4-bb91-3847-481e-deecc69fdbe2"
+            },
+            "registry": {
+                "position": {
+                    "x": 535,
+                    "y": 97
                 }
             },
             "sets": {}
@@ -1974,7 +2575,9 @@
                         "enum": [
                             "AS",
                             "BS",
-                            "CS"
+                            "CS",
+                            "ABC",
+                            ""
                         ]
                     }
                 },
@@ -2031,6 +2634,82 @@
                 "position": {
                     "x": 914,
                     "y": 580
+                }
+            },
+            "sets": {}
+        },
+        "9e47cfc8-70d8-b744-7f86-4017187fd0b8": {
+            "attributes": {
+                "conductor_diameter": 1.15,
+                "conductor_gmr": 0.0368,
+                "conductor_resistance": 0.105,
+                "name": "7210",
+                "neutral_diameter": 0.102,
+                "neutral_gmr": 0.0031,
+                "neutral_resistance": 5.903,
+                "neutral_strands": 20,
+                "outer_diameter": 1.98,
+                "shield_gmr": 0,
+                "shield_resistance": 0
+            },
+            "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592"
+            },
+            "registry": {
+                "position": {
+                    "x": 280,
+                    "y": 230
+                }
+            },
+            "sets": {}
+        },
+        "a6e57ffb-28ff-64fa-26c1-ab3702fca322": {
+            "attributes": {
+                "constant_power_A": "",
+                "constant_power_B": "",
+                "constant_power_C": "-20000.000000-10000.000000j",
+                "name": "8120",
+                "nominal_voltage": "4800",
+                "phases": "ABCD",
+                "voltage_A": "2400.000000 -1385.640646j",
+                "voltage_B": "-2400.000000 -1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "32fdb84f-8369-d198-d062-41f0fa0a76de"
+            },
+            "registry": {
+                "position": {
+                    "x": 1073,
+                    "y": 377
+                }
+            },
+            "sets": {}
+        },
+        "a6f41b0d-7740-37d4-1f0e-d6a2b7f3cf1c": {
+            "attributes": {
+                "name": "7211"
+            },
+            "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+                "conductor_A": "9e47cfc8-70d8-b744-7f86-4017187fd0b8",
+                "conductor_B": "9e47cfc8-70d8-b744-7f86-4017187fd0b8",
+                "conductor_C": "9e47cfc8-70d8-b744-7f86-4017187fd0b8",
+                "spacing": "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff"
+            },
+            "registry": {
+                "position": {
+                    "x": 628,
+                    "y": 220
                 }
             },
             "sets": {}
@@ -2126,6 +2805,52 @@
             },
             "sets": {}
         },
+        "ab857ffb-28ff-64fa-26c1-ab3702fca322": {
+            "attributes": {
+                "constant_power_A": "",
+                "constant_power_B": "",
+                "constant_power_C": "85000.000000+40000.000000j",
+                "name": "813",
+                "nominal_voltage": "4800",
+                "phases": "ABCD",
+                "voltage_A": "2400.000000 -1385.640646j",
+                "voltage_B": "-2400.000000 -1385.640646j",
+                "voltage_C": "0.000000+2771.281292j"
+            },
+            "base": "32fdb84f-8369-d198-d062-41f0fa0a76de",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "32fdb84f-8369-d198-d062-41f0fa0a76de"
+            },
+            "registry": {
+                "position": {
+                    "x": 1054,
+                    "y": 427
+                }
+            },
+            "sets": {}
+        },
+        "ae19824f-d5e5-6bae-ffa6-72982294af5c": {
+            "attributes": {
+                "name": "23",
+                "phases": "ABC"
+            },
+            "base": "94ff69c0-2d28-d84b-46db-89b8be5564b4",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "94ff69c0-2d28-d84b-46db-89b8be5564b4",
+                "configuration": "eeed97e9-0231-5dd8-8175-cadd978db4e2"
+            },
+            "registry": {
+                "position": {
+                    "x": 829,
+                    "y": 312
+                }
+            },
+            "sets": {}
+        },
         "c13508bc-41e4-a3f7-859e-99beda944552": {
             "attributes": {
                 "bustype": "NONE",
@@ -2149,6 +2874,7 @@
                         "type": "string",
                         "enum": [
                             "ABCN",
+                            "ABC",
                             "CN",
                             "ACN",
                             "BCN"
@@ -2312,6 +3038,78 @@
             },
             "sets": {}
         },
+        "d133950c-195a-f85d-3747-bc6864c7f4ec": {
+            "attributes": {
+                "conductor_diameter": 0.414,
+                "conductor_gmr": 0.0125,
+                "conductor_resistance": 0.769,
+                "name": "7230",
+                "neutral_diameter": 0.064,
+                "neutral_gmr": 0.00208,
+                "neutral_resistance": 14.872,
+                "neutral_strands": 7,
+                "outer_diameter": 1.1
+            },
+            "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592"
+            },
+            "registry": {
+                "position": {
+                    "x": 283,
+                    "y": 355
+                }
+            },
+            "sets": {}
+        },
+        "d18253fd-cc6f-a1fb-8aec-d709a5805b35": {
+            "attributes": {
+                "name": "775",
+                "nominal_voltage": "480",
+                "phases": "ABC",
+                "voltage_A": "240.000000 -138.564065j",
+                "voltage_B": "-240.000000 -138.564065j",
+                "voltage_C": "-0.000000+277.128129j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 50,
+                    "y": 235
+                }
+            },
+            "sets": {}
+        },
+        "d4badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "702",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 54,
+                    "y": 403
+                }
+            },
+            "sets": {}
+        },
         "d79800be-ebd6-d712-b3ae-8bf14690efb8": {
             "attributes": {
                 "diameter": 0,
@@ -2385,6 +3183,29 @@
             },
             "sets": {}
         },
+        "d8badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "706",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 53,
+                    "y": 602
+                }
+            },
+            "sets": {}
+        },
         "e019c6ba-4908-18e9-df7a-78142b0d5c8b": {
             "attributes": {
                 "name": "triplex_line_conductor"
@@ -2404,6 +3225,77 @@
             },
             "sets": {}
         },
+        "e0badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "710",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 49,
+                    "y": 800
+                }
+            },
+            "sets": {}
+        },
+        "e129552e-cfd2-9779-65e9-25aef67c4774": {
+            "attributes": {
+                "conductor_diameter": 0.292,
+                "conductor_gmr": 0.00883,
+                "conductor_resistance": 1.54,
+                "name": "7240",
+                "neutral_diameter": 0.064,
+                "neutral_gmr": 0.00208,
+                "neutral_resistance": 14.872,
+                "neutral_strands": 6,
+                "outer_diameter": 0.98
+            },
+            "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "8a94277b-e6a4-b0fa-4331-189c6ee90592"
+            },
+            "registry": {
+                "position": {
+                    "x": 282,
+                    "y": 412
+                }
+            },
+            "sets": {}
+        },
+        "e2c6a4fe-d6d6-04c5-f21b-9d35e64490ba": {
+            "attributes": {
+                "name": "7241"
+            },
+            "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "a96c17cf-6b0d-3998-66d8-f02759b11c84",
+                "conductor_A": "e129552e-cfd2-9779-65e9-25aef67c4774",
+                "conductor_B": "e129552e-cfd2-9779-65e9-25aef67c4774",
+                "conductor_C": "e129552e-cfd2-9779-65e9-25aef67c4774",
+                "spacing": "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff"
+            },
+            "registry": {
+                "position": {
+                    "x": 628,
+                    "y": 400
+                }
+            },
+            "sets": {}
+        },
         "e574f575-2724-be4c-46b9-400bad15ecc7": {
             "attributes": {
                 "name": "overhead_line_conductor"
@@ -2419,6 +3311,94 @@
                 "position": {
                     "x": 734,
                     "y": 440
+                }
+            },
+            "sets": {}
+        },
+        "e6badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "704",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 55,
+                    "y": 504
+                }
+            },
+            "sets": {}
+        },
+        "e7badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "705",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 51,
+                    "y": 553
+                }
+            },
+            "sets": {}
+        },
+        "e7fb17de-ba96-9f06-a0f6-2829f1da62ce": {
+            "attributes": {
+                "name": "IEEE_13_Node_With_Houses",
+                "pauseat": "2000-01-01 0:00:00"
+            },
+            "base": "11e2ea0b-ff8a-0dae-c093-a252b6aa4660",
+            "meta": {},
+            "parent": "03d36072-9e09-7866-cb4e-d0a36ff825f6",
+            "pointers": {
+                "base": "11e2ea0b-ff8a-0dae-c093-a252b6aa4660"
+            },
+            "registry": {
+                "position": {
+                    "x": 391,
+                    "y": 226
+                }
+            },
+            "sets": {}
+        },
+        "e9badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "781",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 49,
+                    "y": 353
                 }
             },
             "sets": {}
@@ -2506,6 +3486,89 @@
             },
             "sets": {}
         },
+        "edb17d62-17ec-da38-51d9-4f9bf0a03335": {
+            "attributes": {
+                "CT_phase": "ABC",
+                "PT_phase": "ABC",
+                "Type": "A",
+                "band_center": 122,
+                "band_width": 2,
+                "compensator_r_setting_A": 1.5,
+                "compensator_r_setting_B": 1.5,
+                "compensator_x_setting_A": 3,
+                "compensator_x_setting_B": 3,
+                "connect_type": "WYE_WYE",
+                "control": "MANUAL",
+                "current_transducer_ratio": 350,
+                "lower_taps": 16,
+                "name": "79978101",
+                "power_transducer_ratio": 40,
+                "raise_taps": 16,
+                "regulation": 0.01,
+                "time_delay": 30
+            },
+            "base": "0635d6de-5602-9280-b897-99049813e802",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "0635d6de-5602-9280-b897-99049813e802"
+            },
+            "registry": {
+                "position": {
+                    "x": 772,
+                    "y": 556
+                }
+            },
+            "sets": {}
+        },
+        "eeed97e9-0231-5dd8-8175-cadd978db4e2": {
+            "attributes": {
+                "connect_type": "2",
+                "install_type": "PADMOUNT",
+                "name": "400",
+                "power_rating": 500,
+                "primary_voltage": 4800,
+                "reactance": 0.09,
+                "resistance": 1.81,
+                "secondary_voltage": 480
+            },
+            "base": "1b8bb9d1-40cd-e22b-3eaa-a98287649464",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "1b8bb9d1-40cd-e22b-3eaa-a98287649464"
+            },
+            "registry": {
+                "position": {
+                    "x": 829,
+                    "y": 252
+                }
+            },
+            "sets": {}
+        },
+        "efbadc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "703",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 51,
+                    "y": 453
+                }
+            },
+            "sets": {}
+        },
         "f1138a29-7d9c-fc08-d50b-b535fafe2f61": {
             "attributes": {
                 "name": "switch",
@@ -2572,6 +3635,75 @@
                 "position": {
                     "x": 1057,
                     "y": 633
+                }
+            },
+            "sets": {}
+        },
+        "f4badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "707",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 48,
+                    "y": 650
+                }
+            },
+            "sets": {}
+        },
+        "f6badc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "708",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 51,
+                    "y": 704
+                }
+            },
+            "sets": {}
+        },
+        "fbbadc4d-d884-dda9-b954-4fdbe81669ea": {
+            "attributes": {
+                "name": "711",
+                "nominal_voltage": "4800",
+                "phases": "ABC",
+                "voltage_A": "2400.0000-1385.640646j",
+                "voltage_B": "-2400.0000-1385.640646j",
+                "voltage_C": "0.0000+2771.281292j"
+            },
+            "base": "c13508bc-41e4-a3f7-859e-99beda944552",
+            "meta": {},
+            "parent": "1df27b5d-adf1-09e0-813c-a94f27f0fa1f",
+            "pointers": {
+                "base": "c13508bc-41e4-a3f7-859e-99beda944552"
+            },
+            "registry": {
+                "position": {
+                    "x": 52,
+                    "y": 850
                 }
             },
             "sets": {}
@@ -2730,14 +3862,21 @@
         }
     },
     "relids": {
+        "0292e032-bf07-7d78-3d9e-2b455844402d": "B",
         "03d36072-9e09-7866-cb4e-d0a36ff825f6": null,
         "0635d6de-5602-9280-b897-99049813e802": "X",
         "11e2ea0b-ff8a-0dae-c093-a252b6aa4660": "R",
+        "12dadc4d-d884-dda9-b954-4fdbe81669ea": "Z4",
         "1b8bb9d1-40cd-e22b-3eaa-a98287649464": "S",
+        "1c857ffb-28ff-64fa-26c1-ab3702fca322": "mO",
+        "1df27b5d-adf1-09e0-813c-a94f27f0fa1f": "M",
+        "20ad4f63-b7a1-14dc-c056-ba1aaf65c2bf": "O",
         "21274ba9-fc39-8e2f-ed9d-13529681ba57": "5",
+        "23844fff-4cb2-76d6-087d-f3fcf4f3f7ff": "W",
         "2c33fa80-e6fe-800f-67f7-0a6cc60f1e73": "8",
         "2cc13368-6033-dd20-2b21-8d3a6db576c6": "s",
         "2cf57745-eec5-2a62-72de-a9f7637c7aa8": "f",
+        "32fdb84f-8369-d198-d062-41f0fa0a76de": "O",
         "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47": "u",
         "3ec388c6-9fbe-a946-57f7-a510659b9f12": "P",
         "49667ca2-7f3b-e98c-020f-389ccdb6271e": "m",
@@ -2745,27 +3884,58 @@
         "4f08052c-ad39-cc20-3674-aeed55f44237": "L",
         "50aec2e4-bb91-3847-481e-deecc69fdbe2": "F",
         "52552de1-9da9-cf4d-2c9c-6a681378e67d": "z",
+        "5424ad1e-b46f-77aa-4b53-e63584e3a45e": "n",
         "54edd22d-deaf-6ced-5e5a-c81a3769d189": "D",
+        "634d0133-33ab-b22d-aee0-086ce6f8d4ec": "gl",
         "6499e351-586f-7e0b-df2c-992849b91aa0": "o",
+        "66e57ffb-28ff-64fa-26c1-ab3702fca322": "y",
         "68d10581-ab03-e600-0d03-c9799404bde8": "H",
         "72b5d1ef-3394-a636-0392-f010c0fca955": "d",
         "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8": "T",
+        "7b2c92f0-f508-cc0f-1377-bb2635a4819e": "e",
+        "85973e00-06c7-d9a4-313f-ad6414a274e4": "z",
+        "877fd4da-4e92-e084-4c5f-ba8d52284db8": "1",
+        "87e57ffb-28ff-64fa-26c1-ab3702fca322": "i",
         "8a94277b-e6a4-b0fa-4331-189c6ee90592": "p",
         "8bfa3fab-1979-1d1e-9d9b-04f39d670ae9": "v",
+        "8ee57ffb-28ff-64fa-26c1-ab3702fca322": "g",
+        "8fcd6680-be2b-37fa-b039-7e7125fb0d5c": "I",
         "94a5f276-a492-010a-7442-bf35797d05e5": "1",
         "94ff69c0-2d28-d84b-46db-89b8be5564b4": "z",
+        "9e47cfc8-70d8-b744-7f86-4017187fd0b8": "Z",
+        "a6e57ffb-28ff-64fa-26c1-ab3702fca322": "3",
+        "a6f41b0d-7740-37d4-1f0e-d6a2b7f3cf1c": "0",
         "a96c17cf-6b0d-3998-66d8-f02759b11c84": "h",
+        "ab857ffb-28ff-64fa-26c1-ab3702fca322": "yJ",
+        "ae19824f-d5e5-6bae-ffa6-72982294af5c": "4",
         "c13508bc-41e4-a3f7-859e-99beda944552": "N",
         "ca747095-7252-7946-4d3d-e8f65e965dde": "A",
         "cacb9c98-21cf-49a6-7a01-c3edccc5416b": "b",
         "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "1",
         "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2": "E",
+        "d133950c-195a-f85d-3747-bc6864c7f4ec": "L",
+        "d18253fd-cc6f-a1fb-8aec-d709a5805b35": "U",
+        "d4badc4d-d884-dda9-b954-4fdbe81669ea": "p",
         "d79800be-ebd6-d712-b3ae-8bf14690efb8": "C",
+        "d8badc4d-d884-dda9-b954-4fdbe81669ea": "c",
         "e019c6ba-4908-18e9-df7a-78142b0d5c8b": "k",
+        "e0badc4d-d884-dda9-b954-4fdbe81669ea": "R",
+        "e129552e-cfd2-9779-65e9-25aef67c4774": "K",
+        "e2c6a4fe-d6d6-04c5-f21b-9d35e64490ba": "9",
         "e574f575-2724-be4c-46b9-400bad15ecc7": "6",
+        "e6badc4d-d884-dda9-b954-4fdbe81669ea": "b",
+        "e7badc4d-d884-dda9-b954-4fdbe81669ea": "v",
+        "e7fb17de-ba96-9f06-a0f6-2829f1da62ce": "o",
+        "e9badc4d-d884-dda9-b954-4fdbe81669ea": "A",
         "eabc7add-5b1f-2f13-08f7-27e7c2af344d": "q",
         "ec9be6bf-f479-748c-6cff-2828bf42100d": "0",
+        "edb17d62-17ec-da38-51d9-4f9bf0a03335": "Y",
+        "eeed97e9-0231-5dd8-8175-cadd978db4e2": "l",
+        "efbadc4d-d884-dda9-b954-4fdbe81669ea": "T",
         "f1138a29-7d9c-fc08-d50b-b535fafe2f61": "oT",
+        "f4badc4d-d884-dda9-b954-4fdbe81669ea": "H",
+        "f6badc4d-d884-dda9-b954-4fdbe81669ea": "F",
+        "fbbadc4d-d884-dda9-b954-4fdbe81669ea": "N",
         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": "c",
         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": "B"
     },
