@@ -1,4 +1,9 @@
 {
+    "_metadata": {
+        "type": "project",
+        "rootGuid": "03d36072-9e09-7866-cb4e-d0a36ff825f6",
+        "hasAssets": false
+    },
     "root": {
         "path": "",
         "guid": "03d36072-9e09-7866-cb4e-d0a36ff825f6"
@@ -51,11 +56,6 @@
             },
             "base": null,
             "meta": {
-                "attributes": {
-                    "name": {
-                        "type": "string"
-                    }
-                },
                 "children": {
                     "items": [
                         "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
@@ -66,6 +66,11 @@
                     "maxItems": [
                         -1
                     ]
+                },
+                "attributes": {
+                    "name": {
+                        "type": "string"
+                    }
                 }
             },
             "parent": null,
@@ -800,8 +805,7 @@
                         }
                     }
                 ]
-            },
-            "constraints": {}
+            }
         },
         "0635d6de-5602-9280-b897-99049813e802": {
             "attributes": {
@@ -821,34 +825,7 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "tap_pos_C": {
-                        "type": "integer"
-                    },
-                    "tap_pos_A": {
-                        "type": "integer"
-                    },
-                    "regulation": {
-                        "type": "float"
-                    },
-                    "raise_taps": {
-                        "type": "integer"
-                    },
-                    "band_width": {
-                        "type": "float"
-                    },
-                    "connect_type": {
-                        "type": "string",
-                        "enum": [
-                            "WYE_WYE"
-                        ]
-                    },
-                    "band_center": {
-                        "type": "float"
-                    },
-                    "dwell_time": {
-                        "type": "float"
-                    },
-                    "lower_taps": {
+                    "tap_pos_B": {
                         "type": "integer"
                     },
                     "control": {
@@ -857,7 +834,34 @@
                             "REMOTE_NODE"
                         ]
                     },
-                    "tap_pos_B": {
+                    "lower_taps": {
+                        "type": "integer"
+                    },
+                    "dwell_time": {
+                        "type": "float"
+                    },
+                    "band_center": {
+                        "type": "float"
+                    },
+                    "connect_type": {
+                        "type": "string",
+                        "enum": [
+                            "WYE_WYE"
+                        ]
+                    },
+                    "band_width": {
+                        "type": "float"
+                    },
+                    "raise_taps": {
+                        "type": "integer"
+                    },
+                    "regulation": {
+                        "type": "float"
+                    },
+                    "tap_pos_A": {
+                        "type": "integer"
+                    },
+                    "tap_pos_C": {
                         "type": "integer"
                     }
                 }
@@ -872,12 +876,17 @@
                     "y": 670
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "11e2ea0b-ff8a-0dae-c093-a252b6aa4660": {
             "attributes": {
-                "name": "Model"
+                "name": "Model",
+                "pauseat": "",
+                "profiler": 1,
+                "randomseed": 1,
+                "relax_naming_rules": 1,
+                "stylesheet": "http://gridlab-d.svn.sourceforge.net/viewvc/gridlab-d/trunk/core/gridlabd-2_0",
+                "threadcount": 1
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
@@ -963,6 +972,26 @@
                         -1,
                         -1
                     ]
+                },
+                "attributes": {
+                    "stylesheet": {
+                        "type": "string"
+                    },
+                    "pauseat": {
+                        "type": "string"
+                    },
+                    "relax_naming_rules": {
+                        "type": "integer"
+                    },
+                    "randomseed": {
+                        "type": "integer"
+                    },
+                    "threadcount": {
+                        "type": "integer"
+                    },
+                    "profiler": {
+                        "type": "integer"
+                    }
                 }
             },
             "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
@@ -975,8 +1004,7 @@
                     "y": 122
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "1b8bb9d1-40cd-e22b-3eaa-a98287649464": {
             "attributes": {
@@ -993,27 +1021,8 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "powerC_rating": {
+                    "powerB_rating": {
                         "type": "integer"
-                    },
-                    "powerA_rating": {
-                        "type": "integer"
-                    },
-                    "connect_type": {
-                        "type": "string",
-                        "enum": [
-                            "SINGLE_PHASE_CENTER_TAPPED",
-                            "WYE_WYE"
-                        ]
-                    },
-                    "secondary_voltage": {
-                        "type": "float"
-                    },
-                    "primary_voltage": {
-                        "type": "float"
-                    },
-                    "impedence": {
-                        "type": "string"
                     },
                     "install_type": {
                         "type": "string",
@@ -1022,7 +1031,26 @@
                             "PADMOUNT"
                         ]
                     },
-                    "powerB_rating": {
+                    "impedence": {
+                        "type": "string"
+                    },
+                    "primary_voltage": {
+                        "type": "float"
+                    },
+                    "secondary_voltage": {
+                        "type": "float"
+                    },
+                    "connect_type": {
+                        "type": "string",
+                        "enum": [
+                            "SINGLE_PHASE_CENTER_TAPPED",
+                            "WYE_WYE"
+                        ]
+                    },
+                    "powerA_rating": {
+                        "type": "integer"
+                    },
+                    "powerC_rating": {
                         "type": "integer"
                     }
                 }
@@ -1037,8 +1065,7 @@
                     "y": 630
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "21274ba9-fc39-8e2f-ed9d-13529681ba57": {
             "attributes": {
@@ -1115,8 +1142,7 @@
                     "y": 620
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "2c33fa80-e6fe-800f-67f7-0a6cc60f1e73": {
             "attributes": {
@@ -1135,8 +1161,7 @@
                     "y": 440
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "2cc13368-6033-dd20-2b21-8d3a6db576c6": {
             "attributes": {
@@ -1147,6 +1172,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "length": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1154,9 +1182,6 @@
                             "BS",
                             "CS"
                         ]
-                    },
-                    "length": {
-                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -1214,8 +1239,7 @@
                     "y": 470
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "2cf57745-eec5-2a62-72de-a9f7637c7aa8": {
             "attributes": {
@@ -1226,9 +1250,6 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "length": {
-                        "type": "integer"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1239,6 +1260,9 @@
                             "ABC",
                             "AN"
                         ]
+                    },
+                    "length": {
+                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -1297,8 +1321,7 @@
                     "y": 481
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "38e1a0bd-ae6d-dee6-0070-9cffa6e82f47": {
             "attributes": {
@@ -1328,8 +1351,7 @@
                     "y": 230
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "3ec388c6-9fbe-a946-57f7-a510659b9f12": {
             "attributes": {
@@ -1346,10 +1368,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "init_stdev": {
+                    "init_price": {
                         "type": "integer"
                     },
-                    "warmup": {
+                    "fixed_price": {
+                        "type": "integer"
+                    },
+                    "verbose": {
+                        "type": "boolean"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "MW"
+                        ]
+                    },
+                    "period": {
                         "type": "integer"
                     },
                     "special_mode": {
@@ -1358,22 +1392,10 @@
                             "BUYERS_ONLY"
                         ]
                     },
-                    "period": {
+                    "warmup": {
                         "type": "integer"
                     },
-                    "unit": {
-                        "type": "string",
-                        "enum": [
-                            "MW"
-                        ]
-                    },
-                    "verbose": {
-                        "type": "boolean"
-                    },
-                    "fixed_price": {
-                        "type": "integer"
-                    },
-                    "init_price": {
+                    "init_stdev": {
                         "type": "integer"
                     }
                 }
@@ -1388,8 +1410,7 @@
                     "y": 337
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "49667ca2-7f3b-e98c-020f-389ccdb6271e": {
             "attributes": {
@@ -1400,14 +1421,14 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "ANSI_voltage_check": {
-                        "type": "boolean"
-                    },
                     "implicit_enduces": {
                         "type": "string",
                         "enum": [
                             "NONE"
                         ]
+                    },
+                    "ANSI_voltage_check": {
+                        "type": "boolean"
                     }
                 }
             },
@@ -1421,8 +1442,7 @@
                     "y": 455
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "4bc65eb3-a6e3-9b5d-3e09-bc88c0c12607": {
             "attributes": {
@@ -1435,17 +1455,17 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "property": {
-                        "type": "string"
-                    },
-                    "interval": {
+                    "limit": {
                         "type": "integer"
                     },
                     "file": {
                         "type": "string"
                     },
-                    "limit": {
+                    "interval": {
                         "type": "integer"
+                    },
+                    "property": {
+                        "type": "string"
                     }
                 }
             },
@@ -1459,8 +1479,7 @@
                     "y": 161
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "4f08052c-ad39-cc20-3674-aeed55f44237": {
             "attributes": {
@@ -1471,10 +1490,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "geometric_mean_radius": {
+                    "resistance": {
                         "type": "float"
                     },
-                    "resistance": {
+                    "geometric_mean_radius": {
                         "type": "float"
                     }
                 }
@@ -1490,8 +1509,7 @@
                     "y": 341
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "50aec2e4-bb91-3847-481e-deecc69fdbe2": {
             "attributes": {
@@ -1503,17 +1521,17 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "stoptime": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
                     "timezone": {
                         "type": "string",
                         "enum": [
                             "UTC0"
                         ]
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
-                    "stoptime": {
-                        "type": "string"
                     }
                 }
             },
@@ -1527,8 +1545,7 @@
                     "y": 330
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "52552de1-9da9-cf4d-2c9c-6a681378e67d": {
             "attributes": {
@@ -1558,8 +1575,7 @@
                     "y": 150
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "54edd22d-deaf-6ced-5e5a-c81a3769d189": {
             "attributes": {
@@ -1570,9 +1586,6 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "nominal_voltage": {
-                        "type": "integer"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1580,6 +1593,9 @@
                             "BS",
                             "CS"
                         ]
+                    },
+                    "nominal_voltage": {
+                        "type": "integer"
                     }
                 }
             },
@@ -1593,8 +1609,7 @@
                     "y": 420
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "6499e351-586f-7e0b-df2c-992849b91aa0": {
             "attributes": {
@@ -1606,8 +1621,8 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "line_limits": {
-                        "type": "boolean"
+                    "default_maximum_voltage_error": {
+                        "type": "float"
                     },
                     "solver_method": {
                         "type": "string",
@@ -1615,8 +1630,8 @@
                             "FBS"
                         ]
                     },
-                    "default_maximum_voltage_error": {
-                        "type": "float"
+                    "line_limits": {
+                        "type": "boolean"
                     }
                 }
             },
@@ -1630,8 +1645,7 @@
                     "y": 390
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "68d10581-ab03-e600-0d03-c9799404bde8": {
             "attributes": {
@@ -1646,22 +1660,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "distance_CN": {
-                        "type": "float"
-                    },
-                    "distance_BN": {
-                        "type": "float"
-                    },
-                    "distance_AC": {
-                        "type": "float"
-                    },
-                    "distance_AB": {
+                    "distance_AN": {
                         "type": "float"
                     },
                     "distance_BC": {
                         "type": "float"
                     },
-                    "distance_AN": {
+                    "distance_AB": {
+                        "type": "float"
+                    },
+                    "distance_AC": {
+                        "type": "float"
+                    },
+                    "distance_BN": {
+                        "type": "float"
+                    },
+                    "distance_CN": {
                         "type": "float"
                     }
                 }
@@ -1676,8 +1690,7 @@
                     "y": 550
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "72b5d1ef-3394-a636-0392-f010c0fca955": {
             "attributes": {
@@ -1692,22 +1705,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "value": {
-                        "type": "string"
-                    },
-                    "months": {
-                        "type": "string"
-                    },
-                    "days": {
-                        "type": "string"
-                    },
-                    "minutes": {
+                    "weekdays": {
                         "type": "string"
                     },
                     "hours": {
                         "type": "string"
                     },
-                    "weekdays": {
+                    "minutes": {
+                        "type": "string"
+                    },
+                    "days": {
+                        "type": "string"
+                    },
+                    "months": {
+                        "type": "string"
+                    },
+                    "value": {
                         "type": "string"
                     }
                 }
@@ -1722,8 +1735,7 @@
                     "y": 286
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8": {
             "attributes": {
@@ -1742,8 +1754,7 @@
                     "y": 500
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "8a94277b-e6a4-b0fa-4331-189c6ee90592": {
             "attributes": {
@@ -1760,29 +1771,29 @@
             "base": "4f08052c-ad39-cc20-3674-aeed55f44237",
             "meta": {
                 "attributes": {
-                    "neutral_strands": {
-                        "type": "integer"
-                    },
-                    "neutral_resistance": {
-                        "type": "float"
-                    },
-                    "neutral_gmr": {
-                        "type": "float"
-                    },
-                    "conductor_diameter": {
-                        "type": "float"
-                    },
-                    "outer_diameter": {
-                        "type": "float"
-                    },
-                    "conductor_gmr": {
+                    "neutral_diameter": {
                         "type": "float"
                     },
                     "conductor_resistance": {
                         "type": "float"
                     },
-                    "neutral_diameter": {
+                    "conductor_gmr": {
                         "type": "float"
+                    },
+                    "outer_diameter": {
+                        "type": "float"
+                    },
+                    "conductor_diameter": {
+                        "type": "float"
+                    },
+                    "neutral_gmr": {
+                        "type": "float"
+                    },
+                    "neutral_resistance": {
+                        "type": "float"
+                    },
+                    "neutral_strands": {
+                        "type": "integer"
                     }
                 }
             },
@@ -1797,8 +1808,7 @@
                     "y": 500
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "8bfa3fab-1979-1d1e-9d9b-04f39d670ae9": {
             "attributes": {
@@ -1816,8 +1826,7 @@
                     "y": 280
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "94a5f276-a492-010a-7442-bf35797d05e5": {
             "attributes": {
@@ -1841,38 +1850,40 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "switchB": {
+                    "switchC": {
                         "type": "string",
                         "enum": [
                             "CLOSED",
                             "OPEN"
                         ]
                     },
-                    "nominal_voltage": {
-                        "type": "float"
-                    },
-                    "time_delay": {
-                        "type": "float"
-                    },
-                    "capacitor_C": {
-                        "type": "float"
-                    },
-                    "capacitor_A": {
-                        "type": "float"
-                    },
-                    "voltage_set_high": {
-                        "type": "float"
-                    },
-                    "phases_connected": {
+                    "switchA": {
                         "type": "string",
                         "enum": [
-                            "ABCN",
-                            "ABC",
-                            "ACN",
-                            "BCN",
-                            "AN",
-                            "BN",
-                            "CN"
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    },
+                    "dwell_time": {
+                        "type": "float"
+                    },
+                    "control_level": {
+                        "type": "string",
+                        "enum": [
+                            "INDIVIDUAL",
+                            ""
+                        ]
+                    },
+                    "capacitor_B": {
+                        "type": "float"
+                    },
+                    "voltage_set_low": {
+                        "type": "float"
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "VOLT"
                         ]
                     },
                     "phases": {
@@ -1886,36 +1897,34 @@
                             "CN"
                         ]
                     },
-                    "control": {
+                    "phases_connected": {
                         "type": "string",
                         "enum": [
-                            "VOLT"
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AN",
+                            "BN",
+                            "CN"
                         ]
                     },
-                    "voltage_set_low": {
+                    "voltage_set_high": {
                         "type": "float"
                     },
-                    "capacitor_B": {
+                    "capacitor_A": {
                         "type": "float"
                     },
-                    "control_level": {
-                        "type": "string",
-                        "enum": [
-                            "INDIVIDUAL",
-                            ""
-                        ]
-                    },
-                    "dwell_time": {
+                    "capacitor_C": {
                         "type": "float"
                     },
-                    "switchA": {
-                        "type": "string",
-                        "enum": [
-                            "CLOSED",
-                            "OPEN"
-                        ]
+                    "time_delay": {
+                        "type": "float"
                     },
-                    "switchC": {
+                    "nominal_voltage": {
+                        "type": "float"
+                    },
+                    "switchB": {
                         "type": "string",
                         "enum": [
                             "CLOSED",
@@ -1950,8 +1959,7 @@
                     "y": 600
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "94ff69c0-2d28-d84b-46db-89b8be5564b4": {
             "attributes": {
@@ -2025,8 +2033,7 @@
                     "y": 580
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "a96c17cf-6b0d-3998-66d8-f02759b11c84": {
             "attributes": {
@@ -2117,8 +2124,7 @@
                     "y": 550
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "c13508bc-41e4-a3f7-859e-99beda944552": {
             "attributes": {
@@ -2133,17 +2139,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "bustype": {
-                        "type": "string",
-                        "enum": [
-                            "NONE",
-                            "SWING"
-                        ]
-                    },
-                    "voltage_C": {
+                    "nominal_voltage": {
                         "type": "string"
                     },
-                    "voltage_A": {
+                    "voltage_B": {
                         "type": "string"
                     },
                     "phases": {
@@ -2155,11 +2154,18 @@
                             "BCN"
                         ]
                     },
-                    "voltage_B": {
+                    "voltage_A": {
                         "type": "string"
                     },
-                    "nominal_voltage": {
+                    "voltage_C": {
                         "type": "string"
+                    },
+                    "bustype": {
+                        "type": "string",
+                        "enum": [
+                            "NONE",
+                            "SWING"
+                        ]
                     }
                 }
             },
@@ -2173,8 +2179,7 @@
                     "y": 580
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "ca747095-7252-7946-4d3d-e8f65e965dde": {
             "attributes": {
@@ -2192,8 +2197,7 @@
                     "y": 280
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "cacb9c98-21cf-49a6-7a01-c3edccc5416b": {
             "attributes": {
@@ -2205,20 +2209,6 @@
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
-                "attributes": {
-                    "air_temperature": {
-                        "type": "integer"
-                    },
-                    "cooling_setpoint": {
-                        "type": "float"
-                    },
-                    "floor_area": {
-                        "type": "float"
-                    },
-                    "heating_setpoint": {
-                        "type": "float"
-                    }
-                },
                 "children": {
                     "items": [
                         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc"
@@ -2229,6 +2219,20 @@
                     "maxItems": [
                         1
                     ]
+                },
+                "attributes": {
+                    "heating_setpoint": {
+                        "type": "float"
+                    },
+                    "floor_area": {
+                        "type": "float"
+                    },
+                    "cooling_setpoint": {
+                        "type": "float"
+                    },
+                    "air_temperature": {
+                        "type": "integer"
+                    }
                 },
                 "pointers": {
                     "parent": {
@@ -2257,8 +2261,7 @@
                     "y": 230
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
             "attributes": {
@@ -2270,11 +2273,6 @@
                     "name": {
                         "type": "string"
                     }
-                },
-                "children": {
-                    "items": [],
-                    "minItems": [],
-                    "maxItems": []
                 }
             },
             "parent": "03d36072-9e09-7866-cb4e-d0a36ff825f6",
@@ -2294,8 +2292,7 @@
                 },
                 "validVisualizers": "ModelEditor METAAspect SetEditor Crosscut GraphViz"
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2": {
             "attributes": {
@@ -2313,8 +2310,7 @@
                     "y": 230
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "d79800be-ebd6-d712-b3ae-8bf14690efb8": {
             "attributes": {
@@ -2325,10 +2321,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "diameter": {
+                    "insulation_thickness": {
                         "type": "float"
                     },
-                    "insulation_thickness": {
+                    "diameter": {
                         "type": "float"
                     }
                 },
@@ -2387,8 +2383,7 @@
                     "y": 470
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "e019c6ba-4908-18e9-df7a-78142b0d5c8b": {
             "attributes": {
@@ -2407,8 +2402,7 @@
                     "y": 470
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "e574f575-2724-be4c-46b9-400bad15ecc7": {
             "attributes": {
@@ -2427,8 +2421,7 @@
                     "y": 440
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "eabc7add-5b1f-2f13-08f7-27e7c2af344d": {
             "attributes": {
@@ -2439,9 +2432,6 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "nominal_voltage": {
-                        "type": "integer"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -2449,6 +2439,9 @@
                             "BS",
                             "CS"
                         ]
+                    },
+                    "nominal_voltage": {
+                        "type": "integer"
                     }
                 }
             },
@@ -2462,8 +2455,7 @@
                     "y": 520
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "ec9be6bf-f479-748c-6cff-2828bf42100d": {
             "attributes": {
@@ -2474,15 +2466,15 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "water_demand": {
+                        "type": "integer"
+                    },
                     "location": {
                         "type": "string",
                         "enum": [
                             "INSIDE",
                             "OUTSIDE"
                         ]
-                    },
-                    "water_demand": {
-                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -2512,8 +2504,7 @@
                     "y": 290
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "f1138a29-7d9c-fc08-d50b-b535fafe2f61": {
             "attributes": {
@@ -2524,13 +2515,6 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "CLOSED",
-                            "OPEN"
-                        ]
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -2539,6 +2523,13 @@
                             "AN",
                             "CN",
                             "BCN"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
                         ]
                     }
                 },
@@ -2583,8 +2574,7 @@
                     "y": 633
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "fd5d161b-dd9b-2a51-8987-bc7f84273bbc": {
             "attributes": {
@@ -2608,54 +2598,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "standard_deviation_target": {
+                    "average_target": {
                         "type": "string",
                         "enum": [
-                            "current_price_stdev_30min"
+                            "current_price_mean_30min"
                         ]
                     },
-                    "range_high": {
+                    "range_low": {
                         "type": "integer"
                     },
-                    "ramp_high": {
+                    "ramp_low": {
                         "type": "integer"
                     },
-                    "slider_setting": {
-                        "type": "integer"
-                    },
-                    "total": {
+                    "load": {
                         "type": "string",
                         "enum": [
-                            "total_load"
-                        ]
-                    },
-                    "setpoint": {
-                        "type": "string",
-                        "enum": [
-                            "cooling_setpoint",
-                            "heating_setpoint"
-                        ]
-                    },
-                    "period": {
-                        "type": "integer"
-                    },
-                    "bid_mode": {
-                        "type": "string",
-                        "enum": [
-                            "ON",
-                            "OFF"
-                        ]
-                    },
-                    "control_mode": {
-                        "type": "string",
-                        "enum": [
-                            "RAMP"
-                        ]
-                    },
-                    "target": {
-                        "type": "string",
-                        "enum": [
-                            "air_temperature"
+                            "hvac_load"
                         ]
                     },
                     "demand": {
@@ -2665,22 +2623,54 @@
                             "heating_demand"
                         ]
                     },
-                    "load": {
+                    "target": {
                         "type": "string",
                         "enum": [
-                            "hvac_load"
+                            "air_temperature"
                         ]
                     },
-                    "ramp_low": {
-                        "type": "integer"
-                    },
-                    "range_low": {
-                        "type": "integer"
-                    },
-                    "average_target": {
+                    "control_mode": {
                         "type": "string",
                         "enum": [
-                            "current_price_mean_30min"
+                            "RAMP"
+                        ]
+                    },
+                    "bid_mode": {
+                        "type": "string",
+                        "enum": [
+                            "ON",
+                            "OFF"
+                        ]
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "setpoint": {
+                        "type": "string",
+                        "enum": [
+                            "cooling_setpoint",
+                            "heating_setpoint"
+                        ]
+                    },
+                    "total": {
+                        "type": "string",
+                        "enum": [
+                            "total_load"
+                        ]
+                    },
+                    "slider_setting": {
+                        "type": "integer"
+                    },
+                    "ramp_high": {
+                        "type": "integer"
+                    },
+                    "range_high": {
+                        "type": "integer"
+                    },
+                    "standard_deviation_target": {
+                        "type": "string",
+                        "enum": [
+                            "current_price_stdev_30min"
                         ]
                     }
                 },
@@ -2711,8 +2701,7 @@
                     "y": 340
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         },
         "fef9d3ea-a93b-c0fe-1e52-7c9e3515e9d1": {
             "attributes": {
@@ -2737,8 +2726,7 @@
                     "y": 230
                 }
             },
-            "sets": {},
-            "constraints": {}
+            "sets": {}
         }
     },
     "relids": {
