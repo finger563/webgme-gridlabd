@@ -1077,8 +1077,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 100,
-                    "y": 100
+                    "x": 328,
+                    "y": 1094
                 }
             },
             "sets": {}
@@ -1238,8 +1238,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 715,
-                    "y": 855
+                    "x": 447,
+                    "y": 1073
                 }
             },
             "sets": {}
@@ -1849,6 +1849,8 @@
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
             "registry": {
+                "SVGIcon": "svgs/schedule.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 284,
                     "y": 230
@@ -2044,6 +2046,8 @@
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
             "registry": {
+                "SVGIcon": "svgs/clock.svg",
+                "decorator": "SVGDecorator",
                 "position": {
                     "x": 84,
                     "y": 330
@@ -2519,8 +2523,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 535,
-                    "y": 97
+                    "x": 532,
+                    "y": 57
                 }
             },
             "sets": {}
@@ -3596,8 +3600,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 502,
-                    "y": 346.6666666666667
+                    "x": 500,
+                    "y": 349
                 }
             },
             "sets": {}
@@ -3723,6 +3727,14 @@
                 "src": "7b2c92f0-f508-cc0f-1377-bb2635a4819e"
             },
             "registry": {
+                "lineCustomPoints": [
+                    [
+                        466.4999999999975,
+                        424.3299865722656,
+                        0,
+                        0
+                    ]
+                ],
                 "position": {
                     "x": 100,
                     "y": 100
@@ -3886,8 +3898,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 849,
-                    "y": 186
+                    "x": 851.3333333333334,
+                    "y": 190
                 }
             },
             "sets": {}
@@ -4025,8 +4037,8 @@
             },
             "registry": {
                 "position": {
-                    "x": 903,
-                    "y": 846
+                    "x": 307,
+                    "y": 1073
                 }
             },
             "sets": {}
