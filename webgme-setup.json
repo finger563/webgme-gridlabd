@@ -8,6 +8,10 @@
       "SimulateWithGridlabD": {
         "src": "src/plugins/SimulateWithGridlabD",
         "test": "test/plugins/SimulateWithGridlabD"
+      },
+      "ImportGLM": {
+        "src": "src/plugins/ImportGLM",
+        "test": "test/plugins/ImportGLM"
       }
     }
   },
