@@ -8,6 +8,10 @@
       "GenerateGLM": {
         "src": "src/plugins/GenerateGLM",
         "test": "test/plugins/GenerateGLM"
+      },
+      "SimulateWithGridlabD": {
+        "src": "src/plugins/SimulateWithGridlabD",
+        "test": "test/plugins/SimulateWithGridlabD"
       }
     }
   },
