@@ -11,6 +11,9 @@ var config = require('webgme/config/config.default'),
 config.plugin.basePaths.push('src/plugins');
 
 
+
+
+
 // Visualizer descriptors
 
 // Add requirejs paths
