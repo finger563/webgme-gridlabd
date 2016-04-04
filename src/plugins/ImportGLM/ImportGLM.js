@@ -7,10 +7,12 @@
 
 define([
     'plugin/PluginConfig',
-    'plugin/PluginBase'
+    'plugin/PluginBase',
+    'q'
 ], function (
     PluginConfig,
-    PluginBase) {
+    PluginBase,
+    Q) {
     'use strict';
 
     /**
@@ -47,6 +49,19 @@ define([
         return '0.1.0';
     };
 
+    ImportGLM.prototype.getConfigStructure = function() {
+        return [
+            {
+                'name': 'glmFile',
+                'displayName': 'Gridlab-D Model File',
+                'description': 'GLM file for loading as a WebGME Power System Model.',
+                'value': '',
+                'valueType': 'asset',
+                'readOnly': false
+            }
+        ];
+    };
+
     /**
      * Main function for the plugin to execute. This will perform the execution.
      * Notes:
@@ -62,32 +77,53 @@ define([
         var self = this,
             nodeObject;
 
+        // Default fails
+        self.result.success = false;
 
-        // Using the logger.
-        self.logger.debug('This is a debug message.');
-        self.logger.info('This is an info message.');
-        self.logger.warn('This is a warning message.');
-        self.logger.error('This is an error message.');
+	//var path = require('path');
+
+	var currentConfig = self.getCurrentConfig(),
+	glmFileHash = currentConfig.glmFile;
 
         // Using the coreAPI to make changes.
-
         nodeObject = self.activeNode;
 
-        self.core.setAttribute(nodeObject, 'name', 'My new obj');
-        self.core.setRegistry(nodeObject, 'position', {x: 70, y: 70});
+	self.blobClient.getMetadata(glmFileHash)
+	    .then(function(glmMetaData) {
+		self.logger.error(JSON.stringify(glmMetaData,null,2));
+		var splitName = glmMetaData.name.split(".");
+		var newName = "";
+		for (var i=0;i<splitName.length-1;i++) {
+		    newName += splitName[i];
+		}
+		self.modelName = newName;
+		self.logger.error('loaded model: ' + self.modelName);
+	    })
+	    .then(function() {
+		return self.blobClient.getObjectAsString(glmFileHash)
+	    })
+	    .then(function(glmFile) {
+	    })
+	    .then(function() {
+		// This will save the changes. If you don't want to save;
+		// exclude self.save and call callback directly from this scope.
+		return self.save('ImportGLM updated model.');
+	    })
+	    .then(function() {
+		self.result.setSuccess(true);
+		callback(null, self.result);
+	    })
+	    .catch(function(err) {
+		self.logger.error(err);
+		self.result.setSuccess(false);
+		callback(null, self.result);
+	    });
+    };
 
-
-        // This will save the changes. If you don't want to save;
-        // exclude self.save and call callback directly from this scope.
-        self.save('ImportGLM updated model.', function (err) {
-            if (err) {
-                callback(err, self.result);
-                return;
-            }
-            self.result.setSuccess(true);
-            callback(null, self.result);
-        });
-
+    ImportGLM.prototype.createModelArtifacts = function() {
+	var self = this;
+	var metaNodes = self.core.getAllMetaNodes(self.activeNode);
+	var fcoNode = self.core.getBaseRoot(self.activeNode);
     };
 
     return ImportGLM;
