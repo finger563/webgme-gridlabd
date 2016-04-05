@@ -79,7 +79,7 @@ define([
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            nodeObject;
+        nodeObject;
 
         self.updateMETA(self.metaTypes);
 
@@ -104,13 +104,16 @@ define([
 		    newName += splitName[i];
 		}
 		self.modelName = newName;
+		self.newModel.name = newName;
 		self.logger.error('loaded model: ' + self.modelName);
 	    })
 	    .then(function() {
 		return self.blobClient.getObjectAsString(glmFileHash)
 	    })
 	    .then(function(glmFile) {
-		return self.parseHeader(glmFile);
+		self.parseHeader(glmFile);
+		self.parseObject(glmFile, self.newModel);
+		self.logger.error(JSON.stringify(self.newModel,null,2));
 	    })
 	    .then(function() {
 		// This will save the changes. If you don't want to save;
@@ -141,9 +144,11 @@ define([
 	    var cmd = matches[1];
 	    var variable = matches[2];
 	    var value = matches[3].replace(/;/gi,'').replace(/'/gi,'');
+	    self.newModel[variable] = value;
 	    //self.logger.error('got ' + cmd + ' for variable ' + variable + ' and value ' + value);
 	    matches = regex.exec(str);
 	}
+	self.logger.error(JSON.stringify(self.newModel,null,2));
     };
 
     ImportGLM.prototype.parseClock = function(str) {
@@ -162,8 +167,50 @@ define([
 	var self = this;
     };
 
-    ImportGLM.prototype.parseObject = function(str) {
+    ImportGLM.prototype.parseProperty = function(str) {
 	var self = this;
+	var splitStr = str.split(' ');
+    };
+
+    ImportGLM.prototype.parseObject = function(str, parent) {
+	var self = this;
+	var submodel_str = '';
+	var submodels = [];
+	var currentObj = undefined;
+	var depth = 0;
+	var lines = str.split('\n');
+	lines.map(function(line) {
+	    if ( line.indexOf('{') > -1 ) {
+		if ( depth == 0 ) {
+		    currentObj = {};
+		    currentObj.name = line.split(' ')[1].replace('{','');
+		}
+		depth += 1;
+	    }
+	    else if ( line.indexOf('}') > -1 ) {
+		depth -= 1;
+	    }
+
+	    if ( depth == 0 ) {
+		if (currentObj) {
+		    self.logger.info(JSON.stringify(currentObj,null,2));
+		    submodels.push({string:submodel_str, object:currentObj});
+		    currentObj = undefined;
+		}
+	    }
+	    else {
+		if (depth == 1 && line.indexOf(';') > -1) {
+		    // parse property here
+		}
+		else {
+		    submodel_str += line + '\n';
+		}
+	    }
+	});
+	submodels.map(function(subModel) {
+	    self.parseObject(subModel.string, subModel.object);
+	    parent[subModel.object.name] = subModel.object;
+	});
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
