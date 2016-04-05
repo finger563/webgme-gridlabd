@@ -110,6 +110,7 @@ define([
 		return self.blobClient.getObjectAsString(glmFileHash)
 	    })
 	    .then(function(glmFile) {
+		return self.parseHeader(glmFile);
 	    })
 	    .then(function() {
 		// This will save the changes. If you don't want to save;
@@ -121,7 +122,7 @@ define([
 		callback(null, self.result);
 	    })
 	    .catch(function(err) {
-		self.logger.error(err);
+		self.logger.error('ERROR:: '+err);
 		self.result.setSuccess(false);
 		callback(null, self.result);
 	    });
@@ -129,6 +130,39 @@ define([
 
     ImportGLM.prototype.parseObjectsFromGLM = function() {
 	// fill out self.newModel
+	var self = this;
+    };
+
+    ImportGLM.prototype.parseHeader = function(str) {
+	var self = this;
+	var regex = /#(\S+)\s+(\S+)\s*=\s*([\S ]+)(?:;)?/gi;
+	var matches = regex.exec(str);
+	while (matches != null) {
+	    var cmd = matches[1];
+	    var variable = matches[2];
+	    var value = matches[3].replace(/;/gi,'').replace(/'/gi,'');
+	    //self.logger.error('got ' + cmd + ' for variable ' + variable + ' and value ' + value);
+	    matches = regex.exec(str);
+	}
+    };
+
+    ImportGLM.prototype.parseClock = function(str) {
+	var self = this;
+    };
+
+    ImportGLM.prototype.parsePowerFlow = function(str) {
+	var self = this;
+    };
+
+    ImportGLM.prototype.parseResidential = function(str) {
+	var self = this;
+    };
+
+    ImportGLM.prototype.parseSchedule = function(str) {
+	var self = this;
+    };
+
+    ImportGLM.prototype.parseObject = function(str) {
 	var self = this;
     };
 
