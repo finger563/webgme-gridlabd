@@ -265,6 +265,26 @@ define([
 	}
     };
 
+    ImportGLM.prototype.parseLine = function(str, obj) {
+	var self = this;
+    };
+
+    ImportGLM.prototype.saveLine = function(obj, parentNode) {
+	var self = this;
+	// save obj as node here (set the properties of the multiRecorder)
+	var lineNode = self.core.createNode({parent: parentNode, base: self.META[obj.type]});
+	self.core.setAttribute(lineNode, 'name', obj.name);
+	for (var a in obj.attributes) {
+	    var val = obj.attributes[a];
+	    self.core.setAttribute(lineNode, a, val);
+	}
+	for (var p in obj.pointers) {
+	    var nodeRef = obj.pointers[a];
+	    
+	}
+	obj.node = lineNode;
+    };
+
     ImportGLM.prototype.parseObject = function(str, parent) {
 	var self = this;
 	var splitString = /[\s:\{]+/gi;
@@ -290,7 +310,8 @@ define([
 			    base: base,
 			    name: name,
 			    children: [],
-			    attributes: {}
+			    attributes: {},
+			    pointers: {}
 			};
 		    }
 		}
@@ -349,7 +370,35 @@ define([
 	});
     };
 
-    ImportGLM.prototype.resolveReferences = function() {
+    ImportGLM.prototype.saveObject = function(obj, parent) {
+	var self = this;
+	if ( obj.type == 'clock' ){
+	    self.saveClock(obj, parent);
+	}
+	else if ( obj.type == 'schedule' ){
+	    self.saveSchedule(obj, parent);
+	}
+	else if ( obj.type == 'multi_recorder' ){
+	    self.saveMultiRecorder(obj, parent);
+	}
+	else if ( obj.type ) {
+	    var newNode = self.core.createNode({parent: parent, base: self.META[obj.type]});
+	    if (obj.name) {
+		self.core.setAttribute(newNode, 'name', obj.name);
+	    }
+	    for (var a in obj.attributes) {
+		var val = obj.attributes[a];
+		self.core.setAttribute(newNode, a, val);
+	    }
+	    obj.node = newNode;
+	    obj.children.map(function(child) {
+		self.saveObject(child, newNode);
+	    });
+	}
+    };
+
+    ImportGLM.prototype.resolveReferences = function(obj) {
+	var self = this;
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
@@ -363,28 +412,12 @@ define([
 	    var val = self.newModel.attributes[ai];
 	    self.core.setAttribute(modelNode, ai, val);
 	}
-	for (var oi in self.newModel.children) {
-	    var obj = self.newModel.children[oi];
-	    if ( obj.type == 'clock' ){
-		self.saveClock(obj, modelNode);
-	    }
-	    else if ( obj.type == 'schedule' ){
-		self.saveSchedule(obj, modelNode);
-	    }
-	    else if ( obj.type == 'multi_recorder' ){
-		self.saveMultiRecorder(obj, modelNode);
-	    }
-	    else if ( obj.type ) {
-		var newNode = self.core.createNode({parent: modelNode, base: self.META[obj.type]});
-		if (obj.name) {
-		    self.core.setAttribute(newNode, 'name', obj.name);
-		}
-		for (var a in obj.attributes) {
-		    var val = obj.attributes[a];
-		    self.core.setAttribute(newNode, a, val);
-		}
-	    }
-	}
+	self.newModel.children.map(function(obj) {
+	    self.saveObject(obj, modelNode);
+	});
+	self.newModel.children.map(function(obj) {
+	    self.resolveReferences(obj);
+	});
     };
 
     return ImportGLM;
