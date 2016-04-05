@@ -87,7 +87,10 @@ define([
         self.result.success = false;
 
 	// fill this out before creating the WebGME nodes
-	self.newModel = {};
+	self.newModel = {
+	    children: [],
+	    attributes: {}
+	};
 
 	var currentConfig = self.getCurrentConfig(),
 	glmFileHash = currentConfig.glmFile;
@@ -147,61 +150,118 @@ define([
 	    var cmd = matches[1];
 	    var variable = matches[2];
 	    var value = matches[3].replace(/;/gi,'').replace(/'/gi,'');
-	    self.newModel[variable] = value;
+	    self.newModel.attributes[variable] = value;
 	    //self.logger.error('got ' + cmd + ' for variable ' + variable + ' and value ' + value);
 	    matches = regex.exec(str);
 	}
     };
 
+    ImportGLM.prototype.saveHeader = function(obj) {
+	var self = this;
+	// save obj as node here (set the properties of the model)
+    };
+
     ImportGLM.prototype.parseClock = function(str, obj) {
 	var self = this;
-	var splitString = /[\s;]+/;
-	var splits;
-	var lines = str.split('\n');
-	lines.map(function(line) {
-	    splits = line.split(splitString)
-		.filter(function(obj) { return obj.length > 0; });
-	    if (splits.length > 0 && splits[0].indexOf('/') == -1) {
-		obj[splits[0]] = splits.slice(1).join(' ');
+	var patterns = [
+		/(timestamp)\s+'([^\/\n\r\v][\w:\- \']*)';/gi,
+		/(stoptime)\s+'([^\/\n\r\v][\w:\- \']*)';/gi,
+		/(timezone)\s+([^\/\n\r\v][\w:\- \']*);/gi
+	];
+
+	patterns.map(function(pattern) {
+	    var matches = pattern.exec(str);
+	    while (matches != null) {
+		var key = matches[1];
+		var value = matches[2];
+		obj.attributes[key] = value;
+		matches = pattern.exec(str);
 	    }
 	});
-	self.newModel.clock = obj;
+	self.newModel.children.push(obj);
+    };
+
+    ImportGLM.prototype.saveClock = function(obj, parentNode) {
+	var self = this;
+	// save obj as node here (set the properties of the clock)
+	var clockNode = self.core.createNode({parent: parentNode, base: self.META.clock});
+	self.core.setAttribute(clockNode, 'name', 'clock');
+	for (var a in obj.attributes) {
+	    var val = obj.attributes[a];
+	    self.core.setAttribute(clockNode, a, val);
+	}
     };
 
     ImportGLM.prototype.parseSchedule = function(str, obj) {
 	var self = this;
-	var splitString = /[\s;\{]+/;
-	var splits;
+	var pattern = /\s(?:([\d\*\.]+[\-\.\d]*)[ \t]*)+;?/gi;
 	var lines = str.split('\n');
 	obj.entries = [];
 	lines.map(function(line) {
-	    splits = line.split(splitString)
-		.filter(function(obj) { return obj.length > 0; });
-	    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
-		obj.entries.push(splits)
+	    var matches = pattern.exec(line);
+	    if (matches) {
+		var splits = matches[0].split(/\s;/g).filter(function(obj) {return obj.length > 0;});
+		if ( splits.length >=5 ) {
+		    var entry = {
+			minutes: splits[0],
+			hours: splits[1],
+			days: splits[2],
+			months: splits[3],
+			weekdays: splits[4],
+			value: splits[5]
+		    };
+		    obj.entries.push(entry)
+		}
+		else {
+		    self.logger.error(line);
+		    self.logger.error(matches);
+		    self.logger.error(splits);
+		}
 	    }
 	});
-	self.newModel[obj.name] = obj;
+	self.newModel.children.push(obj);
+    };
+
+    ImportGLM.prototype.saveSchedule = function(obj, parentNode) {
+	var self = this;
+	// save obj as node here (set the properties of the schedule)
+	var schedNode = self.core.createNode({parent: parentNode, base: self.META.schedule});
+	self.core.setAttribute(schedNode, 'name', obj.name);
+	var i =0;
+	obj.entries.map(function(entry) {
+	    var entryNode = self.core.createNode({parent: schedNode, base: self.META.schedule_entry});
+	    self.core.setAttribute(entryNode, 'name', 'Entry ' + i++);
+	    //self.logger.error(JSON.stringify(entry, null, 2));
+	    for (var a in entry) {
+		var val = entry[a];
+		self.core.setAttribute(entryNode, a, val);
+	    }
+	});
     };
 
     ImportGLM.prototype.parseMultiRecorder = function(str, obj) {
 	var self = this;
-	var splitString = /[\s;]+/;
+	var splitString = /[\s;]+/gi;
 	var splits;
 	var lines = str.split('\n');
 	lines.map(function(line) {
 	    splits = line.split(splitString)
 		.filter(function(obj) { return obj.length > 0; });
 	    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
-		obj[splits[0]] = splits[1];
+		obj.attributes[splits[0]] = splits[1];
 	    }
 	});
-	self.newModel.multiRecorder = obj;
+	self.newModel.children.push(obj);
+    };
+
+    ImportGLM.prototype.saveMultiRecorder = function(obj, parentNode) {
+	var self = this;
+	// save obj as node here (set the properties of the multiRecorder)
     };
 
     ImportGLM.prototype.parseObject = function(str, parent) {
 	var self = this;
-	var splitString = /[\s:\{]+/;
+	var splitString = /[\s:\{]+/gi;
 	var submodel_str = '';
 	var submodels = [];
 	var currentObj = undefined;
@@ -219,10 +279,13 @@ define([
 			if (splits.length >= 3) {
 			    name = splits[2];
 			}
-			currentObj = {};
-			currentObj.type = type;
-			currentObj.base = base;
-			currentObj.name = name;
+			currentObj = {
+			    type: type,
+			    base: base,
+			    name: name,
+			    children: [],
+			    attributes: {}
+			};
 		    }
 		}
 		else {
@@ -235,15 +298,20 @@ define([
 		if ( depth == 0 ) {
 		    if (currentObj) {
 			if (currentObj.base == 'clock') {
-			    currentObj = { type: currentObj.base };
+			    currentObj.type = currentObj.base;
+			    currentObj.attributes = {};
 			    self.parseClock(submodel_str, currentObj);
 			}
 			else if (currentObj.base == 'schedule') {
-			    currentObj = { name: currentObj.type, type: currentObj.base };
+			    currentObj.name = currentObj.type;
+			    currentObj.type = currentObj.base;
+			    currentObj.attributes = {};
 			    self.parseSchedule(submodel_str, currentObj);
 			}
 			else if (currentObj.type == 'multi_recorder') {
-			    currentObj = { name: currentObj.type, type: currentObj.base };
+			    currentObj.name = currentObj.type;
+			    currentObj.type = currentObj.base;
+			    currentObj.attributes = {};
 			    self.parseMultiRecorder(submodel_str, currentObj);
 			}
 			else {
@@ -263,7 +331,7 @@ define([
 		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
 		    if (splits && splits[0].indexOf('/') == -1) { // don't want comments
 			if (depth == 1)
-			    currentObj[splits[0]] = splits[1].replace(';','');
+			    currentObj.attributes[splits[0]] = splits[1].replace(';','');
 			submodel_str += line + '\n';
 		    }
 		}
@@ -271,25 +339,39 @@ define([
 	});
 	submodels.map(function(subModel) {
 	    self.parseObject(subModel.string, subModel.object);
-	    parent[subModel.object.name] = subModel.object;
+	    parent.children.push(subModel.object);
 	});
+    };
+
+    ImportGLM.prototype.resolveReferences = function() {
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
 	// use self.newModel
 	var self = this;
-	var metaNodes = self.core.getAllMetaNodes(self.activeNode);
 	var fcoNode = self.core.getBaseRoot(self.activeNode);
 	var modelMetaNode = self.META.Model;
-	self.logger.error(metaNodes);
 	var modelNode = self.core.createNode({parent: self.activeNode, base: modelMetaNode});
 	self.core.setAttribute(modelNode, 'name', self.newModel.name);
-	for (var oi in self.newModel) {
-	    var obj = self.newModel[oi];
-	    if ( obj.type ) {
+	for (var oi in self.newModel.children) {
+	    var obj = self.newModel.children[oi];
+	    if ( obj.type == 'clock' ){
+		self.saveClock(obj, modelNode);
+	    }
+	    else if ( obj.type == 'schedule' ){
+		self.saveSchedule(obj, modelNode);
+	    }
+	    else if ( obj.type == 'multi_recorder' ){
+		self.saveMultiRecorder(obj, modelNode);
+	    }
+	    else if ( obj.type ) {
 		var newNode = self.core.createNode({parent: modelNode, base: self.META[obj.type]});
 		if (obj.name) {
 		    self.core.setAttribute(newNode, 'name', obj.name);
+		}
+		for (var a in obj.attributes) {
+		    var val = obj.attributes[a];
+		    self.core.setAttribute(newNode, a, val);
 		}
 	    }
 	}
