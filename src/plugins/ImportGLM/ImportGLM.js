@@ -257,6 +257,12 @@ define([
     ImportGLM.prototype.saveMultiRecorder = function(obj, parentNode) {
 	var self = this;
 	// save obj as node here (set the properties of the multiRecorder)
+	var recorderNode = self.core.createNode({parent: parentNode, base: self.META.multi_recorder});
+	self.core.setAttribute(recorderNode, 'name', obj.name);
+	for (var a in obj.attributes) {
+	    var val = obj.attributes[a];
+	    self.core.setAttribute(recorderNode, a, val);
+	}
     };
 
     ImportGLM.prototype.parseObject = function(str, parent) {
