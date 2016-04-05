@@ -151,27 +151,34 @@ define([
 
     ImportGLM.prototype.parseClock = function(str) {
 	var self = this;
-    };
-
-    ImportGLM.prototype.parsePowerFlow = function(str) {
-	var self = this;
-    };
-
-    ImportGLM.prototype.parseResidential = function(str) {
-	var self = this;
+	var obj = {name: 'clock'};
+	var lines = str.split('\n');
+	lines.map(function(line) {
+	});
+	self.newModel.clock = obj;
     };
 
     ImportGLM.prototype.parseSchedule = function(str) {
 	var self = this;
+	var obj = {};
+	var lines = str.split('\n');
+	lines.map(function(line) {
+	});
+	self.newModel[obj.name] = obj;
     };
 
-    ImportGLM.prototype.parseProperty = function(str) {
+    ImportGLM.prototype.parseMultiRecorder = function(str) {
 	var self = this;
-	var splitStr = str.split(' ');
+	var obj = {};
+	var lines = str.split('\n');
+	lines.map(function(line) {
+	});
+	self.newModel.multiRecorder = obj;
     };
 
     ImportGLM.prototype.parseObject = function(str, parent) {
 	var self = this;
+	var splitString = /[\s:\{\/]+/;
 	var submodel_str = '';
 	var submodels = [];
 	var currentObj = undefined;
@@ -181,11 +188,16 @@ define([
 	lines.map(function(line) {
 	    if ( line.indexOf('{') > -1 ) {
 		if ( depth == 0 ) {
-		    splits = line.split(' ').filter(function(obj) { return obj.length > 0; });
-		    var type = splits[0];
-		    var name = splits[1].replace('{','');
+		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
+		    var base = splits[0];
+		    var type = splits[1];
+		    var name;
+		    if (splits.length >= 3) {
+			name = splits[2];
+		    }
 		    currentObj = {};
 		    currentObj.type = type;
+		    currentObj.base = base;
 		    currentObj.name = name;
 		}
 		else {
@@ -197,7 +209,18 @@ define([
 		depth -= 1;
 		if ( depth == 0 ) {
 		    if (currentObj) {
-			submodels.push({string:submodel_str, object:currentObj});
+			if (currentObj.base == 'clock') {
+			    self.parseClock(submodel_str);
+			}
+			else if (currentObj.base == 'schedule') {
+			    self.parseSchedule(submodel_str);
+			}
+			else if (currentObj.type == 'multi_recorder') {
+			    self.parseMultiRecorder(submodel_str);
+			}
+			else {
+			    submodels.push({string:submodel_str, object:currentObj});
+			}
 			currentObj = undefined;
 			submodel_str = '';
 		    }
@@ -209,6 +232,10 @@ define([
 	    else {
 		if (depth == 1 && line.indexOf(';') > -1) {
 		    // parse property here
+		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
+		    if (splits && splits[0].indexOf('/') == -1) { // don't want comments
+			currentObj[splits[0]] = splits[1].replace(';','');
+		    }
 		}
 		else if (depth > 1) {
 		    submodel_str += line + '\n';
