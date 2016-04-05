@@ -287,7 +287,7 @@ define([
 
     ImportGLM.prototype.parseObject = function(str, parent) {
 	var self = this;
-	var splitString = /[\s:\{]+/gi;
+	var splitString = /[\s\{]+/gi;
 	var submodel_str = '';
 	var submodels = [];
 	var currentObj = undefined;
@@ -300,10 +300,15 @@ define([
 		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
 		    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
 			var base = splits[0];
-			var type = splits[1];
+			var type;
 			var name;
-			if (splits.length >= 3) {
-			    name = splits[2];
+			if (splits[1] && splits[1].indexOf(':') > -1) {
+			    var tmp = splits[1].split(':');
+			    type = tmp[0];
+			    name = tmp[1];
+			}
+			else if (splits[1]) {
+			    type = splits[1];
 			}
 			currentObj = {
 			    type: type,
@@ -397,8 +402,42 @@ define([
 	}
     };
 
+    ImportGLM.prototype.getObjectName = function(str) {
+	var self = this;
+	var name = str;
+	if ( name.indexOf(':') > -1 ) {
+	    name = name.split(':')[1];
+	}
+	return name;
+    };
+
     ImportGLM.prototype.resolveReferences = function(obj) {
 	var self = this;
+	if ( obj.type == 'underground_line' ) {
+	}
+	else if ( obj.type == 'overhead_line' ) {
+	    var from = self.getObjectName(obj.attributes.from);
+	    var to = self.getObjectName(obj.attributes.to);
+	    var configuration = self.getObjectName(obj.attributes.configuration);
+	    var srcNode = self.newModel.children.filter(function(c) { return c.name == from; })[0].node;
+	    var dstNode = self.newModel.children.filter(function(c) { return c.name == to; })[0].node;
+	    var confNode = self.newModel.children.filter(function(c) { return c.name == configuration; })[0].node;
+	    self.core.setPointer(obj.node, 'src', srcNode);
+	    self.core.setPointer(obj.node, 'dst', dstNode);
+	    self.core.setPointer(obj.node, 'configuration', confNode);
+	}
+	else if ( obj.type == 'triplex_line' ) {
+	}
+	else if ( obj.type == 'line_configuration' ) {
+	}
+	else if ( obj.type == 'triplex_line_configuration' ) {
+	}
+	else if ( obj.type == 'transformer' ) {
+	}
+	else if ( obj.type == 'switch' ) {
+	}
+	else if ( obj.type == 'regulator' ) {
+	}
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
