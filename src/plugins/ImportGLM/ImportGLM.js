@@ -110,9 +110,10 @@ define([
 		return self.blobClient.getObjectAsString(glmFileHash)
 	    })
 	    .then(function(glmFile) {
-		self.parseHeader(glmFile);
-		self.parseObject(glmFile, self.newModel);
-		self.logger.error(JSON.stringify(self.newModel,null,2));
+		return self.parseObjectsFromGLM(glmFile);
+	    })
+	    .then(function() {
+		return self.createModelArtifacts();
 	    })
 	    .then(function() {
 		// This will save the changes. If you don't want to save;
@@ -130,9 +131,12 @@ define([
 	    });
     };
 
-    ImportGLM.prototype.parseObjectsFromGLM = function() {
+    ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
 	var self = this;
+	self.parseHeader(glmFile);
+	self.parseObject(glmFile, self.newModel);
+	//self.logger.error(JSON.stringify(self.newModel,null,2));
     };
 
     ImportGLM.prototype.parseHeader = function(str) {
@@ -276,6 +280,19 @@ define([
 	var self = this;
 	var metaNodes = self.core.getAllMetaNodes(self.activeNode);
 	var fcoNode = self.core.getBaseRoot(self.activeNode);
+	var modelMetaNode = self.META.Model;
+	self.logger.error(metaNodes);
+	var modelNode = self.core.createNode({parent: self.activeNode, base: modelMetaNode});
+	self.core.setAttribute(modelNode, 'name', self.newModel.name);
+	for (var oi in self.newModel) {
+	    var obj = self.newModel[oi];
+	    if ( obj.type ) {
+		var newNode = self.core.createNode({parent: modelNode, base: self.META[obj.type]});
+		if (obj.name) {
+		    self.core.setAttribute(newNode, 'name', obj.name);
+		}
+	    }
+	}
     };
 
     return ImportGLM;
