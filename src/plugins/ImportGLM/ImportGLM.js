@@ -8,7 +8,7 @@
 define([
     'plugin/PluginConfig',
     'plugin/PluginBase',
-    'rosmod/meta',
+    'gridlabd/meta',
     'q'
 ], function (
     PluginConfig,
