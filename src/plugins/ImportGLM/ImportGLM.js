@@ -97,7 +97,6 @@ define([
 
 	self.blobClient.getMetadata(glmFileHash)
 	    .then(function(glmMetaData) {
-		self.logger.error(JSON.stringify(glmMetaData,null,2));
 		var splitName = glmMetaData.name.split(".");
 		var newName = "";
 		for (var i=0;i<splitName.length-1;i++) {
@@ -148,7 +147,6 @@ define([
 	    //self.logger.error('got ' + cmd + ' for variable ' + variable + ' and value ' + value);
 	    matches = regex.exec(str);
 	}
-	self.logger.error(JSON.stringify(self.newModel,null,2));
     };
 
     ImportGLM.prototype.parseClock = function(str) {
@@ -179,30 +177,40 @@ define([
 	var currentObj = undefined;
 	var depth = 0;
 	var lines = str.split('\n');
+	var splits;
 	lines.map(function(line) {
 	    if ( line.indexOf('{') > -1 ) {
 		if ( depth == 0 ) {
+		    splits = line.split(' ').filter(function(obj) { return obj.length > 0; });
+		    var type = splits[0];
+		    var name = splits[1].replace('{','');
 		    currentObj = {};
-		    currentObj.name = line.split(' ')[1].replace('{','');
+		    currentObj.type = type;
+		    currentObj.name = name;
+		}
+		else {
+		    submodel_str += line +'\n';
 		}
 		depth += 1;
 	    }
 	    else if ( line.indexOf('}') > -1 ) {
 		depth -= 1;
-	    }
-
-	    if ( depth == 0 ) {
-		if (currentObj) {
-		    self.logger.info(JSON.stringify(currentObj,null,2));
-		    submodels.push({string:submodel_str, object:currentObj});
-		    currentObj = undefined;
+		if ( depth == 0 ) {
+		    if (currentObj) {
+			submodels.push({string:submodel_str, object:currentObj});
+			currentObj = undefined;
+			submodel_str = '';
+		    }
+		}
+		else {
+		    submodel_str += line + '\n';
 		}
 	    }
 	    else {
 		if (depth == 1 && line.indexOf(';') > -1) {
 		    // parse property here
 		}
-		else {
+		else if (depth > 1) {
 		    submodel_str += line + '\n';
 		}
 	    }
