@@ -200,7 +200,7 @@ define([
 	lines.map(function(line) {
 	    var matches = pattern.exec(line);
 	    if (matches) {
-		var splits = matches[0].split(/\s;/g).filter(function(obj) {return obj.length > 0;});
+		var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
 		if ( splits.length >=5 ) {
 		    var entry = {
 			minutes: splits[0],
@@ -359,6 +359,10 @@ define([
 	var modelMetaNode = self.META.Model;
 	var modelNode = self.core.createNode({parent: self.activeNode, base: modelMetaNode});
 	self.core.setAttribute(modelNode, 'name', self.newModel.name);
+	for (var ai in self.newModel.attributes) {
+	    var val = self.newModel.attributes[ai];
+	    self.core.setAttribute(modelNode, ai, val);
+	}
 	for (var oi in self.newModel.children) {
 	    var obj = self.newModel.children[oi];
 	    if ( obj.type == 'clock' ){
