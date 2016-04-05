@@ -8,10 +8,12 @@
 define([
     'plugin/PluginConfig',
     'plugin/PluginBase',
+    'rosmod/meta',
     'q'
 ], function (
     PluginConfig,
     PluginBase,
+    MetaTypes,
     Q) {
     'use strict';
 
@@ -25,6 +27,8 @@ define([
     var ImportGLM = function () {
         // Call base class' constructor.
         PluginBase.call(this);
+
+        this.metaTypes = MetaTypes;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -77,10 +81,13 @@ define([
         var self = this,
             nodeObject;
 
+        self.updateMETA(self.metaTypes);
+
         // Default fails
         self.result.success = false;
 
-	//var path = require('path');
+	// fill this out before creating the WebGME nodes
+	self.newModel = {};
 
 	var currentConfig = self.getCurrentConfig(),
 	glmFileHash = currentConfig.glmFile;
@@ -120,7 +127,13 @@ define([
 	    });
     };
 
+    ImportGLM.prototype.parseObjectsFromGLM = function() {
+	// fill out self.newModel
+	var self = this;
+    };
+
     ImportGLM.prototype.createModelArtifacts = function() {
+	// use self.newModel
 	var self = this;
 	var metaNodes = self.core.getAllMetaNodes(self.activeNode);
 	var fcoNode = self.core.getBaseRoot(self.activeNode);

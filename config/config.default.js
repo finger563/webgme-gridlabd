@@ -12,6 +12,8 @@ config.seedProjects.enable = true;
 config.seedProjects.basePaths = ["./src/seeds"]
 config.seedProjects.defaultProject = "guest+GridlabD"
 
+config.requirejsPaths.rosmod = "./src/common/"
+
 config.client.log.level = 'info'
 
 config.visualization.svgDirs = ["./src/svgs"] 
