@@ -112,7 +112,7 @@ define([
 	    .then(function(glmFile) {
 		self.parseHeader(glmFile);
 		self.parseObject(glmFile, self.newModel);
-		self.logger.error(JSON.stringify(self.newModel,null,2));
+		//self.logger.error(JSON.stringify(self.newModel,null,2));
 	    })
 	    .then(function() {
 		// This will save the changes. If you don't want to save;
@@ -152,17 +152,29 @@ define([
     ImportGLM.prototype.parseClock = function(str) {
 	var self = this;
 	var obj = {name: 'clock'};
+	var splitString = /[\s:;\{\/]+/;
+	var splits;
 	var lines = str.split('\n');
 	lines.map(function(line) {
+	    if (line.indexOf('{') == -1 && line.indexOf('}') == -1) {
+		self.logger.error(line);
+		splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
+		self.logger.error(splits);
+		obj[splits[0]] = splits.slice(0,0).join('');
+	    }
 	});
+	self.logger.error(JSON.stringify(obj,null,2));
 	self.newModel.clock = obj;
     };
 
     ImportGLM.prototype.parseSchedule = function(str) {
 	var self = this;
 	var obj = {};
+	var splitString = /[\s:\{\/]+/;
+	var splits;
 	var lines = str.split('\n');
 	lines.map(function(line) {
+	    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
 	});
 	self.newModel[obj.name] = obj;
     };
@@ -170,8 +182,11 @@ define([
     ImportGLM.prototype.parseMultiRecorder = function(str) {
 	var self = this;
 	var obj = {};
+	var splitString = /[\s\/]+/;
+	var splits;
 	var lines = str.split('\n');
 	lines.map(function(line) {
+	    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
 	});
 	self.newModel.multiRecorder = obj;
     };
