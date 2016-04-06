@@ -275,6 +275,7 @@ define([
 	var lines = str.split('\n');
 	var splits;
 	lines.map(function(line) {
+	    if ( !line ) return;
 	    if ( line.indexOf('{') > -1 ) {
 		if ( depth == 0 ) {
 		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
@@ -342,8 +343,12 @@ define([
 		    // parse property here
 		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
 		    if (splits && splits[0].indexOf('/') == -1) { // don't want comments
-			if (depth == 1)
+			if (depth == 1) {
+			    if (splits[0]=='name') {
+				currentObj.name = splits[1].replace(';','');
+			    }
 			    currentObj.attributes[splits[0]] = splits[1].replace(';','');
+			}
 			submodel_str += line + '\n';
 		    }
 		}
@@ -351,7 +356,9 @@ define([
 	});
 	submodels.map(function(subModel) {
 	    self.parseObject(subModel.string, subModel.object);
-	    parent.children.push(subModel.object);
+	    if (parent !== self.newModel)
+		subModel.object.attributes.parent = parent.name;
+	    self.newModel.children.push(subModel.object);
 	});
     };
 
@@ -391,12 +398,21 @@ define([
 	return name;
     };
 
-    ImportGLM.prototype.resolveReferences = function(obj) {
+    ImportGLM.prototype.resolveReferences = function(obj, modelNode) {
 	// TODO: DELETE OLD ATTRIBUTES AFTER DONE
 	var self = this;
+	if ( obj.attributes.parent ) {
+	    var src = obj.node;
+	    var p = self.getObjectName(obj.attributes.parent);
+	    var dst = self.newModel.children.filter(function(c) { return c.name == p; })[0].node;
+	    var link = self.core.createNode({parent:modelNode, base: self.META.FCO});
+	    self.core.setAttribute(link, 'name', 'parent');
+	    self.core.setPointer(link, 'src', src);
+	    self.core.setPointer(link, 'dst', dst);
+	}
 	if ( obj.type == 'underground_line' ||
 	     obj.type == 'overhead_line' ||
-//	     obj.type == 'triplex_line' ||
+	     obj.type == 'triplex_line' ||
 	     obj.type == 'transformer' ||
 	     obj.type == 'regulator' ) {
 	    var from = self.getObjectName(obj.attributes.from);
@@ -415,7 +431,6 @@ define([
 		self.core.setPointer(obj.node, 'configuration', confNode);
 	    }
 	}
-	/*
 	else if ( obj.type == 'line_configuration' ) {
 	    var a = self.getObjectName(obj.attributes.conductor_A);
 	    if ( a ) {
@@ -429,7 +444,7 @@ define([
 	    }
 	    var c = self.getObjectName(obj.attributes.conductor_C);
 	    if ( c ) {
-		var cNode = self.newModel.children.filter(function(c) { return c.name == c; })[0].node;
+		var cNode = self.newModel.children.filter(function(ch) { return ch.name == c; })[0].node;
 		self.core.setPointer(obj.node, 'conductor_C', cNode);
 	    }
 	    var n = self.getObjectName(obj.attributes.conductor_N);
@@ -444,6 +459,21 @@ define([
 	    }
 	}
 	else if ( obj.type == 'triplex_line_configuration' ) {
+	    var c1 = self.getObjectName(obj.attributes.conductor_1);
+	    if ( c1 ) {
+		var c1Node = self.newModel.children.filter(function(ch) { return ch.name == c1; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_1', c1Node);
+	    }
+	    var c2 = self.getObjectName(obj.attributes.conductor_2);
+	    if ( c2 ) {
+		var c2Node = self.newModel.children.filter(function(ch) { return ch.name == c2; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_2', c2Node);
+	    }
+	    var n = self.getObjectName(obj.attributes.conductor_N);
+	    if ( n ) {
+		var nNode = self.newModel.children.filter(function(c) { return c.name == n; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_N', nNode);
+	    }
 	}
 	else if ( obj.type == 'switch' ) {
 	    var from = self.getObjectName(obj.attributes.from);
@@ -457,7 +487,6 @@ define([
 		self.core.setPointer(obj.node, 'dst', dstNode);
 	    }
 	}
-	*/
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
@@ -474,10 +503,8 @@ define([
 	self.newModel.children.map(function(obj) {
 	    self.saveObject(obj, modelNode);
 	});
-	var child=self.newModel.children.filter(function(c) { return c.name == 'trip_node1'; });
-	self.logger.error(JSON.stringify(child,null,2));
 	self.newModel.children.map(function(obj) {
-	    self.resolveReferences(obj);
+	    self.resolveReferences(obj, modelNode);
 	});
     };
 
