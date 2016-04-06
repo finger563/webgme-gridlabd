@@ -265,26 +265,6 @@ define([
 	}
     };
 
-    ImportGLM.prototype.parseLine = function(str, obj) {
-	var self = this;
-    };
-
-    ImportGLM.prototype.saveLine = function(obj, parentNode) {
-	var self = this;
-	// save obj as node here (set the properties of the multiRecorder)
-	var lineNode = self.core.createNode({parent: parentNode, base: self.META[obj.type]});
-	self.core.setAttribute(lineNode, 'name', obj.name);
-	for (var a in obj.attributes) {
-	    var val = obj.attributes[a];
-	    self.core.setAttribute(lineNode, a, val);
-	}
-	for (var p in obj.pointers) {
-	    var nodeRef = obj.pointers[a];
-	    
-	}
-	obj.node = lineNode;
-    };
-
     ImportGLM.prototype.parseObject = function(str, parent) {
 	var self = this;
 	var splitString = /[\s\{]+/gi;
@@ -405,39 +385,79 @@ define([
     ImportGLM.prototype.getObjectName = function(str) {
 	var self = this;
 	var name = str;
-	if ( name.indexOf(':') > -1 ) {
+	if ( name && name.indexOf(':') > -1 ) {
 	    name = name.split(':')[1];
 	}
 	return name;
     };
 
     ImportGLM.prototype.resolveReferences = function(obj) {
+	// TODO: DELETE OLD ATTRIBUTES AFTER DONE
 	var self = this;
-	if ( obj.type == 'underground_line' ) {
-	}
-	else if ( obj.type == 'overhead_line' ) {
+	if ( obj.type == 'underground_line' ||
+	     obj.type == 'overhead_line' ||
+//	     obj.type == 'triplex_line' ||
+	     obj.type == 'transformer' ||
+	     obj.type == 'regulator' ) {
 	    var from = self.getObjectName(obj.attributes.from);
+	    if (from) {
+		var srcNode = self.newModel.children.filter(function(c) { return c.name == from; })[0].node;
+		self.core.setPointer(obj.node, 'src', srcNode);
+	    }
 	    var to = self.getObjectName(obj.attributes.to);
+	    if (to) {
+		var dstNode = self.newModel.children.filter(function(c) { return c.name == to; })[0].node;
+		self.core.setPointer(obj.node, 'dst', dstNode);
+	    }
 	    var configuration = self.getObjectName(obj.attributes.configuration);
-	    var srcNode = self.newModel.children.filter(function(c) { return c.name == from; })[0].node;
-	    var dstNode = self.newModel.children.filter(function(c) { return c.name == to; })[0].node;
-	    var confNode = self.newModel.children.filter(function(c) { return c.name == configuration; })[0].node;
-	    self.core.setPointer(obj.node, 'src', srcNode);
-	    self.core.setPointer(obj.node, 'dst', dstNode);
-	    self.core.setPointer(obj.node, 'configuration', confNode);
+	    if (configuration) {
+		var confNode = self.newModel.children.filter(function(c) { return c.name == configuration; })[0].node;
+		self.core.setPointer(obj.node, 'configuration', confNode);
+	    }
 	}
-	else if ( obj.type == 'triplex_line' ) {
-	}
+	/*
 	else if ( obj.type == 'line_configuration' ) {
+	    var a = self.getObjectName(obj.attributes.conductor_A);
+	    if ( a ) {
+		var aNode = self.newModel.children.filter(function(c) { return c.name == a; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_A', aNode);
+	    }
+	    var b = self.getObjectName(obj.attributes.conductor_B);
+	    if ( b ) {
+		var bNode = self.newModel.children.filter(function(c) { return c.name == b; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_B', bNode);
+	    }
+	    var c = self.getObjectName(obj.attributes.conductor_C);
+	    if ( c ) {
+		var cNode = self.newModel.children.filter(function(c) { return c.name == c; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_C', cNode);
+	    }
+	    var n = self.getObjectName(obj.attributes.conductor_N);
+	    if ( n ) {
+		var nNode = self.newModel.children.filter(function(c) { return c.name == n; })[0].node;
+		self.core.setPointer(obj.node, 'conductor_N', nNode);
+	    }
+	    var spacing = self.getObjectName(obj.attributes.spacing);
+	    if ( spacing ) {
+		var spacingNode = self.newModel.children.filter(function(c) { return c.name == spacing; })[0].node;
+		self.core.setPointer(obj.node, 'spacing', spacingNode);
+	    }
 	}
 	else if ( obj.type == 'triplex_line_configuration' ) {
 	}
-	else if ( obj.type == 'transformer' ) {
-	}
 	else if ( obj.type == 'switch' ) {
+	    var from = self.getObjectName(obj.attributes.from);
+	    if (from) {
+		var srcNode = self.newModel.children.filter(function(c) { return c.name == from; })[0].node;
+		self.core.setPointer(obj.node, 'src', srcNode);
+	    }
+	    var to = self.getObjectName(obj.attributes.to);
+	    if (to) {
+		var dstNode = self.newModel.children.filter(function(c) { return c.name == to; })[0].node;
+		self.core.setPointer(obj.node, 'dst', dstNode);
+	    }
 	}
-	else if ( obj.type == 'regulator' ) {
-	}
+	*/
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
@@ -454,6 +474,8 @@ define([
 	self.newModel.children.map(function(obj) {
 	    self.saveObject(obj, modelNode);
 	});
+	var child=self.newModel.children.filter(function(c) { return c.name == 'trip_node1'; });
+	self.logger.error(JSON.stringify(child,null,2));
 	self.newModel.children.map(function(obj) {
 	    self.resolveReferences(obj);
 	});
