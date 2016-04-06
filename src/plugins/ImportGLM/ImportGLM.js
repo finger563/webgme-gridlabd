@@ -398,8 +398,61 @@ define([
 	return name;
     };
 
+    ImportGLM.prototype.objectTypeToPointerMap = function(objType) {
+	var self = this;
+	// each entry in each array is an array of [attr name , pointer name]
+	var dict = {
+	    'underground_line': [
+		['from','src'],
+		['to','dst'],
+		['configuration','configuration'],
+	    ],
+	    'overhead_line': [
+		['from','src'],
+		['to','dst'],
+		['configuration','configuration'],
+	    ],
+	    'triplex_line': [
+		['from','src'],
+		['to','dst'],
+		['configuration','configuration'],
+	    ],
+	    'transformer': [
+		['from','src'],
+		['to','dst'],
+		['configuration','configuration'],
+	    ],
+	    'regulator': [
+		['from','src'],
+		['to','dst'],
+		['configuration','configuration'],
+		['sense_node','sense_node'],
+	    ],
+	    'line_configuration': [
+		['conductor_A','conductor_A'],
+		['conductor_B','conductor_B'],
+		['conductor_C','conductor_C'],
+		['conductor_N','conductor_N'],
+		['spacing','spacing'],
+	    ],
+	    'triplex_line_configuration': [
+		['conductor_1','conductor_1'],
+		['conductor_2','conductor_2'],
+		['conductor_N','conductor_N'],
+		['spacing','spacing'],
+	    ],
+	    'switch': [
+		['from','src'],
+		['to','dst'],
+	    ],
+	    'controller': [
+		['market','market'],
+	    ],
+	};
+	return dict[objType];
+    };
+
     ImportGLM.prototype.resolveReferences = function(obj, modelNode) {
-	// TODO: DELETE OLD ATTRIBUTES AFTER DONE
 	var self = this;
 	if ( obj.attributes.parent ) {
 	    var src = obj.node;
@@ -410,82 +463,20 @@ define([
 	    self.core.setPointer(link, 'src', src);
 	    self.core.setPointer(link, 'dst', dst);
 	}
-	if ( obj.type == 'underground_line' ||
-	     obj.type == 'overhead_line' ||
-	     obj.type == 'triplex_line' ||
-	     obj.type == 'transformer' ||
-	     obj.type == 'regulator' ) {
-	    var from = self.getObjectName(obj.attributes.from);
-	    if (from) {
-		var srcNode = self.newModel.children.filter(function(c) { return c.name == from; })[0].node;
-		self.core.setPointer(obj.node, 'src', srcNode);
-	    }
-	    var to = self.getObjectName(obj.attributes.to);
-	    if (to) {
-		var dstNode = self.newModel.children.filter(function(c) { return c.name == to; })[0].node;
-		self.core.setPointer(obj.node, 'dst', dstNode);
-	    }
-	    var configuration = self.getObjectName(obj.attributes.configuration);
-	    if (configuration) {
-		var confNode = self.newModel.children.filter(function(c) { return c.name == configuration; })[0].node;
-		self.core.setPointer(obj.node, 'configuration', confNode);
-	    }
-	}
-	else if ( obj.type == 'line_configuration' ) {
-	    var a = self.getObjectName(obj.attributes.conductor_A);
-	    if ( a ) {
-		var aNode = self.newModel.children.filter(function(c) { return c.name == a; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_A', aNode);
-	    }
-	    var b = self.getObjectName(obj.attributes.conductor_B);
-	    if ( b ) {
-		var bNode = self.newModel.children.filter(function(c) { return c.name == b; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_B', bNode);
-	    }
-	    var c = self.getObjectName(obj.attributes.conductor_C);
-	    if ( c ) {
-		var cNode = self.newModel.children.filter(function(ch) { return ch.name == c; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_C', cNode);
-	    }
-	    var n = self.getObjectName(obj.attributes.conductor_N);
-	    if ( n ) {
-		var nNode = self.newModel.children.filter(function(c) { return c.name == n; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_N', nNode);
-	    }
-	    var spacing = self.getObjectName(obj.attributes.spacing);
-	    if ( spacing ) {
-		var spacingNode = self.newModel.children.filter(function(c) { return c.name == spacing; })[0].node;
-		self.core.setPointer(obj.node, 'spacing', spacingNode);
-	    }
-	}
-	else if ( obj.type == 'triplex_line_configuration' ) {
-	    var c1 = self.getObjectName(obj.attributes.conductor_1);
-	    if ( c1 ) {
-		var c1Node = self.newModel.children.filter(function(ch) { return ch.name == c1; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_1', c1Node);
-	    }
-	    var c2 = self.getObjectName(obj.attributes.conductor_2);
-	    if ( c2 ) {
-		var c2Node = self.newModel.children.filter(function(ch) { return ch.name == c2; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_2', c2Node);
-	    }
-	    var n = self.getObjectName(obj.attributes.conductor_N);
-	    if ( n ) {
-		var nNode = self.newModel.children.filter(function(c) { return c.name == n; })[0].node;
-		self.core.setPointer(obj.node, 'conductor_N', nNode);
-	    }
-	}
-	else if ( obj.type == 'switch' ) {
-	    var from = self.getObjectName(obj.attributes.from);
-	    if (from) {
-		var srcNode = self.newModel.children.filter(function(c) { return c.name == from; })[0].node;
-		self.core.setPointer(obj.node, 'src', srcNode);
-	    }
-	    var to = self.getObjectName(obj.attributes.to);
-	    if (to) {
-		var dstNode = self.newModel.children.filter(function(c) { return c.name == to; })[0].node;
-		self.core.setPointer(obj.node, 'dst', dstNode);
-	    }
+	var pointerAttrs = self.objectTypeToPointerMap(obj.type);
+	if (pointerAttrs) {
+	    pointerAttrs.map(function(pointerAttr) {
+		var attrName = pointerAttr[0];
+		var pointerName = pointerAttr[1];
+		var dst = self.getObjectName(obj.attributes[attrName]);
+		if (dst) {
+		    var dstObj = self.newModel.children.filter(function(c) { return c.name == dst; })[0];
+		    if ( dstObj ) {
+			self.core.setPointer(obj.node, pointerName, dstObj.node);
+			self.core.delAttribute(obj.node, attrName);
+		    }
+		}
+	    });
 	}
     };
 
