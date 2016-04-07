@@ -22,12 +22,13 @@ define(['q'], function(Q) {
 			var nodeName = self.core.getAttribute(node, 'name'),
 			nodePath = self.core.getPath(node),
 			attributes = self.core.getAttributeNames(node),
+			childPaths = self.core.getChildrenPaths(node),
 			pointers = self.core.getPointerNames(node),
 			sets = self.core.getSetNames(node),
 			nodeObj = {
 			    name: nodeName,
 			    path: nodePath,
-			    children: [],
+			    children: childPaths,
 			    attributes: {},
 			    pointers: {},
 			    sets: {}
@@ -50,6 +51,14 @@ define(['q'], function(Q) {
 	resolvePointers: function() {
 	    var self = this;
 	    self.model.children.map(function(obj) {
+		var childPaths = obj.children;
+		var kids = [];
+		childPaths.map(function(childPath) {
+		    var dst = self.model.children.filter(function (c) { return c.path == childPath; })[0];
+		    if (dst)
+			kids.push(dst);
+		});
+		obj.children = kids;
 		for (var pointer in obj.pointers) {
 		    var path = obj.pointers[pointer];
 		    var dst = self.model.children.filter(function (c) { return c.path == path; })[0];
