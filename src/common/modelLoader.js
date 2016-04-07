@@ -65,7 +65,7 @@ define(['q'], function(Q) {
 		    var path = obj.pointers[pointer];
 		    var dst = self.model.modelObjects.filter(function (c) { return c.path == path; })[0];
 		    if (dst)
-			obj.pointers[pointer] = dst;
+			obj[pointer] = dst;
 		}
 		for (var set in obj.sets) {
 		    var paths = obj.sets[set];
@@ -75,7 +75,7 @@ define(['q'], function(Q) {
 			if (dst)
 			    dsts.push(dst);
 		    });
-		    obj.sets[set] = dsts;
+		    obj[set] = dsts;
 		}
 		var key = obj.type + 's';
 		if (!self.model[key]) {
