@@ -8,8 +8,8 @@ define(['q'], function(Q) {
 	    var modelAttributes = core.getAttributeNames(modelNode);
 	    self.model = {
 		name: core.getAttribute(modelNode, 'name'),
-		children: [],
-		attributes: {}
+		attributes: {},
+		modelObjects: []   // used to store the objects for handling pointers
 	    };
 	    modelAttributes.map(function(modelAttr) {
 		self.model.attributes[modelAttr] = core.getAttribute(modelNode, modelAttr);
@@ -19,6 +19,7 @@ define(['q'], function(Q) {
 		    nodes.map(function(node) {
 			var nodeName = core.getAttribute(node, 'name'),
 			nodePath = core.getPath(node),
+			nodeType = core.getAttribute(core.getBaseType(node), 'name'),
 			attributes = core.getAttributeNames(node),
 			childPaths = core.getChildrenPaths(node),
 			pointers = core.getPointerNames(node),
@@ -26,7 +27,8 @@ define(['q'], function(Q) {
 			nodeObj = {
 			    name: nodeName,
 			    path: nodePath,
-			    children: childPaths,
+			    type: nodeType,
+			    childPaths: childPaths,
 			    attributes: {},
 			    pointers: {},
 			    sets: {}
@@ -40,7 +42,7 @@ define(['q'], function(Q) {
 			sets.map(function(set) {
 			    nodeObj.sets[set] = core.getMemberPaths(node, set);
 			});
-			self.model.children.push(nodeObj);
+			self.model.modelObjects.push(nodeObj);
 		    });
 		    self.resolvePointers();
 		    return self.model;
@@ -48,18 +50,20 @@ define(['q'], function(Q) {
 	},
 	resolvePointers: function() {
 	    var self = this;
-	    self.model.children.map(function(obj) {
-		var childPaths = obj.children;
-		var kids = [];
-		childPaths.map(function(childPath) {
-		    var dst = self.model.children.filter(function (c) { return c.path == childPath; })[0];
-		    if (dst)
-			kids.push(dst);
+	    self.model.modelObjects.map(function(obj) {
+		obj.childPaths.map(function(childPath) {
+		    var dst = self.model.modelObjects.filter(function (c) { return c.path == childPath; })[0];
+		    if (dst) {
+			var key = dst.type + 's';
+			if (!obj[key]) {
+			    obj[key] = [];
+			}
+			obj[key].push(dst);
+		    }
 		});
-		obj.children = kids;
 		for (var pointer in obj.pointers) {
 		    var path = obj.pointers[pointer];
-		    var dst = self.model.children.filter(function (c) { return c.path == path; })[0];
+		    var dst = self.model.modelObjects.filter(function (c) { return c.path == path; })[0];
 		    if (dst)
 			obj.pointers[pointer] = dst;
 		}
@@ -67,12 +71,17 @@ define(['q'], function(Q) {
 		    var paths = obj.sets[set];
 		    var dsts = [];
 		    paths.map(function(path) {
-			var dst = self.model.filter(function (c) { return c.path == path; })[0];
+			var dst = self.model.modelObjects.filter(function (c) { return c.path == path; })[0];
 			if (dst)
 			    dsts.push(dst);
 		    });
-		    objects.sets[set] = dsts;
+		    obj.sets[set] = dsts;
 		}
+		var key = obj.type + 's';
+		if (!self.model[key]) {
+		    self.model[key] = [];
+		}
+		self.model[key].push(obj);
 	    });
 	},
     }
