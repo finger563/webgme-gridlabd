@@ -7,6 +7,10 @@ var config = require('./config.webgme'),
 config.authentication.enable = false;
 config.authentication.allowGuests = true;
 
+// Plugins
+config.plugin.allowServerExecution = true;
+config.plugin.allowBrowserExecution = true;
+
 // Seeds
 config.seedProjects.enable = true;
 config.seedProjects.basePaths = ["./src/seeds"]

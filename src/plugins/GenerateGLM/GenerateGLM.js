@@ -7,10 +7,16 @@
 
 define([
     'plugin/PluginConfig',
-    'plugin/PluginBase'
+    'plugin/PluginBase',
+    'gridlabd/meta',
+    'gridlabd/modelLoader',
+    'q'
 ], function (
     PluginConfig,
-    PluginBase) {
+    PluginBase,
+    MetaTypes,
+    loader,
+    Q) {
     'use strict';
 
     /**
@@ -23,6 +29,8 @@ define([
     var GenerateGLM = function () {
         // Call base class' constructor.
         PluginBase.call(this);
+
+        this.metaTypes = MetaTypes;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -60,34 +68,29 @@ define([
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            nodeObject;
+            modelNode;
 
+	self.updateMETA(self.metaTypes);
 
-        // Using the logger.
-        self.logger.debug('This is a debug message.');
-        self.logger.info('This is an info message.');
-        self.logger.warn('This is a warning message.');
-        self.logger.error('This is an error message.');
+	self.result.success = false;
 
-        // Using the coreAPI to make changes.
+        modelNode = self.activeNode;
+	self.model = {};
 
-        nodeObject = self.activeNode;
-
-        self.core.setAttribute(nodeObject, 'name', 'My new obj');
-        self.core.setRegistry(nodeObject, 'position', {x: 70, y: 70});
-
-
-        // This will save the changes. If you don't want to save;
-        // exclude self.save and call callback directly from this scope.
-        self.save('GenerateGLM updated model.', function (err) {
-            if (err) {
-                callback(err, self.result);
-                return;
-            }
-            self.result.setSuccess(true);
-            callback(null, self.result);
-        });
-
+	return loader.loadPowerModel(self.core, self.META, modelNode, self.rootNode)
+	    .then(function(powerModel) {
+		self.powerModel = powerModel;
+		self.logger.error(JSON.stringify(self.powerModel,null,2));
+	    })
+	    .then(function() {
+		self.result.setSuccess(true);
+		callback(self.activeNode, self.result);
+	    })
+	    .catch(function(err) {
+		self.result.setSuccess(false);
+		self.createMessage(self.activeNode, err, 'error');
+		callback(self.activeNode, self.result);
+	    });
     };
 
     return GenerateGLM;
