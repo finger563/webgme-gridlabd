@@ -164,9 +164,9 @@ define([
     ImportGLM.prototype.parseClock = function(str, obj) {
 	var self = this;
 	var patterns = [
-		/(timestamp)\s+'([^\/\n\r\v][\w:\- \']*)';/gi,
-		/(stoptime)\s+'([^\/\n\r\v][\w:\- \']*)';/gi,
-		/(timezone)\s+([^\/\n\r\v][\w:\- \']*);/gi
+		/(timestamp)\s+'([^\/\n\r\v]*)';/gi,
+		/(stoptime)\s+'([^\/\n\r\v]*)';/gi,
+		/(timezone)\s+([^\/\n\r\v]*);/gi
 	];
 
 	patterns.map(function(pattern) {
@@ -342,13 +342,17 @@ define([
 	    else {
 		if (depth >= 1) {
 		    // parse property here
-		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
-		    if (splits && splits[0].indexOf('/') == -1) { // don't want comments
+		    splits = line.split(/;/gi).filter(function(s) { return s.length > 0; });
+		    //self.logger.error(splits);
+		    if (splits && splits[0].indexOf('//') == -1) { // don't want comments
 			if (depth == 1) {
-			    if (splits[0]=='name') {
-				currentObj.name = splits[1].replace(';','');
+			    var newSplits = splits[0].split(/\s/g).filter(function(s) { return s.length > 0; });
+			    var attr = newSplits[0];
+			    var val = newSplits.slice(1).join(' ').replace(/"/g,'');
+			    if (attr=='name') {
+				currentObj.name = val;
 			    }
-			    currentObj.attributes[splits[0]] = splits[1].replace(';','');
+			    currentObj.attributes[attr] = val;
 			}
 			submodel_str += line + '\n';
 		    }
