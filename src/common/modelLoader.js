@@ -34,7 +34,9 @@ define(['q'], function(Q) {
 			    sets: {}
 			};
 			attributes.map(function(attribute) {
-			    nodeObj.attributes[attribute] = core.getAttribute(node, attribute);
+			    var val = core.getAttribute(node, attribute);
+			    nodeObj.attributes[attribute] = val;
+			    nodeObj[attribute] = val;
 			});
 			pointers.map(function(pointer) {
 			    nodeObj.pointers[pointer] = core.getPointerPath(node, pointer);

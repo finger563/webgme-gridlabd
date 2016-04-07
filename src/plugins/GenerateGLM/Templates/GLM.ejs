@@ -1,0 +1,19 @@
+<% for ( var attr in model.attributes) { 
+     var val = model.attributes[attr];
+     if (commands[attr] && val) { -%>
+#<%- commands[attr] %> <%- attr %>=<%- val %>;
+<%   }
+   } -%>
+
+<% model.schedules.map(function(schedule) { -%>
+schedule <%- schedule.name %> {
+<%   schedule.schedule_entrys.map(function(entry) {
+       if (entry.value) { -%>
+    <%- entry.minutes %> <%- entry.hours %> <%- entry.days %> <%- entry.months %> <%- entry.weekdays %> <%- entry.value %>;
+<%     } 
+       else { -%>
+    <%- entry.minutes %> <%- entry.hours %> <%- entry.days %> <%- entry.months %> <%- entry.weekdays %>;
+<%     }
+     }); -%>
+}
+<% }); -%>
