@@ -5,15 +5,18 @@
 <%   }
    } -%>
 
-<% model.clocks.map(function(clock) { -%>
+<% if (model.clocks) {
+model.clocks.map(function(clock) { -%>
 clock {
   timestamp '<%- clock.timestamp %>';
   stoptime '<%- clock.stoptime %>';
   timezone <%- clock.timezone %>;
 }
-<% }); -%>
 
-<% model.powerflows.map(function(obj) { -%>
+<% }); 
+   } -%>
+<% if (model.powerflows) {
+model.powerflows.map(function(obj) { -%>
 module <%- obj.type %> {
 <%   for (var attr in obj.attributes) { 
        if ( attr == 'name' ) continue;
@@ -21,9 +24,11 @@ module <%- obj.type %> {
   <%- attr %> <%- val %>;
 <%   } -%>
 }
-<% }); -%>
 
-<% model.residentials.map(function(obj) { -%>
+<% }); 
+   } -%>
+<% if (model.residentials) {
+model.residentials.map(function(obj) { -%>
 module <%- obj.type %> {
 <%   for (var attr in obj.attributes) { 
        if ( attr == 'name' ) continue;
@@ -31,9 +36,11 @@ module <%- obj.type %> {
   <%- attr %> <%- val %>;
 <%   } -%>
 }
-<% }); -%>
 
-<% model.schedules.map(function(schedule) { -%>
+<% });
+   } -%>
+<% if (model.schedules) {
+model.schedules.map(function(schedule) { -%>
 schedule <%- schedule.name %> {
 <%   schedule.schedule_entrys.map(function(entry) {
        if (entry.value) { -%>
@@ -44,8 +51,9 @@ schedule <%- schedule.name %> {
 <%     }
      }); -%>
 }
-<% }); -%>
 
+<% });
+   } -%>
 <% childTypes.map(function(childType) {
       var listName = childType + 's';
       if (model[listName] == undefined) return;
@@ -70,5 +78,6 @@ object <%- obj.type %> {
   <%- pointerDict[obj.type][ptr] %> <%- dst.type %>:<%- dst.name %>;
 <%	} -%>
  }
+
 <%      });
   }); -%>
