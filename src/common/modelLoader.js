@@ -3,28 +3,26 @@
 define(['q'], function(Q) {
     'use strict';
     return {
-	loadPowerModel: function(core, META, modelNode, rootNode) {
+	loadPowerModel: function(core, modelNode) {
 	    var self = this;
-	    self.core = core;
-	    self.rootNode = rootNode;
-	    var modelAttributes = self.core.getAttributeNames(modelNode);
+	    var modelAttributes = core.getAttributeNames(modelNode);
 	    self.model = {
-		name: self.core.getAttribute(modelNode, 'name'),
+		name: core.getAttribute(modelNode, 'name'),
 		children: [],
 		attributes: {}
 	    };
 	    modelAttributes.map(function(modelAttr) {
-		self.model.attributes[modelAttr] = self.core.getAttribute(modelNode, modelAttr);
+		self.model.attributes[modelAttr] = core.getAttribute(modelNode, modelAttr);
 	    });
-	    return self.core.loadSubTree(modelNode)
+	    return core.loadSubTree(modelNode)
 		.then(function(nodes) {
 		    nodes.map(function(node) {
-			var nodeName = self.core.getAttribute(node, 'name'),
-			nodePath = self.core.getPath(node),
-			attributes = self.core.getAttributeNames(node),
-			childPaths = self.core.getChildrenPaths(node),
-			pointers = self.core.getPointerNames(node),
-			sets = self.core.getSetNames(node),
+			var nodeName = core.getAttribute(node, 'name'),
+			nodePath = core.getPath(node),
+			attributes = core.getAttributeNames(node),
+			childPaths = core.getChildrenPaths(node),
+			pointers = core.getPointerNames(node),
+			sets = core.getSetNames(node),
 			nodeObj = {
 			    name: nodeName,
 			    path: nodePath,
@@ -34,13 +32,13 @@ define(['q'], function(Q) {
 			    sets: {}
 			};
 			attributes.map(function(attribute) {
-			    nodeObj.attributes[attribute] = self.core.getAttribute(node, attribute);
+			    nodeObj.attributes[attribute] = core.getAttribute(node, attribute);
 			});
 			pointers.map(function(pointer) {
-			    nodeObj.pointers[pointer] = self.core.getPointerPath(node, pointer);
+			    nodeObj.pointers[pointer] = core.getPointerPath(node, pointer);
 			});
 			sets.map(function(set) {
-			    nodeObj.sets[set] = self.core.getMemberPaths(node, set);
+			    nodeObj.sets[set] = core.getMemberPaths(node, set);
 			});
 			self.model.children.push(nodeObj);
 		    });

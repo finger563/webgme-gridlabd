@@ -77,7 +77,7 @@ define([
         modelNode = self.activeNode;
 	self.model = {};
 
-	return loader.loadPowerModel(self.core, self.META, modelNode, self.rootNode)
+	return loader.loadPowerModel(self.core, modelNode)
 	    .then(function(powerModel) {
 		self.powerModel = powerModel;
 		self.logger.error(JSON.stringify(self.powerModel,null,2));
