@@ -107,7 +107,7 @@ define([
 		}
 		self.modelName = newName;
 		self.newModel.name = newName;
-		self.logger.error('loaded model: ' + self.modelName);
+		//self.logger.error('loaded model: ' + self.modelName);
 	    })
 	    .then(function() {
 		return self.blobClient.getObjectAsString(glmFileHash)
@@ -194,10 +194,10 @@ define([
 
     ImportGLM.prototype.parseSchedule = function(str, obj) {
 	var self = this;
-	var pattern = /\s(?:([\d\*\.]+[\-\.\d]*)[ \t]*)+;?/gi;
 	var lines = str.split('\n');
 	obj.entries = [];
 	lines.map(function(line) {
+	    var pattern = /([\s]+[\d\*\.]+[\-\.\d]*)+/gi; 
 	    var matches = pattern.exec(line);
 	    if (matches) {
 		var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
@@ -208,8 +208,9 @@ define([
 			days: splits[2],
 			months: splits[3],
 			weekdays: splits[4],
-			value: splits[5]
 		    };
+		    if (splits.length > 5)
+			entry.value = splits[5];
 		    obj.entries.push(entry)
 		}
 		else {
