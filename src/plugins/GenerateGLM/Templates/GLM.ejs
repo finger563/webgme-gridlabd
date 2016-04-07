@@ -5,6 +5,24 @@
 <%   }
    } -%>
 
+<% model.clocks.map(function(clock) { -%>
+clock {
+  timestamp '<%- clock.timestamp %>';
+  stoptime '<%- clock.stoptime %>';
+  timezone <%- clock.timezone %>;
+}
+<% }); -%>
+
+<% model.powerflows.map(function(powerflow) { -%>
+module powerflow {
+<%   for (var attr in powerflow.attributes) { 
+       if ( attr == 'name' ) continue;
+       var val = powerflow.attributes[attr]; -%>
+  <%- attr %> <%- val %>;
+<%   } -%>
+}
+<% }); -%>
+
 <% model.schedules.map(function(schedule) { -%>
 schedule <%- schedule.name %> {
 <%   schedule.schedule_entrys.map(function(entry) {
