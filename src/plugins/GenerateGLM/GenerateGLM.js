@@ -168,8 +168,90 @@ define([
 	    'iteration_limit': 'set',
 	    'stylesheet': 'define',
 	};
+	var childTypes = [
+	    'line_spacing',
+	    'underground_line',
+	    'underground_line_conductor',
+	    //'underground_line_configuration',
+	    'line_configuration',
+	    'overhead_line',
+	    'overhead_line_conductor',
+	    //'overhead_line_configuration',
+	    'triplex_line',
+	    'triplex_line_conductor',
+	    'triplex_line_configuration',
+	    'transformer',
+	    'transformer_configuration',
+	    'capacitor',
+	    'node',
+	    'triplex_node',
+	    'triplex_meter',
+	    'regulator',
+	    'regulator_configuration',
+	    'auction',
+	    'house',
+	    'waterheater',
+	    'controller',
+	    'multi_recorder',
+	];
+	var pointerDict = {
+	    'underground_line': {
+		'src': 'from',
+		'dst': 'to',
+		'configuration': 'configuration',
+	    },
+	    'overhead_line': {
+		'src': 'from',
+		'dst': 'to',
+		'configuration': 'configuration',
+	    },
+	    'triplex_line': {
+		'src': 'from',
+		'dst': 'to',
+		'configuration': 'configuration',
+	    },
+	    'transformer': {
+		'src': 'from',
+		'dst': 'to',
+		'configuration': 'configuration',
+	    },
+	    'regulator': {
+		'src': 'from',
+		'dst': 'to',
+		'configuration': 'configuration',
+		'sense_node': 'sense_node',
+	    },
+	    'line_configuration': {
+		'conductor_A': 'conductor_A',
+		'conductor_B': 'conductor_B',
+		'conductor_C': 'conductor_C',
+		'conductor_N': 'conductor_N',
+		'spacing': 'spacing',
+	    },
+	    'triplex_line_configuration': {
+		'conductor_1': 'conductor_1',
+		'conductor_2': 'conductor_2',
+		'conductor_N': 'conductor_N',
+		'spacing': 'spacing',
+	    },
+	    'switch': {
+		'src': 'from',
+		'dst': 'to',
+	    },
+	    'controller': {
+		'market': 'market',
+	    },
+	};
 	try {
-	    self.fileData = ejs.render(glmTemplate, {model: self.powerModel, commands:commands});
+	    self.fileData = ejs.render(
+		glmTemplate,
+		{
+		    model: self.powerModel, 
+		    commands: commands, 
+		    childTypes: childTypes,
+		    pointerDict: pointerDict
+		}
+	    );
 	}
 	catch (err) {
 	    throw new String('Rendering File failed: ' + err);

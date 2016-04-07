@@ -13,11 +13,21 @@ clock {
 }
 <% }); -%>
 
-<% model.powerflows.map(function(powerflow) { -%>
-module powerflow {
-<%   for (var attr in powerflow.attributes) { 
+<% model.powerflows.map(function(obj) { -%>
+module <%- obj.type %> {
+<%   for (var attr in obj.attributes) { 
        if ( attr == 'name' ) continue;
-       var val = powerflow.attributes[attr]; -%>
+       var val = obj.attributes[attr]; -%>
+  <%- attr %> <%- val %>;
+<%   } -%>
+}
+<% }); -%>
+
+<% model.residentials.map(function(obj) { -%>
+module <%- obj.type %> {
+<%   for (var attr in obj.attributes) { 
+       if ( attr == 'name' ) continue;
+       var val = obj.attributes[attr]; -%>
   <%- attr %> <%- val %>;
 <%   } -%>
 }
@@ -35,3 +45,30 @@ schedule <%- schedule.name %> {
      }); -%>
 }
 <% }); -%>
+
+<% childTypes.map(function(childType) {
+      var listName = childType + 's';
+      if (model[listName] == undefined) return;
+      model[listName].map(function(obj) { -%>
+object <%- obj.type %> {
+<%  	//
+        var ptrs = {};
+	if (pointerDict[obj.type]) {
+          var keys = Object.keys(pointerDict[obj.type]);
+          keys.map(function(key) { ptrs[pointerDict[obj.type][key]] = true; });
+        }
+        for (var attr in obj.attributes) {
+	  var val = obj.attributes[attr];
+          if (ptrs[attr]) continue;
+          if (val == undefined) continue; -%>
+  <%- attr %> <%- val %>;
+<%	} -%>
+<%  	for (var ptr in obj.pointers) {
+	  var dst = obj[ptr]; 
+          if (!pointerDict[obj.type] || !pointerDict[obj.type][ptr]) continue;
+          if (dst == undefined) continue; -%>
+  <%- pointerDict[obj.type][ptr] %> <%- dst.type %>:<%- dst.name %>;
+<%	} -%>
+ }
+<%      });
+  }); -%>
