@@ -10,9 +10,10 @@
 module <%- moduleMap[1] %>;
 <%   }
    }); -%>
-<% model.modules.map(function(module) { -%>
+<% if (model.modules) {
+   model.modules.map(function(module) { -%>
 module <%- module.name %>;
-<% }); -%>
+<% }); } -%>
 <% if (model.clocks) {
 model.clocks.map(function(clock) { -%>
 

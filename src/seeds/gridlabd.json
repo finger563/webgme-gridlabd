@@ -1018,7 +1018,7 @@
                 "profiler": null,
                 "randomseed": null,
                 "relax_naming_rules": null,
-                "stylesheet": "http://gridlab-d.svn.sourceforge.net/viewvc/gridlab-d/trunk/core/gridlabd-2_0",
+                "stylesheet": "",
                 "threadcount": null
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
