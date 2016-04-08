@@ -14,9 +14,15 @@ module <%- moduleMap[1] %>;
 <% if (model.clocks) {
 model.clocks.map(function(clock) { -%>
 clock {
+<% if (clock.timestamp) { -%>
   timestamp '<%- clock.timestamp %>';
+<% }
+   if (clock.stoptime) { -%>
   stoptime '<%- clock.stoptime %>';
+<% }
+  if (clock.timezone) { -%>
   timezone <%- clock.timezone %>;
+<% } -%>
 }
 
 <% }); 

@@ -27,6 +27,7 @@
             "54edd22d-deaf-6ced-5e5a-c81a3769d189": {},
             "6499e351-586f-7e0b-df2c-992849b91aa0": {},
             "68d10581-ab03-e600-0d03-c9799404bde8": {},
+            "6d7d9b66-bf85-4e8f-850b-25bddf7da89c": {},
             "72b5d1ef-3394-a636-0392-f010c0fca955": {},
             "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8": {},
             "8a94277b-e6a4-b0fa-4331-189c6ee90592": {},
@@ -379,6 +380,16 @@
                             "position": {
                                 "x": 100,
                                 "y": 100
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
+                        "guid": "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2",
+                        "registry": {
+                            "position": {
+                                "x": 723,
+                                "y": 216
                             }
                         }
                     },
@@ -758,6 +769,16 @@
                     },
                     {
                         "attributes": {},
+                        "guid": "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2",
+                        "registry": {
+                            "position": {
+                                "x": 723,
+                                "y": 216
+                            }
+                        }
+                    },
+                    {
+                        "attributes": {},
                         "guid": "d79800be-ebd6-d712-b3ae-8bf14690efb8",
                         "registry": {
                             "position": {
@@ -877,10 +898,81 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "Type": {
+                    "tap_pos_C": {
+                        "type": "integer"
+                    },
+                    "tap_pos_A": {
+                        "type": "integer"
+                    },
+                    "regulation": {
+                        "type": "float"
+                    },
+                    "raise_taps": {
+                        "type": "integer"
+                    },
+                    "band_width": {
+                        "type": "float"
+                    },
+                    "connect_type": {
                         "type": "string",
                         "enum": [
-                            "A"
+                            "WYE_WYE"
+                        ]
+                    },
+                    "band_center": {
+                        "type": "float"
+                    },
+                    "dwell_time": {
+                        "type": "float"
+                    },
+                    "lower_taps": {
+                        "type": "integer"
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "REMOTE_NODE",
+                            "MANUAL",
+                            ""
+                        ]
+                    },
+                    "tap_pos_B": {
+                        "type": "integer"
+                    },
+                    "time_delay": {
+                        "type": "float"
+                    },
+                    "current_transducer_ratio": {
+                        "type": "integer"
+                    },
+                    "power_transducer_ratio": {
+                        "type": "integer"
+                    },
+                    "compensator_r_setting_A": {
+                        "type": "float"
+                    },
+                    "compensator_x_setting_A": {
+                        "type": "float"
+                    },
+                    "compensator_r_setting_B": {
+                        "type": "float"
+                    },
+                    "compensator_x_setting_B": {
+                        "type": "float"
+                    },
+                    "CT_phase": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ABC",
+                            "ACN",
+                            "BCN",
+                            "AB",
+                            "AC",
+                            "AN",
+                            "BC",
+                            "BN",
+                            "CN"
                         ]
                     },
                     "PT_phase": {
@@ -898,82 +990,11 @@
                             "CN"
                         ]
                     },
-                    "CT_phase": {
+                    "Type": {
                         "type": "string",
                         "enum": [
-                            "ABCN",
-                            "ABC",
-                            "ACN",
-                            "BCN",
-                            "AB",
-                            "AC",
-                            "AN",
-                            "BC",
-                            "BN",
-                            "CN"
+                            "A"
                         ]
-                    },
-                    "compensator_x_setting_B": {
-                        "type": "float"
-                    },
-                    "compensator_r_setting_B": {
-                        "type": "float"
-                    },
-                    "compensator_x_setting_A": {
-                        "type": "float"
-                    },
-                    "compensator_r_setting_A": {
-                        "type": "float"
-                    },
-                    "power_transducer_ratio": {
-                        "type": "integer"
-                    },
-                    "current_transducer_ratio": {
-                        "type": "integer"
-                    },
-                    "time_delay": {
-                        "type": "float"
-                    },
-                    "tap_pos_B": {
-                        "type": "integer"
-                    },
-                    "control": {
-                        "type": "string",
-                        "enum": [
-                            "REMOTE_NODE",
-                            "MANUAL",
-                            ""
-                        ]
-                    },
-                    "lower_taps": {
-                        "type": "integer"
-                    },
-                    "dwell_time": {
-                        "type": "float"
-                    },
-                    "band_center": {
-                        "type": "float"
-                    },
-                    "connect_type": {
-                        "type": "string",
-                        "enum": [
-                            "WYE_WYE"
-                        ]
-                    },
-                    "band_width": {
-                        "type": "float"
-                    },
-                    "raise_taps": {
-                        "type": "integer"
-                    },
-                    "regulation": {
-                        "type": "float"
-                    },
-                    "tap_pos_A": {
-                        "type": "integer"
-                    },
-                    "tap_pos_C": {
-                        "type": "integer"
                     }
                 }
             },
@@ -1025,6 +1046,7 @@
                         "a96c17cf-6b0d-3998-66d8-f02759b11c84",
                         "c13508bc-41e4-a3f7-859e-99beda944552",
                         "cacb9c98-21cf-49a6-7a01-c3edccc5416b",
+                        "d0aedda0-1c8d-5c3a-7871-27d0df44a9f2",
                         "d79800be-ebd6-d712-b3ae-8bf14690efb8",
                         "eabc7add-5b1f-2f13-08f7-27e7c2af344d",
                         "eb40717f-026c-65a9-73aa-32553b2e2a33",
@@ -1049,6 +1071,7 @@
                         1,
                         -1,
                         1,
+                        -1,
                         -1,
                         -1,
                         -1,
@@ -1088,29 +1111,30 @@
                         -1,
                         -1,
                         -1,
+                        -1,
                         -1
                     ]
                 },
                 "attributes": {
-                    "iteration_limit": {
-                        "type": "integer"
-                    },
-                    "stylesheet": {
-                        "type": "string"
-                    },
-                    "pauseat": {
-                        "type": "string"
-                    },
-                    "relax_naming_rules": {
-                        "type": "integer"
-                    },
-                    "randomseed": {
+                    "profiler": {
                         "type": "integer"
                     },
                     "threadcount": {
                         "type": "integer"
                     },
-                    "profiler": {
+                    "randomseed": {
+                        "type": "integer"
+                    },
+                    "relax_naming_rules": {
+                        "type": "integer"
+                    },
+                    "pauseat": {
+                        "type": "string"
+                    },
+                    "stylesheet": {
+                        "type": "string"
+                    },
+                    "iteration_limit": {
                         "type": "integer"
                     }
                 }
@@ -1148,33 +1172,11 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "reactance": {
-                        "type": "float"
-                    },
-                    "resistance": {
-                        "type": "float"
-                    },
-                    "power_rating": {
+                    "powerC_rating": {
                         "type": "integer"
                     },
-                    "powerB_rating": {
+                    "powerA_rating": {
                         "type": "integer"
-                    },
-                    "install_type": {
-                        "type": "string",
-                        "enum": [
-                            "POLETOP",
-                            "PADMOUNT"
-                        ]
-                    },
-                    "impedence": {
-                        "type": "string"
-                    },
-                    "primary_voltage": {
-                        "type": "float"
-                    },
-                    "secondary_voltage": {
-                        "type": "float"
                     },
                     "connect_type": {
                         "type": "string",
@@ -1184,11 +1186,33 @@
                             "2"
                         ]
                     },
-                    "powerA_rating": {
+                    "secondary_voltage": {
+                        "type": "float"
+                    },
+                    "primary_voltage": {
+                        "type": "float"
+                    },
+                    "impedence": {
+                        "type": "string"
+                    },
+                    "install_type": {
+                        "type": "string",
+                        "enum": [
+                            "POLETOP",
+                            "PADMOUNT"
+                        ]
+                    },
+                    "powerB_rating": {
                         "type": "integer"
                     },
-                    "powerC_rating": {
+                    "power_rating": {
                         "type": "integer"
+                    },
+                    "resistance": {
+                        "type": "float"
+                    },
+                    "reactance": {
+                        "type": "float"
                     }
                 }
             },
@@ -1328,9 +1352,6 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "length": {
-                        "type": "integer"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1338,6 +1359,9 @@
                             "BS",
                             "CS"
                         ]
+                    },
+                    "length": {
+                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -1406,6 +1430,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "length": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1416,9 +1443,6 @@
                             "ABC",
                             "AN"
                         ]
-                    },
-                    "length": {
-                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -1500,45 +1524,6 @@
             "base": "eb40717f-026c-65a9-73aa-32553b2e2a33",
             "meta": {
                 "attributes": {
-                    "constant_impedence_C": {
-                        "type": "string"
-                    },
-                    "constant_impedence_B": {
-                        "type": "string"
-                    },
-                    "constant_impedence_A": {
-                        "type": "string"
-                    },
-                    "constant_current_C": {
-                        "type": "string"
-                    },
-                    "constant_current_B": {
-                        "type": "string"
-                    },
-                    "constant_current_A": {
-                        "type": "string"
-                    },
-                    "nominal_voltage": {
-                        "type": "string"
-                    },
-                    "constant_power_C": {
-                        "type": "string"
-                    },
-                    "constant_power_B": {
-                        "type": "string"
-                    },
-                    "constant_power_A": {
-                        "type": "string"
-                    },
-                    "voltage_C": {
-                        "type": "string"
-                    },
-                    "voltage_B": {
-                        "type": "string"
-                    },
-                    "voltage_A": {
-                        "type": "string"
-                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1554,6 +1539,45 @@
                             "BN",
                             "CN"
                         ]
+                    },
+                    "voltage_A": {
+                        "type": "string"
+                    },
+                    "voltage_B": {
+                        "type": "string"
+                    },
+                    "voltage_C": {
+                        "type": "string"
+                    },
+                    "constant_power_A": {
+                        "type": "string"
+                    },
+                    "constant_power_B": {
+                        "type": "string"
+                    },
+                    "constant_power_C": {
+                        "type": "string"
+                    },
+                    "nominal_voltage": {
+                        "type": "string"
+                    },
+                    "constant_current_A": {
+                        "type": "string"
+                    },
+                    "constant_current_B": {
+                        "type": "string"
+                    },
+                    "constant_current_C": {
+                        "type": "string"
+                    },
+                    "constant_impedence_A": {
+                        "type": "string"
+                    },
+                    "constant_impedence_B": {
+                        "type": "string"
+                    },
+                    "constant_impedence_C": {
+                        "type": "string"
                     }
                 }
             },
@@ -1617,22 +1641,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "init_price": {
+                    "init_stdev": {
                         "type": "integer"
                     },
-                    "fixed_price": {
-                        "type": "integer"
-                    },
-                    "verbose": {
-                        "type": "boolean"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": [
-                            "MW"
-                        ]
-                    },
-                    "period": {
+                    "warmup": {
                         "type": "integer"
                     },
                     "special_mode": {
@@ -1641,10 +1653,22 @@
                             "BUYERS_ONLY"
                         ]
                     },
-                    "warmup": {
+                    "period": {
                         "type": "integer"
                     },
-                    "init_stdev": {
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "MW"
+                        ]
+                    },
+                    "verbose": {
+                        "type": "boolean"
+                    },
+                    "fixed_price": {
+                        "type": "integer"
+                    },
+                    "init_price": {
                         "type": "integer"
                     }
                 }
@@ -1670,14 +1694,14 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "ANSI_voltage_check": {
+                        "type": "boolean"
+                    },
                     "implicit_enduces": {
                         "type": "string",
                         "enum": [
                             "NONE"
                         ]
-                    },
-                    "ANSI_voltage_check": {
-                        "type": "boolean"
                     }
                 }
             },
@@ -1704,17 +1728,17 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "limit": {
-                        "type": "integer"
-                    },
-                    "file": {
+                    "property": {
                         "type": "string"
                     },
                     "interval": {
                         "type": "integer"
                     },
-                    "property": {
+                    "file": {
                         "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
                     }
                 }
             },
@@ -1739,10 +1763,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "resistance": {
+                    "geometric_mean_radius": {
                         "type": "float"
                     },
-                    "geometric_mean_radius": {
+                    "resistance": {
                         "type": "float"
                     }
                 }
@@ -1770,18 +1794,18 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "stoptime": {
-                        "type": "string"
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
                     "timezone": {
                         "type": "string",
                         "enum": [
                             "UTC0",
                             "EST+5EDT"
                         ]
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "stoptime": {
+                        "type": "string"
                     }
                 }
             },
@@ -1838,6 +1862,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "nominal_voltage": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -1845,9 +1872,6 @@
                             "BS",
                             "CS"
                         ]
-                    },
-                    "nominal_voltage": {
-                        "type": "integer"
                     }
                 }
             },
@@ -1873,8 +1897,12 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "default_maximum_voltage_error": {
-                        "type": "float"
+                    "line_limits": {
+                        "type": "string",
+                        "enum": [
+                            "FALSE",
+                            "TRUE"
+                        ]
                     },
                     "solver_method": {
                         "type": "string",
@@ -1882,12 +1910,8 @@
                             "FBS"
                         ]
                     },
-                    "line_limits": {
-                        "type": "string",
-                        "enum": [
-                            "FALSE",
-                            "TRUE"
-                        ]
+                    "default_maximum_voltage_error": {
+                        "type": "float"
                     }
                 }
             },
@@ -1918,22 +1942,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "distance_AN": {
-                        "type": "float"
-                    },
-                    "distance_BC": {
-                        "type": "float"
-                    },
-                    "distance_AB": {
-                        "type": "float"
-                    },
-                    "distance_AC": {
+                    "distance_CN": {
                         "type": "float"
                     },
                     "distance_BN": {
                         "type": "float"
                     },
-                    "distance_CN": {
+                    "distance_AC": {
+                        "type": "float"
+                    },
+                    "distance_AB": {
+                        "type": "float"
+                    },
+                    "distance_BC": {
+                        "type": "float"
+                    },
+                    "distance_AN": {
                         "type": "float"
                     }
                 }
@@ -1946,6 +1970,24 @@
                 "position": {
                     "x": 734,
                     "y": 550
+                }
+            },
+            "sets": {}
+        },
+        "6d7d9b66-bf85-4e8f-850b-25bddf7da89c": {
+            "attributes": {
+                "name": "module"
+            },
+            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "meta": {},
+            "parent": "52552de1-9da9-cf4d-2c9c-6a681378e67d",
+            "pointers": {
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+            },
+            "registry": {
+                "position": {
+                    "x": 465,
+                    "y": 93
                 }
             },
             "sets": {}
@@ -1963,22 +2005,22 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "weekdays": {
-                        "type": "string"
-                    },
-                    "hours": {
-                        "type": "string"
-                    },
-                    "minutes": {
-                        "type": "string"
-                    },
-                    "days": {
+                    "value": {
                         "type": "string"
                     },
                     "months": {
                         "type": "string"
                     },
-                    "value": {
+                    "days": {
+                        "type": "string"
+                    },
+                    "minutes": {
+                        "type": "string"
+                    },
+                    "hours": {
+                        "type": "string"
+                    },
+                    "weekdays": {
                         "type": "string"
                     }
                 }
@@ -2031,35 +2073,35 @@
             "base": "4f08052c-ad39-cc20-3674-aeed55f44237",
             "meta": {
                 "attributes": {
-                    "shield_resistance": {
-                        "type": "float"
+                    "neutral_strands": {
+                        "type": "integer"
                     },
-                    "shield_gmr": {
-                        "type": "float"
-                    },
-                    "neutral_diameter": {
-                        "type": "float"
-                    },
-                    "conductor_resistance": {
-                        "type": "float"
-                    },
-                    "conductor_gmr": {
-                        "type": "float"
-                    },
-                    "outer_diameter": {
-                        "type": "float"
-                    },
-                    "conductor_diameter": {
+                    "neutral_resistance": {
                         "type": "float"
                     },
                     "neutral_gmr": {
                         "type": "float"
                     },
-                    "neutral_resistance": {
+                    "conductor_diameter": {
                         "type": "float"
                     },
-                    "neutral_strands": {
-                        "type": "integer"
+                    "outer_diameter": {
+                        "type": "float"
+                    },
+                    "conductor_gmr": {
+                        "type": "float"
+                    },
+                    "conductor_resistance": {
+                        "type": "float"
+                    },
+                    "neutral_diameter": {
+                        "type": "float"
+                    },
+                    "shield_gmr": {
+                        "type": "float"
+                    },
+                    "shield_resistance": {
+                        "type": "float"
                     }
                 }
             },
@@ -2116,52 +2158,27 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "switchC": {
+                    "switchB": {
                         "type": "string",
                         "enum": [
                             "CLOSED",
                             "OPEN"
                         ]
                     },
-                    "switchA": {
-                        "type": "string",
-                        "enum": [
-                            "CLOSED",
-                            "OPEN"
-                        ]
-                    },
-                    "dwell_time": {
+                    "nominal_voltage": {
                         "type": "float"
                     },
-                    "control_level": {
-                        "type": "string",
-                        "enum": [
-                            "INDIVIDUAL",
-                            ""
-                        ]
-                    },
-                    "capacitor_B": {
+                    "time_delay": {
                         "type": "float"
                     },
-                    "voltage_set_low": {
+                    "capacitor_C": {
                         "type": "float"
                     },
-                    "control": {
-                        "type": "string",
-                        "enum": [
-                            "VOLT"
-                        ]
+                    "capacitor_A": {
+                        "type": "float"
                     },
-                    "phases": {
-                        "type": "string",
-                        "enum": [
-                            "ABCN",
-                            "ACN",
-                            "ABN",
-                            "AN",
-                            "BN",
-                            "CN"
-                        ]
+                    "voltage_set_high": {
+                        "type": "float"
                     },
                     "phases_connected": {
                         "type": "string",
@@ -2175,22 +2192,47 @@
                             "CN"
                         ]
                     },
-                    "voltage_set_high": {
+                    "phases": {
+                        "type": "string",
+                        "enum": [
+                            "ABCN",
+                            "ACN",
+                            "ABN",
+                            "AN",
+                            "BN",
+                            "CN"
+                        ]
+                    },
+                    "control": {
+                        "type": "string",
+                        "enum": [
+                            "VOLT"
+                        ]
+                    },
+                    "voltage_set_low": {
                         "type": "float"
                     },
-                    "capacitor_A": {
+                    "capacitor_B": {
                         "type": "float"
                     },
-                    "capacitor_C": {
+                    "control_level": {
+                        "type": "string",
+                        "enum": [
+                            "INDIVIDUAL",
+                            ""
+                        ]
+                    },
+                    "dwell_time": {
                         "type": "float"
                     },
-                    "time_delay": {
-                        "type": "float"
+                    "switchA": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
                     },
-                    "nominal_voltage": {
-                        "type": "float"
-                    },
-                    "switchB": {
+                    "switchC": {
                         "type": "string",
                         "enum": [
                             "CLOSED",
@@ -2409,10 +2451,17 @@
             "base": "eb40717f-026c-65a9-73aa-32553b2e2a33",
             "meta": {
                 "attributes": {
-                    "nominal_voltage": {
+                    "bustype": {
+                        "type": "string",
+                        "enum": [
+                            "NONE",
+                            "SWING"
+                        ]
+                    },
+                    "voltage_C": {
                         "type": "string"
                     },
-                    "voltage_B": {
+                    "voltage_A": {
                         "type": "string"
                     },
                     "phases": {
@@ -2425,18 +2474,11 @@
                             "BCN"
                         ]
                     },
-                    "voltage_A": {
+                    "voltage_B": {
                         "type": "string"
                     },
-                    "voltage_C": {
+                    "nominal_voltage": {
                         "type": "string"
-                    },
-                    "bustype": {
-                        "type": "string",
-                        "enum": [
-                            "NONE",
-                            "SWING"
-                        ]
                     }
                 }
             },
@@ -2495,17 +2537,17 @@
                     ]
                 },
                 "attributes": {
-                    "heating_setpoint": {
+                    "air_temperature": {
+                        "type": "integer"
+                    },
+                    "cooling_setpoint": {
                         "type": "float"
                     },
                     "floor_area": {
                         "type": "float"
                     },
-                    "cooling_setpoint": {
+                    "heating_setpoint": {
                         "type": "float"
-                    },
-                    "air_temperature": {
-                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -2597,10 +2639,10 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "insulation_thickness": {
+                    "diameter": {
                         "type": "float"
                     },
-                    "diameter": {
+                    "insulation_thickness": {
                         "type": "float"
                     }
                 },
@@ -2708,6 +2750,9 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "nominal_voltage": {
+                        "type": "integer"
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -2715,9 +2760,6 @@
                             "BS",
                             "CS"
                         ]
-                    },
-                    "nominal_voltage": {
-                        "type": "integer"
                     }
                 }
             },
@@ -2763,15 +2805,15 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "water_demand": {
-                        "type": "integer"
-                    },
                     "location": {
                         "type": "string",
                         "enum": [
                             "INSIDE",
                             "OUTSIDE"
                         ]
+                    },
+                    "water_demand": {
+                        "type": "integer"
                     }
                 },
                 "pointers": {
@@ -2812,6 +2854,13 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "CLOSED",
+                            "OPEN"
+                        ]
+                    },
                     "phases": {
                         "type": "string",
                         "enum": [
@@ -2820,13 +2869,6 @@
                             "AN",
                             "CN",
                             "BCN"
-                        ]
-                    },
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "CLOSED",
-                            "OPEN"
                         ]
                     }
                 },
@@ -2895,22 +2937,54 @@
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "meta": {
                 "attributes": {
-                    "average_target": {
+                    "standard_deviation_target": {
                         "type": "string",
                         "enum": [
-                            "current_price_mean_30min"
+                            "current_price_stdev_30min"
                         ]
                     },
-                    "range_low": {
+                    "range_high": {
                         "type": "integer"
                     },
-                    "ramp_low": {
+                    "ramp_high": {
                         "type": "integer"
                     },
-                    "load": {
+                    "slider_setting": {
+                        "type": "integer"
+                    },
+                    "total": {
                         "type": "string",
                         "enum": [
-                            "hvac_load"
+                            "total_load"
+                        ]
+                    },
+                    "setpoint": {
+                        "type": "string",
+                        "enum": [
+                            "cooling_setpoint",
+                            "heating_setpoint"
+                        ]
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "bid_mode": {
+                        "type": "string",
+                        "enum": [
+                            "ON",
+                            "OFF"
+                        ]
+                    },
+                    "control_mode": {
+                        "type": "string",
+                        "enum": [
+                            "RAMP"
+                        ]
+                    },
+                    "target": {
+                        "type": "string",
+                        "enum": [
+                            "air_temperature"
                         ]
                     },
                     "demand": {
@@ -2920,54 +2994,22 @@
                             "heating_demand"
                         ]
                     },
-                    "target": {
+                    "load": {
                         "type": "string",
                         "enum": [
-                            "air_temperature"
+                            "hvac_load"
                         ]
                     },
-                    "control_mode": {
-                        "type": "string",
-                        "enum": [
-                            "RAMP"
-                        ]
-                    },
-                    "bid_mode": {
-                        "type": "string",
-                        "enum": [
-                            "ON",
-                            "OFF"
-                        ]
-                    },
-                    "period": {
+                    "ramp_low": {
                         "type": "integer"
                     },
-                    "setpoint": {
-                        "type": "string",
-                        "enum": [
-                            "cooling_setpoint",
-                            "heating_setpoint"
-                        ]
-                    },
-                    "total": {
-                        "type": "string",
-                        "enum": [
-                            "total_load"
-                        ]
-                    },
-                    "slider_setting": {
+                    "range_low": {
                         "type": "integer"
                     },
-                    "ramp_high": {
-                        "type": "integer"
-                    },
-                    "range_high": {
-                        "type": "integer"
-                    },
-                    "standard_deviation_target": {
+                    "average_target": {
                         "type": "string",
                         "enum": [
-                            "current_price_stdev_30min"
+                            "current_price_mean_30min"
                         ]
                     }
                 },
@@ -3046,6 +3088,7 @@
         "54edd22d-deaf-6ced-5e5a-c81a3769d189": "D",
         "6499e351-586f-7e0b-df2c-992849b91aa0": "o",
         "68d10581-ab03-e600-0d03-c9799404bde8": "H",
+        "6d7d9b66-bf85-4e8f-850b-25bddf7da89c": "e",
         "72b5d1ef-3394-a636-0392-f010c0fca955": "d",
         "76f9edfc-b3a6-1c57-97b0-c85a1da6b7c8": "T",
         "8a94277b-e6a4-b0fa-4331-189c6ee90592": "p",
