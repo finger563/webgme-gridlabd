@@ -7,10 +7,20 @@
 
 define([
     'plugin/PluginConfig',
-    'plugin/PluginBase'
+    'plugin/PluginBase',
+    'common/util/ejs', // for ejs templates
+    'common/util/xmljsonconverter', // used to save model as json
+    'gridlabd/meta',
+    'gridlabd/modelLoader',
+    'q'
 ], function (
     PluginConfig,
-    PluginBase) {
+    PluginBase,
+    ejs,
+    Converter,
+    MetaTypes,
+    loader,
+    Q) {
     'use strict';
 
     /**
@@ -23,6 +33,8 @@ define([
     var SimulateWithGridlabD = function () {
         // Call base class' constructor.
         PluginBase.call(this);
+
+        this.metaTypes = MetaTypes;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -48,6 +60,40 @@ define([
     };
 
     /**
+     * The ConfigurationStructure defines the configuration for the plugin
+     * and will be used to populate the GUI when invoking the plugin from webGME.
+     * @returns {object} The version of the plugin.
+     * @public
+     */
+    SimulateWithGridlabD.prototype.getConfigStructure = function() {
+        return [
+	    {
+		'name': 'returnZip',
+		'displayName': 'Zip and return generated GLD output.',
+		'description': 'If true, it enables the client to download a zip of the simulation output.',
+		'value': false,
+		'valueType': 'boolean',
+		'readOnly': false
+	    }
+        ];
+    };
+
+    SimulateWithGridlabD.prototype.notify = function(level, msg) {
+	var self = this;
+	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
+	if (level=='error')
+	    self.logger.error(msg);
+	else if (level=='debug')
+	    self.logger.debug(msg);
+	else if (level=='info')
+	    self.logger.info(msg);
+	else if (level=='warning')
+	    self.logger.warn(msg);
+	self.createMessage(self.activeNode, msg, level);
+	self.sendNotification(prefix+msg);
+    };
+
+    /**
      * Main function for the plugin to execute. This will perform the execution.
      * Notes:
      * - Always log with the provided logger.[error,warning,info,debug].
@@ -60,34 +106,129 @@ define([
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            nodeObject;
+        modelNode;
 
+	self.result.success = false;
 
-        // Using the logger.
-        self.logger.debug('This is a debug message.');
-        self.logger.info('This is an info message.');
-        self.logger.warn('This is a warning message.');
-        self.logger.error('This is an error message.');
+        if (typeof WebGMEGlobal !== 'undefined') {
+	    var msg = 'You must run this plugin on the server!';
+	    self.notify('error', msg);
+	    callback(new Error(msg), self.result);
+        }
 
-        // Using the coreAPI to make changes.
+	self.updateMETA(self.metaTypes);
 
-        nodeObject = self.activeNode;
+	// What did the user select for our configuration?
+	var currentConfig = self.getCurrentConfig();
+	self.returnZip = currentConfig.returnZip;
 
-        self.core.setAttribute(nodeObject, 'name', 'My new obj');
-        self.core.setRegistry(nodeObject, 'position', {x: 70, y: 70});
+        modelNode = self.activeNode;
+	self.modelName = self.core.getAttribute(modelNode, 'name');
+	self.fileName = self.modelName + '.glm';
 
+	var path = require('path');
+	var filendir = require('filendir');
+	self.root_dir = path.join(process.cwd(), 
+				  'generated', 
+				  self.project.projectId, 
+				  self.branchName,
+				  'models');
 
-        // This will save the changes. If you don't want to save;
-        // exclude self.save and call callback directly from this scope.
-        self.save('SimulateWithGridlabD updated model.', function (err) {
-            if (err) {
-                callback(err, self.result);
-                return;
-            }
-            self.result.setSuccess(true);
-            callback(null, self.result);
-        });
+	return self.checkModelFileExists()
+	    .then(function() {
+		return self.runSimulation();
+	    })
+	    .then(function() {
+		return self.generateBlobArtifacts();
+	    })
+	    .then(function() {
+		self.result.success = true;
+		self.createMessage(self.activeNode, 'Simulation Complete.');
+		callback(null, self.result);
+	    })
+	    .catch(function(err) {
+		self.result.success = false;
+		self.createMessage(self.activeNode, err, 'error');
+		callback(err, self.result);
+	    });
 
+    };
+
+    SimulateWithGridlabD.prototype.checkModelFileExists = function() {
+	var self = this;
+	var path = require('path');
+	var fs = require('fs');
+
+	self.notify('info', 'Checking existence of model file.');
+
+	var deferred = Q.defer();
+
+	fs.access(path.join(self.root_dir, self.fileName), (err) => {
+	    if (err) {
+		deferred.reject('Model file has not been generated on the server! Make sure to run GenerateGLM on the server!');
+	    }
+	    else {
+		deferred.resolve();
+	    }
+	});
+
+	return deferred.promise;
+    };
+
+    SimulateWithGridlabD.prototype.runSimulation = function() {
+	var self = this;
+	var path = require('path');
+	var cp = require('child_process');
+
+	self.notify('info', 'Starting Simulation');
+
+	var deferred = Q.defer();
+
+	var fname = path.join(self.root_dir, self.fileName);
+
+	self.sim_stdout = '';
+	self.sim_stderr = '';
+	self.simProcess = cp.spawn('gridlabd', [fname], {
+	    cwd: self.root_dir
+	});
+
+	self.simProcess.stdout.on('data', (data) => {
+	    self.sim_stdout += data;
+	});
+	self.simProcess.stderr.on('data', (data) => {
+	    self.sim_stderr += data;
+	});
+	self.simProcess.on('close', (code) => {
+	    self.notify('info', 'Simulation exited with code: ' + code);
+	    deferred.resolve();
+	});
+	
+	return deferred.promise;
+    };
+
+    SimulateWithGridlabD.prototype.generateBlobArtifacts = function() {
+	var self = this;
+	if (!self.returnZip) {
+	    self.notify('info', 'User did not request the output to be returned.');
+	    return;
+	}
+
+	var path = require('path');
+	var stdoutFile = self.modelName + '.stdout';
+	var stderrFile = self.modelName + '.stderr';
+	
+	self.notify('info', 'Returning output to user.');
+
+	return self.blobClient.putFile(stdoutFile, self.sim_stdout)
+	    .then(function (hash) {
+		self.result.addArtifact(hash);
+	    })
+	    .then(function() {
+		return self.blobClient.putFile(stderrFile, self.sim_stderr);
+	    })
+	    .then(function (hash) {
+		self.result.addArtifact(hash);
+	    });
     };
 
     return SimulateWithGridlabD;
