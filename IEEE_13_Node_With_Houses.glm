@@ -4,7 +4,7 @@
 #set threadcount=1;
 #set randomseed=1;
 #set relax_naming_rules=1;
-#set pauseat='2000-01-01 0:00:01'
+//#set pauseat='2000-01-01 0:00:01'
 #define stylesheet=http://gridlab-d.svn.sourceforge.net/viewvc/gridlab-d/trunk/core/gridlabd-2_0
 
 clock {
