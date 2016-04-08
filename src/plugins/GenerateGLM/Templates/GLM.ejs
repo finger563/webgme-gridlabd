@@ -5,6 +5,12 @@
 <%   }
    } -%>
 
+<% modules.map(function(moduleMap) {
+     if (model[moduleMap[0] + 's']) { -%>
+module <%- moduleMap[1] %>;
+<%   }
+   }); -%>
+
 <% if (model.clocks) {
 model.clocks.map(function(clock) { -%>
 clock {
@@ -79,7 +85,7 @@ object <%- obj.type %><% if (/[a-zA-Z_]/.test(obj.name) == false) { %>:<%- obj.n
 	  var dst = obj[ptr]; 
           if (!pointerDict[obj.type] || !pointerDict[obj.type][ptr]) continue;
           if (dst == undefined) continue; -%>
-  <%- pointerDict[obj.type][ptr] %> <%- dst.type %>:<%- dst.name %>;
+  <%- pointerDict[obj.type][ptr] %> <% if (/[a-zA-Z_]/.test(dst.name) == false) { %><%- dst.type %>:<%- dst.name %><% } else { %><%- dst.name %><% } %>;
 <%	} -%>
  }
 

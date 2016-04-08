@@ -255,6 +255,11 @@ define([
 		'parent': 'parent',
 	    },
 	};
+	var modules = [
+	    ['auction','market'],
+	    ['climate','climate'],
+	    ['multi_recorder','tape'],
+	];
 	try {
 	    self.fileData = ejs.render(
 		glmTemplate,
@@ -262,7 +267,8 @@ define([
 		    model: self.powerModel, 
 		    commands: commands, 
 		    childTypes: childTypes,
-		    pointerDict: pointerDict
+		    pointerDict: pointerDict,
+		    modules: modules
 		}
 	    );
 	}
