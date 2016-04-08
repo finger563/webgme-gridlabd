@@ -254,6 +254,21 @@ define([
 	self.newModel.children.push(obj);
     };
 
+    ImportGLM.prototype.parseClass = function(str, obj) {
+	var self = this;
+	var splitString = /[\s;]+/gi;
+	var splits;
+	var lines = str.split('\n');
+	lines.map(function(line) {
+	    splits = line.split(splitString)
+		.filter(function(obj) { return obj.length > 0; });
+	    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
+		obj.attributes[splits[1]] = splits[0];
+	    }
+	});
+	self.newModel.children.push(obj);
+    };
+
     ImportGLM.prototype.parseObject = function(str, parent) {
 	var self = this;
 	var splitString = /[\s\{]+/gi;
@@ -309,6 +324,12 @@ define([
 			    currentObj.type = currentObj.base;
 			    currentObj.attributes = {};
 			    self.parseSchedule(submodel_str, currentObj);
+			}
+			else if (currentObj.base == 'class') {
+			    currentObj.name = currentObj.type;
+			    currentObj.type = currentObj.base;
+			    currentObj.attributes = {};
+			    self.parseClass(submodel_str, currentObj);
 			}
 			else if (currentObj.type == 'multi_recorder') {
 			    currentObj.name = currentObj.type;
