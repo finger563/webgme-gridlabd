@@ -154,6 +154,21 @@ define([
 	    //self.logger.error('got ' + cmd + ' for variable ' + variable + ' and value ' + value);
 	    matches = regex.exec(str);
 	}
+	regex = /^module (\w+);$/gim;
+	matches = regex.exec(str);
+	while (matches != null) {
+	    var moduleName = matches[1];
+	    var obj = {
+		name: moduleName,
+		type: 'module',
+		base: 'module',
+		children: [],
+		attributes: {},
+		pointers: {}
+	    };
+	    self.newModel.children.push(obj);
+	    matches = regex.exec(str);
+	}
     };
 
     ImportGLM.prototype.saveHeader = function(obj) {
@@ -253,17 +268,6 @@ define([
 	    }
 	});
 	self.newModel.children.push(obj);
-    };
-
-    ImportGLM.prototype.saveMultiRecorder = function(obj, parentNode) {
-	var self = this;
-	// save obj as node here (set the properties of the multiRecorder)
-	var recorderNode = self.core.createNode({parent: parentNode, base: self.META.multi_recorder});
-	self.core.setAttribute(recorderNode, 'name', obj.name);
-	for (var a in obj.attributes) {
-	    var val = obj.attributes[a];
-	    self.core.setAttribute(recorderNode, a, val);
-	}
     };
 
     ImportGLM.prototype.parseObject = function(str, parent) {
@@ -374,9 +378,6 @@ define([
 	}
 	else if ( obj.type == 'schedule' ){
 	    self.saveSchedule(obj, parent);
-	}
-	else if ( obj.type == 'multi_recorder' ){
-	    self.saveMultiRecorder(obj, parent);
 	}
 	else if ( obj.type ) {
 	    var newNode = self.core.createNode({parent: parent, base: self.META[obj.type]});

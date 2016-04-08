@@ -184,6 +184,7 @@ define([
 	    'transformer_configuration',
 	    'capacitor',
 	    'node',
+	    'load',
 	    'triplex_node',
 	    'triplex_meter',
 	    'regulator',

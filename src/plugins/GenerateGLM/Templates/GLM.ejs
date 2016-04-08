@@ -4,15 +4,18 @@
 #<%- commands[attr] %> <%- attr %>=<%- val %>;
 <%   }
    } -%>
-
 <% modules.map(function(moduleMap) {
      if (model[moduleMap[0] + 's']) { -%>
+
 module <%- moduleMap[1] %>;
 <%   }
    }); -%>
-
+<% model.modules.map(function(module) { -%>
+module <%- module.name %>;
+<% }); -%>
 <% if (model.clocks) {
 model.clocks.map(function(clock) { -%>
+
 clock {
 <% if (clock.timestamp) { -%>
   timestamp '<%- clock.timestamp %>';
