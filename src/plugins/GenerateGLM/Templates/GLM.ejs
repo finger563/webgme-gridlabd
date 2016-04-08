@@ -62,8 +62,8 @@ schedule <%- schedule.name %> {
       var listName = childType + 's';
       if (model[listName] == undefined) return;
       model[listName].map(function(obj) { -%>
-object <%- obj.type %> {
-<%  	//
+object <%- obj.type %><% if (/[a-zA-Z_]/.test(obj.name) == false) { %>:<%- obj.name.replace(/\-/g,'') %><% } %> {
+<%  	if (/[a-zA-Z_]/.test(obj.name) == false) { obj.attributes.name = undefined; }
         var ptrs = {};
 	if (pointerDict[obj.type]) {
           var keys = Object.keys(pointerDict[obj.type]);
