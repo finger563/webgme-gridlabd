@@ -4,7 +4,7 @@ var config = require('./config.webgme'),
     validateConfig = require('webgme/config/validator');
 
 // Authentication
-config.authentication.enable = false;
+config.authentication.enable = true;
 config.authentication.allowGuests = true;
 
 // Plugins

@@ -171,11 +171,6 @@ define([
 	}
     };
 
-    ImportGLM.prototype.saveHeader = function(obj) {
-	var self = this;
-	// save obj as node here (set the properties of the model)
-    };
-
     ImportGLM.prototype.parseClock = function(str, obj) {
 	var self = this;
 	var patterns = [
@@ -194,17 +189,6 @@ define([
 	    }
 	});
 	self.newModel.children.push(obj);
-    };
-
-    ImportGLM.prototype.saveClock = function(obj, parentNode) {
-	var self = this;
-	// save obj as node here (set the properties of the clock)
-	var clockNode = self.core.createNode({parent: parentNode, base: self.META.clock});
-	self.core.setAttribute(clockNode, 'name', 'clock');
-	for (var a in obj.attributes) {
-	    var val = obj.attributes[a];
-	    self.core.setAttribute(clockNode, a, val);
-	}
     };
 
     ImportGLM.prototype.parseSchedule = function(str, obj) {
@@ -373,10 +357,7 @@ define([
 
     ImportGLM.prototype.saveObject = function(obj, parent) {
 	var self = this;
-	if ( obj.type == 'clock' ){
-	    self.saveClock(obj, parent);
-	}
-	else if ( obj.type == 'schedule' ){
+	if ( obj.type == 'schedule' ){
 	    self.saveSchedule(obj, parent);
 	}
 	else if ( obj.type ) {

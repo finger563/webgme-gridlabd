@@ -129,7 +129,6 @@ define([
 	self.fileData = '';
 	self.fileName = self.modelName + '.glm';
 
-	loader.logger = self.logger;
 	return loader.loadPowerModel(self.core, modelNode)
 	    .then(function(powerModel) {
 		self.powerModel = powerModel;
@@ -145,14 +144,14 @@ define([
 		return self.generateBlobArtifacts();
 	    })
 	    .then(function() {
-		self.result.setSuccess(true);
+		self.result.success = true;
 		self.createMessage(self.activeNode, 'Generated GLM.');
-		callback(self.activeNode, self.result);
+		callback(null, self.result);
 	    })
 	    .catch(function(err) {
-		self.result.setSuccess(false);
+		self.result.success = false;
 		self.createMessage(self.activeNode, err, 'error');
-		callback(self.activeNode, self.result);
+		callback(err, self.result);
 	    });
     };
 
@@ -281,16 +280,30 @@ define([
     GenerateGLM.prototype.generateLocalArtifacts = function() {
 	var self = this;
 	if (!self.runningOnServer) {
-	    self.notify('info', 'Running in client, skipping file-system GLM generation');
+	    self.notify('info', 'Running in client, skipping server-side file-system GLM generation');
 	    return;
 	}
-
 	var path = require('path');
-	self.root_dir = path.join(process.cwd(), 
-				  'generated', 
-				  self.project.projectId, 
-				  self.branchName,
-				  'models');
+	var filendir = require('filendir');
+
+	self.notify('info', 'Saving GLM on server FS.');
+
+	var root_dir = path.join(process.cwd(), 
+				 'generated', 
+				 self.project.projectId, 
+				 self.branchName,
+				 'models');
+
+	var deferred = Q.defer();
+	filendir.writeFile(path.join(root_dir, self.fileName), self.fileData, function(err) {
+	    if (err) {
+		deferred.reject(err);
+	    }
+	    else {
+		deferred.resolve();
+	    }
+	});
+	return deferred.promise;
     };
 
     GenerateGLM.prototype.generateBlobArtifacts = function() {
@@ -299,6 +312,9 @@ define([
 	    self.notify('info', 'User did not request the model to be returned.');
 	    return;
 	}
+	
+	self.notify('info', 'Returning model to user.');
+
 	return self.blobClient.putFile(self.fileName, self.fileData)
 	    .then(function (hash) {
 		self.result.addArtifact(hash);

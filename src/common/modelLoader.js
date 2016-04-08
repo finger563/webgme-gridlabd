@@ -90,7 +90,6 @@ define(['q'], function(Q) {
 	resolveParents: function() {
 	    var self = this;
 	    var parentObjects = self.model.modelObjects.filter(function (mo) { return mo.type == 'FCO'; });
-	    self.logger.error(parentObjects);
 	    parentObjects.map(function(obj) {
 		var src = obj.src;
 		var dst = obj.dst;

@@ -6,6 +6,8 @@
   },
   "version": "1.0.0",
   "dependencies": {
+    "filendir": "^1.0.0",
+    "path": "^0.12.7",
     "webgme": "^1.1.0"
   },
   "devDependencies": {
