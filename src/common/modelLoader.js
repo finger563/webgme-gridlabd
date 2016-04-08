@@ -47,6 +47,7 @@ define(['q'], function(Q) {
 			self.model.modelObjects.push(nodeObj);
 		    });
 		    self.resolvePointers();
+		    self.resolveParents();
 		    return self.model;
 		});
 	},
@@ -84,6 +85,17 @@ define(['q'], function(Q) {
 		    self.model[key] = [];
 		}
 		self.model[key].push(obj);
+	    });
+	},
+	resolveParents: function() {
+	    var self = this;
+	    var parentObjects = self.model.modelObjects.filter(function (mo) { return mo.type == 'FCO'; });
+	    self.logger.error(parentObjects);
+	    parentObjects.map(function(obj) {
+		var src = obj.src;
+		var dst = obj.dst;
+		src.parent = dst;
+		src.pointers.parent = dst;
 	    });
 	},
     }

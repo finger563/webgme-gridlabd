@@ -467,6 +467,7 @@ define([
 	    self.core.setAttribute(link, 'name', 'parent');
 	    self.core.setPointer(link, 'src', src);
 	    self.core.setPointer(link, 'dst', dst);
+	    self.core.delAttribute(obj.node, 'parent');
 	}
 	var pointerAttrs = self.objectTypeToPointerMap(obj.type);
 	if (pointerAttrs) {
