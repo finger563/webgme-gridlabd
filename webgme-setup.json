@@ -12,6 +12,10 @@
       "ImportGLM": {
         "src": "src/plugins/ImportGLM",
         "test": "test/plugins/ImportGLM"
+      },
+      "UpdateGLDMeta": {
+        "src": "src/plugins/UpdateGLDMeta",
+        "test": "test/plugins/UpdateGLDMeta"
       }
     },
     "addons": {
