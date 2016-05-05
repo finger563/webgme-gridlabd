@@ -13,9 +13,15 @@
         "src": "src/plugins/ImportGLM",
         "test": "test/plugins/ImportGLM"
       }
+    },
+    "addons": {
+      "AttributeConverter": {
+        "src": "src/addons/AttributeConverter"
+      }
     }
   },
   "dependencies": {
-    "plugins": {}
+    "plugins": {},
+    "addons": {}
   }
 }
