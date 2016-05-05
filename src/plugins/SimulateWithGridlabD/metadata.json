@@ -1,0 +1,22 @@
+{
+  "id": "SimulateWithGridlabD",
+  "name": "SimulateWithGridlabD",
+  "version": "0.1.0",
+  "description": "",
+  "icon": {
+    "class": "glyphicon glyphicon-cog",
+    "src": ""
+  },
+  "disableServerSideExecution": false,
+  "disableBrowserSideExecution": true,
+    "configStructure": [
+	{
+	    'name': 'returnZip',
+	    'displayName': 'Zip and return generated GLD output.',
+	    'description': 'If true, it enables the client to download a zip of the simulation output.',
+	    'value': false,
+	    'valueType': 'boolean',
+	    'readOnly': false
+	}
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "id": "UpdateGLDMeta",
-  "name": "UpdateGLDMeta",
+  "id": "ImportGLM",
+  "name": "ImportGLM",
   "version": "0.1.0",
   "description": "",
   "icon": {
@@ -11,9 +11,9 @@
   "disableBrowserSideExecution": false,
     "configStructure": [
         {
-            'name': 'gldModHelp',
-            'displayName': 'Gridlab-D modHelp output file.',
-            'description': 'File containing class definitions for Gridlab-D modules.',
+            'name': 'glmFile',
+            'displayName': 'Gridlab-D model file.',
+            'description': 'Gridlab-D GLM file containing the power system model to be loaded into WebGME.',
             'value': '',
             'valueType': 'asset',
             'readOnly': false

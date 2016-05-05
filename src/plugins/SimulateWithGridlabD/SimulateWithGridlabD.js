@@ -41,43 +41,6 @@ define([
     SimulateWithGridlabD.prototype = Object.create(PluginBase.prototype);
     SimulateWithGridlabD.prototype.constructor = SimulateWithGridlabD;
 
-    /**
-     * Gets the name of the SimulateWithGridlabD.
-     * @returns {string} The name of the plugin.
-     * @public
-     */
-    SimulateWithGridlabD.prototype.getName = function () {
-        return 'SimulateWithGridlabD';
-    };
-
-    /**
-     * Gets the semantic version (semver.org) of the SimulateWithGridlabD.
-     * @returns {string} The version of the plugin.
-     * @public
-     */
-    SimulateWithGridlabD.prototype.getVersion = function () {
-        return '0.1.0';
-    };
-
-    /**
-     * The ConfigurationStructure defines the configuration for the plugin
-     * and will be used to populate the GUI when invoking the plugin from webGME.
-     * @returns {object} The version of the plugin.
-     * @public
-     */
-    SimulateWithGridlabD.prototype.getConfigStructure = function() {
-        return [
-	    {
-		'name': 'returnZip',
-		'displayName': 'Zip and return generated GLD output.',
-		'description': 'If true, it enables the client to download a zip of the simulation output.',
-		'value': false,
-		'valueType': 'boolean',
-		'readOnly': false
-	    }
-        ];
-    };
-
     SimulateWithGridlabD.prototype.notify = function(level, msg) {
 	var self = this;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';

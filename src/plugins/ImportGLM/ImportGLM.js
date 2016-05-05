@@ -36,37 +36,6 @@ define([
     ImportGLM.prototype.constructor = ImportGLM;
 
     /**
-     * Gets the name of the ImportGLM.
-     * @returns {string} The name of the plugin.
-     * @public
-     */
-    ImportGLM.prototype.getName = function () {
-        return 'ImportGLM';
-    };
-
-    /**
-     * Gets the semantic version (semver.org) of the ImportGLM.
-     * @returns {string} The version of the plugin.
-     * @public
-     */
-    ImportGLM.prototype.getVersion = function () {
-        return '0.1.0';
-    };
-
-    ImportGLM.prototype.getConfigStructure = function() {
-        return [
-            {
-                'name': 'glmFile',
-                'displayName': 'Gridlab-D Model File',
-                'description': 'GLM file for loading as a WebGME Power System Model.',
-                'value': '',
-                'valueType': 'asset',
-                'readOnly': false
-            }
-        ];
-    };
-
-    /**
      * Main function for the plugin to execute. This will perform the execution.
      * Notes:
      * - Always log with the provided logger.[error,warning,info,debug].

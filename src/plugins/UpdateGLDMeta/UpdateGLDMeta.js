@@ -53,35 +53,13 @@ define([
     UpdateGLDMeta.prototype.main = function (callback) {
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
-        var self = this,
-            nodeObject;
+        var self = this;
+	var attr_regex = /(?:(\w+)\s([\w]+)(\[\S+\])?;)|(?:(?:enumeration|set)\s\{([\S ]+)\}\s(\w+);)/gm;
+	var enum_set_regex = /(\w+)=(\d+)/gi;
+	var class_regex = /class (\w+) {/gm;
 
-
-        // Using the logger.
-        self.logger.debug('This is a debug message.');
-        self.logger.info('This is an info message.');
-        self.logger.warn('This is a warning message.');
-        self.logger.error('This is an error message.');
-
-        // Using the coreAPI to make changes.
-
-        nodeObject = self.activeNode;
-
-        self.core.setAttribute(nodeObject, 'name', 'My new obj');
-        self.core.setRegistry(nodeObject, 'position', {x: 70, y: 70});
-
-
-        // This will save the changes. If you don't want to save;
-        // exclude self.save and call callback directly from this scope.
-        self.save('UpdateGLDMeta updated model.', function (err) {
-            if (err) {
-                callback(err, self.result);
-                return;
-            }
-            self.result.setSuccess(true);
-            callback(null, self.result);
-        });
-
+        self.result.setSuccess(true);
+        callback(null, self.result);
     };
 
     return UpdateGLDMeta;
