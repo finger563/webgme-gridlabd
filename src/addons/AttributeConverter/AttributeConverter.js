@@ -61,8 +61,8 @@ define([
 
         if (this.core.getAttribute(rootNode, 'name') !== newName) {
             this.logger.info('AttributeConverter changing name of root to committer(s): ', newName);
-            this.core.setAttribute(rootNode, 'name', newName);
-            this.addCommitMessage('Changed rootNode name to "' + newName + '"');
+            //this.core.setAttribute(rootNode, 'name', newName);
+            //this.addCommitMessage('Changed rootNode name to "' + newName + '"');
         }
 
         callback(null, this.updateResult);
