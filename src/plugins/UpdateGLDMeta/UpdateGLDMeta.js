@@ -58,6 +58,44 @@ define([
 	var enum_set_regex = /(\w+)=(\d+)/gi;
 	var class_regex = /class (\w+) {/gm;
 
+	// create: object(fco?), parent (src,dst), 
+
+	// set METAAspectSet of the ROOT node (means it is META)
+	//  adds to the meta sheet
+	//   : core.addMember(self.rootNode, 'MetaAspectSet', node)
+	//  adds to a tab of the meta sheet
+	//   : var set = self.core.getSetNames(self.rootNode).find(name => name !== 'MetaAspectSet');
+	//   : core.addMember(this.rootNode, set, node);
+
+	// need to position the nodes in the meta sheet!
+	
+	// means we can create meta-sheets for each of the loaded files! :D
+
+	// core.setAspectMetaTarget(node, name, target)
+
+	// core.createNode({parent:, base:})
+
+	// core.getFCO(node)
+	// core.getAllMetaNodes(node)
+	// core.getChildrenMeta(node)
+	// core.getAttributeNames(node)
+	// core.getAttributeMeta(node, name)
+	// core.getBase(node)
+	// core.getBaseType(node)
+	// core.getPointerNames(node)
+	// core.getPointerMeta(node, name)
+	// core.getRegistryNames(node)
+	// core.getRegistry(node, name)
+	// core.getSetNames(node)
+	
+	// core.setAttribute(node, name, value)
+	// core.setAttributeMeta(node, name, rule)
+	//   rule : { type: string | integer | float | bool, enum: [string] }
+	// core.setPointerMetaTarget(node, name, target, min, max)
+	// core.setChildMeta(node, child, min, max)
+	// core.setBase(node, base)
+	// core.setRegistry(node, 'position', {x: , y:})
+
         self.result.setSuccess(true);
         callback(null, self.result);
     };
