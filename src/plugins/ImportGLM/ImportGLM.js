@@ -7,11 +7,13 @@
 
 define([
     'plugin/PluginConfig',
+    'text!./metadata.json',
     'plugin/PluginBase',
     'gridlabd/meta',
     'q'
 ], function (
     PluginConfig,
+    pluginMetadata,
     PluginBase,
     MetaTypes,
     Q) {
@@ -27,9 +29,16 @@ define([
     var ImportGLM = function () {
         // Call base class' constructor.
         PluginBase.call(this);
-
+        this.pluginMetadata = pluginMetadata;
         this.metaTypes = MetaTypes;
     };
+
+    /**
+     * Metadata associated with the plugin. Contains id, name, version, description, icon, configStructue etc.
+     * This is also available at the instance at this.pluginMetadata.
+     * @type {object}
+     */
+    ImportGLM.metadata = pluginMetadata;
 
     // Prototypal inheritance from PluginBase.
     ImportGLM.prototype = Object.create(PluginBase.prototype);

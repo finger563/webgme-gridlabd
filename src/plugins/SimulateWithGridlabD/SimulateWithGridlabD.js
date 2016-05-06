@@ -7,6 +7,7 @@
 
 define([
     'plugin/PluginConfig',
+    'text!./metadata.json',
     'plugin/PluginBase',
     'common/util/ejs', // for ejs templates
     'common/util/xmljsonconverter', // used to save model as json
@@ -15,6 +16,7 @@ define([
     'q'
 ], function (
     PluginConfig,
+    pluginMetadata,
     PluginBase,
     ejs,
     Converter,
@@ -33,9 +35,16 @@ define([
     var SimulateWithGridlabD = function () {
         // Call base class' constructor.
         PluginBase.call(this);
-
+	this.pluginMetadata = pluginMetadata;
         this.metaTypes = MetaTypes;
     };
+
+    /**
+     * Metadata associated with the plugin. Contains id, name, version, description, icon, configStructue etc.
+     * This is also available at the instance at this.pluginMetadata.
+     * @type {object}
+     */
+    SimulateWithGridlabD.metadata = pluginMetadata;
 
     // Prototypal inheritance from PluginBase.
     SimulateWithGridlabD.prototype = Object.create(PluginBase.prototype);

@@ -7,6 +7,7 @@
 
 define([
     'plugin/PluginConfig',
+    'text!./metadata.json',
     'plugin/PluginBase',
     'common/util/ejs', // for ejs templates
     'common/util/xmljsonconverter', // used to save model as json
@@ -16,6 +17,7 @@ define([
     'q'
 ], function (
     PluginConfig,
+    pluginMetadata,
     PluginBase,
     ejs,
     Converter,
@@ -35,50 +37,20 @@ define([
     var GenerateGLM = function () {
         // Call base class' constructor.
         PluginBase.call(this);
-
+        this.pluginMetadata = pluginMetadata;
         this.metaTypes = MetaTypes;
     };
+
+    /**
+     * Metadata associated with the plugin. Contains id, name, version, description, icon, configStructue etc.
+     * This is also available at the instance at this.pluginMetadata.
+     * @type {object}
+     */
+    GenerateGLM.metadata = pluginMetadata;
 
     // Prototypal inheritance from PluginBase.
     GenerateGLM.prototype = Object.create(PluginBase.prototype);
     GenerateGLM.prototype.constructor = GenerateGLM;
-
-    /**
-     * Gets the name of the GenerateGLM.
-     * @returns {string} The name of the plugin.
-     * @public
-     */
-    GenerateGLM.prototype.getName = function () {
-        return 'GenerateGLM';
-    };
-
-    /**
-     * Gets the semantic version (semver.org) of the GenerateGLM.
-     * @returns {string} The version of the plugin.
-     * @public
-     */
-    GenerateGLM.prototype.getVersion = function () {
-        return '0.1.0';
-    };
-
-    /**
-     * The ConfigurationStructure defines the configuration for the plugin
-     * and will be used to populate the GUI when invoking the plugin from webGME.
-     * @returns {object} The version of the plugin.
-     * @public
-     */
-    GenerateGLM.prototype.getConfigStructure = function() {
-        return [
-	    {
-		'name': 'returnZip',
-		'displayName': 'Zip and return generated GLM.',
-		'description': 'If true, it enables the client to download a zip of the model.',
-		'value': false,
-		'valueType': 'boolean',
-		'readOnly': false
-	    }
-        ];
-    };
 
     GenerateGLM.prototype.notify = function(level, msg) {
 	var self = this;
