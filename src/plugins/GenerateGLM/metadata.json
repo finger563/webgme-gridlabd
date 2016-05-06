@@ -11,12 +11,12 @@
   "disableBrowserSideExecution": false,
     "configStructure": [
 	{
-	    'name': 'returnZip',
-	    'displayName': 'Zip and return generated GLM.',
-	    'description': 'If true, it enables the client to download a zip of the model.',
-	    'value': false,
-	    'valueType': 'boolean',
-	    'readOnly': false
+	    "name": "returnZip",
+	    "displayName": "Zip and return generated GLM.",
+	    "description": "If true, it enables the client to download a zip of the model.",
+	    "value": false,
+	    "valueType": "boolean",
+	    "readOnly": false
 	}
   ]
 }

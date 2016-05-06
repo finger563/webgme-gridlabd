@@ -11,12 +11,12 @@
   "disableBrowserSideExecution": false,
     "configStructure": [
         {
-            'name': 'glmFile',
-            'displayName': 'Gridlab-D model file.',
-            'description': 'Gridlab-D GLM file containing the power system model to be loaded into WebGME.',
-            'value': '',
-            'valueType': 'asset',
-            'readOnly': false
+            "name": "glmFile",
+            "displayName": "Gridlab-D model file.",
+            "description": "Gridlab-D GLM file containing the power system model to be loaded into WebGME.",
+            "value": "",
+            "valueType": "asset",
+            "readOnly": false
         }
   ]
 }

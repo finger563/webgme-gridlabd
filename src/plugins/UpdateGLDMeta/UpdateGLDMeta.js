@@ -63,7 +63,7 @@ define([
         self.updateMETA(self.metaTypes);
 
 	var currentConfig = self.getCurrentConfig(),
-	metaFileHash = currentConfig.gldModHelp;
+	    metaFileHash = currentConfig.gldModHelp;
 
 	self.blobClient.getMetadata(metaFileHash)
 	    .then(function(glmMetaData) {
@@ -72,11 +72,8 @@ define([
 		for (var i=0;i<splitName.length-1;i++) {
 		    newName += splitName[i];
 		}
-		self.modelName = newName;
-		self.newModel.name = newName;
-	    })
-	    .then(function() {
-		return self.blobClient.getObjectAsString(metaFileHash)
+		self.logger.info('loaded: ' + newName);
+		return self.blobClient.getObjectAsString(metaFileHash);
 	    })
 	    .then(function(metaFile) {
 		return self.parseObjectsFromFile(metaFile);
@@ -85,7 +82,7 @@ define([
 		return self.createModelArtifacts();
 	    })
 	    .then(function() {
-		return self.save('UpdateGLDMeta updated model meta.');
+		//return self.save('UpdateGLDMeta updated model meta.');
 	    })
 	    .then(function() {
 		self.result.setSuccess(true);
@@ -97,42 +94,80 @@ define([
 		callback(null, self.result);
 	    });
     };
-
-    UpdateGLDMeta.prototype.parseObjectsFromFile(fileStr) {
+    
+    UpdateGLDMeta.prototype.parseObjectsFromFile = function(fileStr) {
+	var self = this,
+	    class_regex = /class (\w+) {/g,
+	    class_end_regex = /}$/gm,
+	    lines = fileStr.split('\n'),
+	    results,
+	    objects = {},
+	    currentObj,
+	    objStrings = [],
+	    depth = 0;
+	lines.map((line) => {
+	    if (results = class_regex.exec(line)) {
+		depth++;
+		var name = results[1];
+		if (objects[name] === undefined) {
+		    self.logger.info('got class: ' + name);
+		    objects[name] = {name: name};
+		    currentObj = objects[name];
+		    objStrings[depth] = '';
+		}
+	    }
+	    else if (class_end_regex.test(line)) {
+		if (typeof objStrings[depth] === 'string' &&
+		    objStrings[depth].length > 0) {
+		    currentObj = self.parseObjectString(currentObj, objStrings[depth]);
+		    objStrings.splice(depth, 1);
+		}
+		depth--;
+	    }
+	    else if (typeof objStrings[depth] === 'string') {
+		objStrings[depth] += line + '\n';
+	    }
+	});
     };
 
-    UpdateGLDMeta.prototype.parseObjectString(objStr) {
-	var attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/gm;
-	var enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/gm;
+    UpdateGLDMeta.prototype.parseObjectString = function (obj, str) {
+	var attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/g;
+	var enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/g;
 	var value_regex = /(\w+)=(\d+)/gi;
-	var class_regex = /class (\w+) {/gm;
 
 	var convertAttrToType = function(attr) {
-	    if (attr === 'complex' ||
-		attr === 'set' ||
-		attr === 'enumeration' ||
-		attr === 'loadshape' ||
-		attr === 'enduse' ||
-		attr === 'timestamp' ||
-		attr.indexOf('char') > -1)
+	    if (attr.type === 'complex' ||
+		attr.type === 'set' ||
+		attr.type === 'enumeration' ||
+		attr.type === 'loadshape' ||
+		attr.type === 'enduse' ||
+		attr.type === 'timestamp' ||
+		attr.type.indexOf('char') > -1)
 		return 'string';
-	    else if (attr.indexOf('int') > -1)
+	    else if (attr.type.indexOf('int') > -1)
 		return 'integer';
-	    else if (attr === 'double')
+	    else if (attr.type === 'double')
 		return 'float';
-	    else if (attr === 'bool')
+	    else if (attr.type === 'bool')
 		return 'bool';
 	    else
 		return undefined;
 	};
 
 	var isPointer = function(attr) {
-	    return attr === 'object';
-	}
+	    return attr.type === 'object';
+	};
+
+	var isParent = function(attr) {
+	    return attr.type === 'parent';
+	};
 
     };
 
-    UpdateGLDMeta.prototype.createMetaNode(name, base, attrs, ptrs) {
+    UpdateGLDMeta.prototype.createModelArtifacts = function() {
+    };
+
+    UpdateGLDMeta.prototype.createMetaNode = function(name, base, attrs, ptrs) {
 	if (this.META[name]) {
 	    this.logger.warn('"' + name + '" already exists!');
 	    return this.META[name];
@@ -206,7 +241,7 @@ define([
 	}
     };
 
-    UpdateGLDMeta.prototype.addAttribute(name, node, desc) {
+    UpdateGLDMeta.prototype.addAttribute = function(name, node, desc) {
 	var initial,
 	    schema = {};
 
@@ -237,7 +272,7 @@ define([
 	}
     };
 
-    UpdateGLDMeta.prototype.addPointer(name, node, desc) {
+    UpdateGLDMeta.prototype.addPointer = function(name, node, desc) {
 	this.core.setPointerMetaTarget(node, name, desc.target, desc.min || -1, desc.max || -1);
     };
 

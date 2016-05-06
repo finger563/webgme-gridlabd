@@ -11,12 +11,12 @@
   "disableBrowserSideExecution": false,
     "configStructure": [
         {
-            'name': 'gldModHelp',
-            'displayName': 'Gridlab-D modHelp output file.',
-            'description': 'File containing class definitions for Gridlab-D modules.',
-            'value': '',
-            'valueType': 'asset',
-            'readOnly': false
+            "name": "gldModHelp",
+            "displayName": "Gridlab-D modHelp output file.",
+            "description": "File containing class definitions for Gridlab-D modules.",
+            "value": "",
+            "valueType": "asset",
+            "readOnly": false
         }
   ]
 }
