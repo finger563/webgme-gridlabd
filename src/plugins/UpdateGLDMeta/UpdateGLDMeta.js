@@ -82,7 +82,7 @@ define([
 		return self.createModelArtifacts();
 	    })
 	    .then(function() {
-		//return self.save('UpdateGLDMeta updated model meta.');
+		return self.save('UpdateGLDMeta updated model meta.');
 	    })
 	    .then(function() {
 		self.result.setSuccess(true);
@@ -111,8 +111,12 @@ define([
 		var name = results[1];
 		if (objects[name] === undefined) {
 		    self.logger.info('got class: ' + name);
-		    objects[name] = {name: name};
-		    currentObj = objects[name];
+		    currentObj = {
+			name: name,
+			attributes: [],
+			pointers: [],
+			base: undefined
+		    };
 		    objStrings[depth] = [];
 		}
 	    }
@@ -120,6 +124,7 @@ define([
 		if (objStrings[depth] instanceof Array &&
 		    objStrings[depth].length > 0) {
 		    currentObj = self.parseObjectString(currentObj, objStrings[depth]);
+		    objects[currentObj.name] = currentObj;
 		    objStrings.pop();
 		}
 		depth--;
@@ -128,6 +133,7 @@ define([
 		objStrings[depth].push(line);
 	    }
 	});
+	self.objects = objects;
     };
 
     UpdateGLDMeta.prototype.parseObjectString = function (obj, lines) {
@@ -168,32 +174,112 @@ define([
 	    if (results = attr_regex.exec(line)) {
 		var kind = convertAttrToType(results[1]);
 		if (kind === undefined) { // must be object or parent
-		    if (results[1] === 'parent') {
-			self.logger.info('got parent!');
+		    if (isParent(results[1])) {
+			obj.base = results[2];
 		    }
-		    else if (results[1] === 'object') {
-			self.logger.info('got pointer!');
+		    else if (isPointer(results[1])) {
+			var ptr = {
+			    name: results[2]
+			};
+			obj.pointers.push(ptr);
 		    }
 		}
 		else {
-		    self.logger.info('got kind: '+results[1] + ': ' +kind);
+		    var attr = {
+			name: results[2],
+			type: kind,
+			units: results[3]
+		    };
+		    obj.attributes.push(attr);
+		    //obj[attr.name] = attr;
 		}
 	    }
 	    else if (results = enum_set_regex.exec(line)) {
-		var kind = convertAttrToType(results[1]);
-		self.logger.info('got enum/set: '+results[1] + ': ' +kind);
+		var kind = convertAttrToType(results[1]),
+		    enums = [];
+		var vals = value_regex.exec(results[2]);
+		while (vals) {
+		    enums.push(vals[1]);
+		    vals = value_regex.exec(results[2]);
+		}
+		if (results[1] === 'set' && // need to combine the entries
+		    enums.indexOf('UNKNOWN') == -1) {
+		    var combinations = function (string)
+		    {
+			var result = [];
+			var loop = function (start,depth,prefix)
+			{
+			    for(var i=start; i<string.length; i++)
+			    {
+				var next = prefix+string[i];
+				if (depth > 0)
+				    loop(i+1,depth-1,next);
+				else
+				    result.push(next);
+			    }
+			}
+			for(var i=0; i<string.length; i++)
+			{
+			    loop(0,i,'');
+			}
+			return result;
+		    }
+		    enums = combinations(enums.join(''));
+		}
+		var attr = {
+		    name: results[3],
+		    type: kind,
+		    "enum": enums
+		};
+		obj.attributes.push(attr);
+		//obj[attr.name] = attr;
 	    }
 	});
-
+	//self.logger.info(JSON.stringify(obj, null, 2));
+	return obj;
     };
 
     UpdateGLDMeta.prototype.createModelArtifacts = function() {
+	var self = this,
+	    names = Object.keys(self.objects);
+	self.createdObjects = [];
+	self.nodeMap = {};
+	names.map((name) => {
+	    var obj = self.objects[name];
+	    if (self.createdObjects.indexOf(obj.name) == -1) {
+		var base = obj.base;
+		var bases = [];
+		while (base) {
+		    bases.push(base);
+		    base = base.base;
+		}
+		self.logger.info(bases);
+		for (var i= bases.length-1; i>=0; i--) {
+		    if (self.createdObjects.indexOf(bases[i]) > -1) {
+			var b = self.objects[bases[i]];
+			self.createMetaNode(b.name, b.base, b.attributes, b.pointers);
+			self.createdObjects.push(bases[i]);
+		    }
+		}
+		self.createMetaNode( obj.name, obj.base, obj.attributes, obj.pointers );
+		self.createdObjects.push(name);
+	    }
+	});
     };
+
+    var prevY = 100;
 
     UpdateGLDMeta.prototype.createMetaNode = function(name, base, attrs, ptrs) {
 	if (this.META[name]) {
 	    this.logger.warn('"' + name + '" already exists!');
-	    return this.META[name];
+	}
+
+	if (!this.META.Language) {
+	    throw new String('Must have Language folder!');
+	}
+
+	if (!this.META.Object) {
+	    throw new String('Must have Object base type!!');
 	}
 
 	// set METAAspectSet of the ROOT node (means it is META)
@@ -222,16 +308,25 @@ define([
 
 	// require:
 	//   META.Language
+	//   META.Model
 	//   META.Object
 	//   META.Module
 	//   META.Class
 	//   META.Parent
+
+	if (!base) {
+	    base = this.META.Object;
+	}
+	else {
+	    base = this.nodeMap[base];
+	}
 	
 	var node = this.core.createNode({
 	    parent: this.META.Language,
 	    base: base
 	});
 	this.core.setAttribute(node, 'name', name);
+	this.nodeMap[name] = node;
 
 	// add to the META sheet
 	this.core.addMember(this.rootNode, 'MetaAspectSet', node);
@@ -242,8 +337,10 @@ define([
 	this.core.addMember(this.rootNode, set, node);
 
 	// position the node based on the position of the most recently created node on that sheet
-	// core.setRegistry(node, 'position', {x: , y:})
+	this.core.setRegistry(node, 'position', {x: 100, y: prevY})
+	prevY += 100;
 
+	/*
 	// set the attributes
 	if (attrs) {
 	    attrs.forEach((attr, index) => {
@@ -262,6 +359,7 @@ define([
 		this.addPointer(name, node, desc);
 	    });
 	}
+	*/
     };
 
     UpdateGLDMeta.prototype.addAttribute = function(name, node, desc) {
@@ -277,16 +375,16 @@ define([
 	    schema.max = +desc.max;
 	}
 	if (desc.infer) {
-	    schema.infer = def.infer;
+	    schema.infer = desc.infer;
 	}
 	if (desc.enum) {
 	    schema.enum = desc.enum;
 	}
-	schema.argindex = def.argindex;
+	schema.argindex = desc.argindex;
 	this.core.setAttributeMeta(node, name, schema);
 
 	// determine and set the initial value for the attribute
-	initial = desc.hasOwnProperty('default') ? desc.default : def.min || null;
+	initial = desc.hasOwnProperty('default') ? desc.default : desc.min || null;
 	if (schema.type === 'boolean') {
 	    initial = initial !== null ? initial : false;
 	}
@@ -296,6 +394,10 @@ define([
     };
 
     UpdateGLDMeta.prototype.addPointer = function(name, node, desc) {
+	if (name == 'from')
+	    name = 'src';
+	if (name == 'to')
+	    name = 'dst';
 	this.core.setPointerMetaTarget(node, name, desc.target, desc.min || -1, desc.max || -1);
     };
 
