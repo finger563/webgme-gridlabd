@@ -113,54 +113,77 @@ define([
 		    self.logger.info('got class: ' + name);
 		    objects[name] = {name: name};
 		    currentObj = objects[name];
-		    objStrings[depth] = '';
+		    objStrings[depth] = [];
 		}
 	    }
 	    else if (class_end_regex.test(line)) {
-		if (typeof objStrings[depth] === 'string' &&
+		if (objStrings[depth] instanceof Array &&
 		    objStrings[depth].length > 0) {
 		    currentObj = self.parseObjectString(currentObj, objStrings[depth]);
-		    objStrings.splice(depth, 1);
+		    objStrings.pop();
 		}
 		depth--;
 	    }
-	    else if (typeof objStrings[depth] === 'string') {
-		objStrings[depth] += line + '\n';
+	    else if (objStrings[depth] instanceof Array) {
+		objStrings[depth].push(line);
 	    }
 	});
     };
 
-    UpdateGLDMeta.prototype.parseObjectString = function (obj, str) {
-	var attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/g;
-	var enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/g;
-	var value_regex = /(\w+)=(\d+)/gi;
+    UpdateGLDMeta.prototype.parseObjectString = function (obj, lines) {
+	var self = this,
+	    attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/g,
+	    enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/g,
+	    value_regex = /(\w+)=(\d+)/gi,
+	    results;
 
 	var convertAttrToType = function(attr) {
-	    if (attr.type === 'complex' ||
-		attr.type === 'set' ||
-		attr.type === 'enumeration' ||
-		attr.type === 'loadshape' ||
-		attr.type === 'enduse' ||
-		attr.type === 'timestamp' ||
-		attr.type.indexOf('char') > -1)
+	    if (attr === 'complex' ||
+		attr === 'set' ||
+		attr === 'enumeration' ||
+		attr === 'loadshape' ||
+		attr === 'enduse' ||
+		attr === 'timestamp' ||
+		attr.indexOf('char') > -1)
 		return 'string';
-	    else if (attr.type.indexOf('int') > -1)
+	    else if (attr.indexOf('int') > -1)
 		return 'integer';
-	    else if (attr.type === 'double')
+	    else if (attr === 'double')
 		return 'float';
-	    else if (attr.type === 'bool')
+	    else if (attr === 'bool')
 		return 'bool';
 	    else
 		return undefined;
 	};
 
 	var isPointer = function(attr) {
-	    return attr.type === 'object';
+	    return attr === 'object';
 	};
 
 	var isParent = function(attr) {
-	    return attr.type === 'parent';
+	    return attr === 'parent';
 	};
+
+	lines.map((line) => {
+	    if (results = attr_regex.exec(line)) {
+		var kind = convertAttrToType(results[1]);
+		if (kind === undefined) { // must be object or parent
+		    if (results[1] === 'parent') {
+			self.logger.info('got parent!');
+		    }
+		    else if (results[1] === 'object') {
+			self.logger.info('got pointer!');
+		    }
+		}
+		else {
+		    self.logger.info('got kind: '+results[1] + ': ' +kind);
+		}
+	    }
+	    else if (results = enum_set_regex.exec(line)) {
+		var kind = convertAttrToType(results[1]);
+		self.logger.info('got enum/set: '+results[1] + ': ' +kind);
+	    }
+	});
 
     };
 
