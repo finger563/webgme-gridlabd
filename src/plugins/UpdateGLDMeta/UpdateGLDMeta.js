@@ -8,11 +8,15 @@
 define([
     'plugin/PluginConfig',
     'text!./metadata.json',
-    'plugin/PluginBase'
+    'plugin/PluginBase',
+    'gridlabd/meta',
+    'q'
 ], function (
     PluginConfig,
     pluginMetadata,
-    PluginBase) {
+    PluginBase,
+    MetaTypes,
+    Q) {
     'use strict';
 
     pluginMetadata = JSON.parse(pluginMetadata);
@@ -28,6 +32,7 @@ define([
         // Call base class' constructor.
         PluginBase.call(this);
         this.pluginMetadata = pluginMetadata;
+        this.metaTypes = MetaTypes;
     };
 
     /**
@@ -54,50 +59,67 @@ define([
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this;
-	var attr_regex = /(?:(\w+)\s([\w]+)(\[\S+\])?;)|(?:(?:enumeration|set)\s\{([\S ]+)\}\s(\w+);)/gm;
-	var enum_set_regex = /(\w+)=(\d+)/gi;
+
+        self.updateMETA(self.metaTypes);
+
+	var currentConfig = self.getCurrentConfig(),
+	metaFileHash = currentConfig.gldModHelp;
+
+	self.blobClient.getMetadata(metaFileHash)
+	    .then(function(glmMetaData) {
+		var splitName = glmMetaData.name.split(".");
+		var newName = "";
+		for (var i=0;i<splitName.length-1;i++) {
+		    newName += splitName[i];
+		}
+		self.modelName = newName;
+		self.newModel.name = newName;
+	    })
+	    .then(function() {
+		return self.blobClient.getObjectAsString(metaFileHash)
+	    })
+	    .then(function(metaFile) {
+		return self.parseObjectsFromFile(metaFile);
+	    })
+	    .then(function() {
+		return self.createModelArtifacts();
+	    })
+	    .then(function() {
+		return self.save('UpdateGLDMeta updated model meta.');
+	    })
+	    .then(function() {
+		self.result.setSuccess(true);
+		callback(null, self.result);
+	    })
+	    .catch(function(err) {
+		self.logger.error('ERROR:: '+err);
+		self.result.setSuccess(false);
+		callback(null, self.result);
+	    });
+    };
+
+    UpdateGLDMeta.prototype.parseObjectsFromFile(fileStr) {
+    };
+
+    UpdateGLDMeta.prototype.parseObjectString(objStr) {
+	var attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/gm;
+	var enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/gm;
+	var value_regex = /(\w+)=(\d+)/gi;
 	var class_regex = /class (\w+) {/gm;
 
-	// create: object(fco?), parent (src,dst), 
+	var convertAttrToType = function(attr) {
+	    if (attr === 'complex' || attr.indexOf('char') > -1)
+		return 'string';
+	    else if (attr.indexOf('int') > -1)
+		return 'integer';
+	    else if (attr === 'double')
+		return 'float';
+	    else if (attr === 'bool')
+		return 'bool';
+	    else if (attr === 'set' || attr === 'enumeration')
+		return 'string';
+	};
 
-	// set METAAspectSet of the ROOT node (means it is META)
-	//  adds to the meta sheet
-	//   : core.addMember(self.rootNode, 'MetaAspectSet', node)
-	//  adds to a tab of the meta sheet
-	//   : var set = self.core.getSetNames(self.rootNode).find(name => name !== 'MetaAspectSet');
-	//   : core.addMember(this.rootNode, set, node);
-
-	// need to position the nodes in the meta sheet!
-	
-	// means we can create meta-sheets for each of the loaded files! :D
-
-	// core.setAspectMetaTarget(node, name, target)
-
-	// core.createNode({parent:, base:})
-
-	// core.getFCO(node)
-	// core.getAllMetaNodes(node)
-	// core.getChildrenMeta(node)
-	// core.getAttributeNames(node)
-	// core.getAttributeMeta(node, name)
-	// core.getBase(node)
-	// core.getBaseType(node)
-	// core.getPointerNames(node)
-	// core.getPointerMeta(node, name)
-	// core.getRegistryNames(node)
-	// core.getRegistry(node, name)
-	// core.getSetNames(node)
-	
-	// core.setAttribute(node, name, value)
-	// core.setAttributeMeta(node, name, rule)
-	//   rule : { type: string | integer | float | bool, enum: [string] }
-	// core.setPointerMetaTarget(node, name, target, min, max)
-	// core.setChildMeta(node, child, min, max)
-	// core.setBase(node, base)
-	// core.setRegistry(node, 'position', {x: , y:})
-
-        self.result.setSuccess(true);
-        callback(null, self.result);
     };
 
     UpdateGLDMeta.prototype.createMetaNode(name, base, attrs, ptrs) {
@@ -106,6 +128,37 @@ define([
 	    return this.META[name];
 	}
 
+	// set METAAspectSet of the ROOT node (means it is META)
+	//  adds to the meta sheet
+	//   : core.addMember(self.rootNode, 'MetaAspectSet', node)
+	//  adds to a tab of the meta sheet
+	//   : var set = self.core.getSetNames(self.rootNode).find(name => name !== 'MetaAspectSet');
+	//   : core.addMember(this.rootNode, set, node);
+	// need to position the nodes in the meta sheet!
+	// means we can create meta-sheets for each of the loaded files! :D
+	
+	// USEFUL FUNCTIONS:
+	//   core.setAspectMetaTarget(node, name, target)
+	//   core.getFCO(node)
+	//   core.getAllMetaNodes(node)
+	//   core.getChildrenMeta(node)
+	//   core.getAttributeNames(node)
+	//   core.getAttributeMeta(node, name)
+	//   core.getBase(node)
+	//   core.getBaseType(node)
+	//   core.getPointerNames(node)
+	//   core.getPointerMeta(node, name)
+	//   core.getRegistryNames(node)
+	//   core.getRegistry(node, name)
+	//   core.getSetNames(node)
+
+	// require:
+	//   META.Language
+	//   META.Object
+	//   META.Module
+	//   META.Class
+	//   META.Parent
+	
 	var node = this.core.createNode({
 	    parent: this.META.Language,
 	    base: base
@@ -121,6 +174,7 @@ define([
 	this.core.addMember(this.rootNode, set, node);
 
 	// position the node based on the position of the most recently created node on that sheet
+	// core.setRegistry(node, 'position', {x: , y:})
 
 	// set the attributes
 	if (attrs) {
