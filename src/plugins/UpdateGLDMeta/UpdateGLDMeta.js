@@ -100,5 +100,82 @@ define([
         callback(null, self.result);
     };
 
+    UpdateGLDMeta.prototype.createMetaNode(name, base, attrs, ptrs) {
+	if (this.META[name]) {
+	    this.logger.warn('"' + name + '" already exists!');
+	    return this.META[name];
+	}
+
+	var node = this.core.createNode({
+	    parent: this.META.Language,
+	    base: base
+	});
+	this.core.setAttribute(node, 'name', name);
+
+	// add to the META sheet
+	this.core.addMember(this.rootNode, 'MetaAspectSet', node);
+
+	// add to the specific sheet
+	var set = this.core.getSetNames(this.rootNode)
+	    .find(name => name !== 'MetaAspectSet');
+	this.core.addMember(this.rootNode, set, node);
+
+	// position the node based on the position of the most recently created node on that sheet
+
+	// set the attributes
+	if (attrs) {
+	    attrs.forEach((attr, index) => {
+		var name = attr.name;
+		var desc = attr;
+		desc.argindex = index;
+		this.addAttribute(name, node, desc);
+	    });
+	}
+
+	// set the pointers
+	if (ptrs) {
+	    ptrs.map((ptr) => {
+		var name = ptr.name;
+		var desc = ptr;
+		this.addPointer(name, node, desc);
+	    });
+	}
+    };
+
+    UpdateGLDMeta.prototype.addAttribute(name, node, desc) {
+	var initial,
+	    schema = {};
+
+	schema.type = desc.type || 'integer';
+
+	if (desc.min !== undefined) {
+	    schema.min = +desc.min;
+	}
+	if (desc.max !== undefined) {
+	    schema.max = +desc.max;
+	}
+	if (desc.infer) {
+	    schema.infer = def.infer;
+	}
+	if (desc.enum) {
+	    schema.enum = desc.enum;
+	}
+	schema.argindex = def.argindex;
+	this.core.setAttributeMeta(node, name, schema);
+
+	// determine and set the initial value for the attribute
+	initial = desc.hasOwnProperty('default') ? desc.default : def.min || null;
+	if (schema.type === 'boolean') {
+	    initial = initial !== null ? initial : false;
+	}
+	if (initial !== null) {
+	    this.core.setAttribute(node, name, initial);
+	}
+    };
+
+    UpdateGLDMeta.prototype.addPointer(name, node, desc) {
+	this.core.setPointerMetaTarget(node, name, desc.target, desc.min || -1, desc.max || -1);
+    };
+
     return UpdateGLDMeta;
 });
