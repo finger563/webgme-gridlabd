@@ -108,7 +108,13 @@ define([
 	var class_regex = /class (\w+) {/gm;
 
 	var convertAttrToType = function(attr) {
-	    if (attr === 'complex' || attr.indexOf('char') > -1)
+	    if (attr === 'complex' ||
+		attr === 'set' ||
+		attr === 'enumeration' ||
+		attr === 'loadshape' ||
+		attr === 'enduse' ||
+		attr === 'timestamp' ||
+		attr.indexOf('char') > -1)
 		return 'string';
 	    else if (attr.indexOf('int') > -1)
 		return 'integer';
@@ -116,9 +122,13 @@ define([
 		return 'float';
 	    else if (attr === 'bool')
 		return 'bool';
-	    else if (attr === 'set' || attr === 'enumeration')
-		return 'string';
+	    else
+		return undefined;
 	};
+
+	var isPointer = function(attr) {
+	    return attr === 'object';
+	}
 
     };
 
