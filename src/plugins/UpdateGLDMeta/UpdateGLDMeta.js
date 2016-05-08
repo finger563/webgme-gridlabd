@@ -227,7 +227,9 @@ define([
 			}
 			return result;
 		    }
-		    enums = combinations(enums.join(''));
+		    var singles = enums.filter(function(v) { return v.length == 1; });
+		    var multiples = enums.filter(function(v) { return v.length > 1; });
+		    enums = multiples.concat(combinations(singles.join('')));
 		}
 		var attr = {
 		    name: results[3],
