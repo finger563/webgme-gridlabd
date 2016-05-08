@@ -108,29 +108,30 @@ define([
 	lines.map((line) => {
 	    if (results = class_regex.exec(line)) {
 		depth++;
-		var name = results[1];
-		if (objects[name] === undefined) {
-		    self.logger.info('got class: ' + name);
-		    currentObj = {
-			name: name,
-			attributes: [],
-			pointers: [],
-			base: undefined
-		    };
-		    objStrings[depth] = [];
+		if (depth === 1) {
+		    var name = results[1];
+		    if (objects[name] === undefined) {
+			self.logger.info('got class: ' + name);
+			currentObj = {
+			    name: name,
+			    attributes: [],
+			    pointers: [],
+			    base: undefined
+			};
+			objStrings = [];
+		    }
 		}
 	    }
 	    else if (class_end_regex.test(line)) {
-		if (objStrings[depth] instanceof Array &&
-		    objStrings[depth].length > 0) {
-		    currentObj = self.parseObjectString(currentObj, objStrings[depth]);
+		if (depth === 1) {
+		    currentObj = self.parseObjectString(currentObj, objStrings);
 		    objects[currentObj.name] = currentObj;
-		    objStrings.pop();
+		    objStrings = [];
 		}
 		depth--;
 	    }
-	    else if (objStrings[depth] instanceof Array) {
-		objStrings[depth].push(line);
+	    else if (depth === 1) {
+		objStrings.push(line);
 	    }
 	});
 	self.objects = objects;
@@ -251,11 +252,11 @@ define([
 		var bases = [];
 		while (base) {
 		    bases.push(base);
-		    base = base.base;
+		    base = self.objects[base].base;
 		}
-		self.logger.info(bases);
+		//self.logger.info('bases: ' + bases);
 		for (var i= bases.length-1; i>=0; i--) {
-		    if (self.createdObjects.indexOf(bases[i]) > -1) {
+		    if (self.createdObjects.indexOf(bases[i]) == -1) {
 			var b = self.objects[bases[i]];
 			self.createMetaNode(b.name, b.base, b.attributes, b.pointers);
 			self.createdObjects.push(bases[i]);
@@ -270,8 +271,9 @@ define([
     var prevY = 100;
 
     UpdateGLDMeta.prototype.createMetaNode = function(name, base, attrs, ptrs) {
-	if (this.META[name]) {
+	if (this.META[name] || this.nodeMap[name]) {
 	    this.logger.warn('"' + name + '" already exists!');
+	    return;
 	}
 
 	if (!this.META.Language) {
@@ -320,7 +322,7 @@ define([
 	else {
 	    base = this.nodeMap[base];
 	}
-	
+
 	var node = this.core.createNode({
 	    parent: this.META.Language,
 	    base: base
@@ -340,7 +342,6 @@ define([
 	this.core.setRegistry(node, 'position', {x: 100, y: prevY})
 	prevY += 100;
 
-	/*
 	// set the attributes
 	if (attrs) {
 	    attrs.forEach((attr, index) => {
@@ -350,7 +351,7 @@ define([
 		this.addAttribute(name, node, desc);
 	    });
 	}
-
+	/*
 	// set the pointers
 	if (ptrs) {
 	    ptrs.map((ptr) => {
@@ -396,9 +397,9 @@ define([
     UpdateGLDMeta.prototype.addPointer = function(name, node, desc) {
 	if (name == 'from')
 	    name = 'src';
-	if (name == 'to')
+	else if (name == 'to')
 	    name = 'dst';
-	this.core.setPointerMetaTarget(node, name, desc.target, desc.min || -1, desc.max || -1);
+	this.core.setPointerMetaTarget(node, name, this.nodeMap[desc.target], desc.min || -1, desc.max || -1);
     };
 
     return UpdateGLDMeta;

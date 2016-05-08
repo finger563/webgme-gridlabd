@@ -5,12 +5,12 @@
 define([], function () {
     'use strict';
     return {
-        'Class': '/z/7',
+        'Class': '/0/J',
         'FCO': '/1',
-        'Language': '/z',
-        'Model': '/z/R',
-        'Module': '/z/E',
-        'Object': '/z/A',
-        'Parent': '/z/X1',
+        'Language': '/0',
+        'Model': '/0/b',
+        'Module': '/0/l',
+        'Object': '/0/2',
+        'Parent': '/0/4',
     };
 });
