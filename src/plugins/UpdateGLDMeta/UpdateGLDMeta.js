@@ -111,7 +111,7 @@ define([
 		if (depth === 1) {
 		    var name = results[1];
 		    if (objects[name] === undefined) {
-			self.logger.info('got class: ' + name);
+			//self.logger.info('got class: ' + name);
 			currentObj = {
 			    name: name,
 			    attributes: [],
@@ -138,49 +138,51 @@ define([
     };
 
     UpdateGLDMeta.prototype.parseObjectString = function (obj, lines) {
-	var self = this,
-	    attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/g,
-	    enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/g,
-	    value_regex = /(\w+)=(\d+)/gi,
-	    results;
+	var self = this;
 
 	var convertAttrToType = function(attr) {
-	    if (attr === 'complex' ||
-		attr === 'set' ||
-		attr === 'enumeration' ||
-		attr === 'loadshape' ||
-		attr === 'enduse' ||
-		attr === 'timestamp' ||
+	    if (attr == 'complex' ||
+		attr == 'set' ||
+		attr == 'enumeration' ||
+		attr == 'loadshape' ||
+		attr == 'enduse' ||
+		attr == 'timestamp' ||
 		attr.indexOf('char') > -1)
 		return 'string';
 	    else if (attr.indexOf('int') > -1)
 		return 'integer';
-	    else if (attr === 'double')
+	    else if (attr == 'double')
 		return 'float';
-	    else if (attr === 'bool')
+	    else if (attr == 'bool')
 		return 'bool';
 	    else
 		return undefined;
 	};
 
 	var isPointer = function(attr) {
-	    return attr === 'object';
+	    return attr == 'object';
 	};
 
 	var isParent = function(attr) {
-	    return attr === 'parent';
+	    return attr == 'parent';
 	};
 
 	lines.map((line) => {
+	    var attr_regex = /(\w+)\s([\w]+)(\[\S+\])?;/g,
+		enum_set_regex = /(enumeration|set)\s\{([\S ]+)\}\s(\w+);/g,
+		value_regex = /(\w+)=(\d+)/gi,
+		results;
 	    if (results = attr_regex.exec(line)) {
 		var kind = convertAttrToType(results[1]);
-		if (kind === undefined) { // must be object or parent
+		if (kind == undefined) { // must be object or parent
 		    if (isParent(results[1])) {
 			obj.base = results[2];
 		    }
 		    else if (isPointer(results[1])) {
 			var ptr = {
-			    name: results[2]
+			    name: results[2],
+			    min: 0,
+			    max: 1
 			};
 			obj.pointers.push(ptr);
 		    }
@@ -203,7 +205,7 @@ define([
 		    enums.push(vals[1]);
 		    vals = value_regex.exec(results[2]);
 		}
-		if (results[1] === 'set' && // need to combine the entries
+		if (results[1] == 'set' && // need to combine the entries
 		    enums.indexOf('UNKNOWN') == -1) {
 		    var combinations = function (string)
 		    {
@@ -333,10 +335,12 @@ define([
 	// add to the META sheet
 	this.core.addMember(this.rootNode, 'MetaAspectSet', node);
 
+	/*
 	// add to the specific sheet
 	var set = this.core.getSetNames(this.rootNode)
 	    .find(name => name !== 'MetaAspectSet');
 	this.core.addMember(this.rootNode, set, node);
+	*/
 
 	// position the node based on the position of the most recently created node on that sheet
 	this.core.setRegistry(node, 'position', {x: 100, y: prevY})
@@ -351,7 +355,6 @@ define([
 		this.addAttribute(name, node, desc);
 	    });
 	}
-	/*
 	// set the pointers
 	if (ptrs) {
 	    ptrs.map((ptr) => {
@@ -360,7 +363,6 @@ define([
 		this.addPointer(name, node, desc);
 	    });
 	}
-	*/
     };
 
     UpdateGLDMeta.prototype.addAttribute = function(name, node, desc) {
@@ -399,7 +401,9 @@ define([
 	    name = 'src';
 	else if (name == 'to')
 	    name = 'dst';
-	this.core.setPointerMetaTarget(node, name, this.nodeMap[desc.target], desc.min || -1, desc.max || -1);
+	this.core.setPointerMetaLimits(node, name, 0, 1);
+	this.core.setPointerMetaTarget(node, name, this.META.Object, 0, 1);
+	this.core.setPointer(node, name, null);
     };
 
     return UpdateGLDMeta;
