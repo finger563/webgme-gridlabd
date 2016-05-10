@@ -155,6 +155,8 @@ define([
 		if (objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
+		if (obj.base == 'class' || obj.base == 'module')
+		    self.logger.error(obj);
 		// add to model
 		objDict[obj.name] = obj;
 		self.newModel.children.push(obj);
@@ -371,12 +373,44 @@ define([
     };
 
     ImportGLM.prototype.parseModuleLine = function(line, obj) {
-	var self = this;
+	// <variable> <expression>; 
+	var self = this,
+	    attr_regex = /(\w+)\s+([^;]*);/g,
+	    results;
+	if (results = attr_regex.exec(line)) {
+	    var attr = {
+		name: results[1],
+		value: results[2]
+	    };
+	    obj.attributes.push(attr);
+	}
 	return obj;
     };
 
     ImportGLM.prototype.parseClassLine = function(line, obj) {
-	var self = this;
+	// <type> <property>[<unit>]; 
+	var self = this,
+	    attr_regex = /(\w+)\s+(\w+)(?:\[(\w+)\])?;/g,
+	    results;
+	if (results = attr_regex.exec(line)) {
+	    var propDef = {
+		base: "PropertyDef",
+		name: results[2],
+		attributes: [
+		    {
+			name: "Type",
+			value: results[1]
+		    }
+		]
+	    };
+	    if (results[3]) {
+		propDef.attributes.push({
+		    name: "Unit",
+		    value: results[3]
+		});
+	    }
+	    obj.children.push(propDef);
+	}
 	return obj;
     };
 
