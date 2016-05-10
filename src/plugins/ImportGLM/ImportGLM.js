@@ -19,6 +19,8 @@ define([
     Q) {
     'use strict';
 
+    pluginMetadata = JSON.parse(pluginMetadata);
+
     /**
      * Initializes a new instance of ImportGLM.
      * @class
@@ -67,7 +69,7 @@ define([
 	// fill this out before creating the WebGME nodes
 	self.newModel = {
 	    children: [],
-	    attributes: {}
+	    attributes: []
 	};
 
 	var currentConfig = self.getCurrentConfig(),
@@ -94,12 +96,12 @@ define([
 		return self.parseObjectsFromGLM(glmFile);
 	    })
 	    .then(function() {
-		return self.createModelArtifacts();
+		//return self.createModelArtifacts();
 	    })
 	    .then(function() {
 		// This will save the changes. If you don't want to save;
 		// exclude self.save and call callback directly from this scope.
-		return self.save('ImportGLM updated model.');
+		//return self.save('ImportGLM updated model.');
 	    })
 	    .then(function() {
 		self.result.setSuccess(true);
@@ -125,7 +127,7 @@ define([
 	    var macro_regex = /^#/gm,
 		module_def_regex = /module\s+(\w+);/gm,
 		container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
-		container_end_regex = /};?$/gm;
+		container_end_regex = /};?/gm;
 	    if (macro_regex.test(line)) {
 		var obj = self.parseMacro(line, self.newModel);
 		self.newModel.children.push(obj);
@@ -135,7 +137,8 @@ define([
 	    }
 	    else if (container_regex.test(line)) {
 		// start object / module / class / clock / schedule
-		objByDepth.push( self.getObjStub(line) );
+		var obj = self.getObjStub(line);
+		objByDepth.push(obj);
 		objLinesByDepth.push([line]);
 	    }
 	    else if (container_end_regex.test(line)) {
@@ -160,13 +163,18 @@ define([
 		}
 		// work out parent
 		if (objByDepth.length > 0) {
-		    obj.parent = objByDepth[objByDepth.length-1];
+		    obj.attributes.push({
+			name: 'parent',
+			value: objByDepth[objByDepth.length-1]
+		    });
+		    self.logger.info('obj: '+obj.name+' parent: '+objByDepth[objByDepth.length-1].type);
 		}
 		// add to model
 		self.newModel.children.push(obj);
 	    }
-	    else {
+	    else if (line.length > 0 && objLinesByDepth.length > 0){
 		// add to current object list
+		//self.logger.info('obj '+objByDepth[objByDepth.length-1].name+' adding line: '+line);
 		objLinesByDepth[objLinesByDepth.length - 1].push(line);
 	    }
 	});
@@ -179,6 +187,7 @@ define([
 		type: null,
 		base: null,
 		attributes: [],
+		children: [],
 		pointers: []
 	    },
 	    results = container_regex.exec(line);
@@ -252,19 +261,28 @@ define([
 
     ImportGLM.prototype.parseClock = function(lines, obj) {
 	var self = this;
-	var patterns = [
-		/(timestamp)\s+'([^\/\n\r\v]*)';/gi,
-		/(stoptime)\s+'([^\/\n\r\v]*)';/gi,
-		/(timezone)\s+([^\/\n\r\v]*);/gi
-	];
-
-	patterns.map(function(pattern) {
-	    var matches = pattern.exec(str);
-	    while (matches != null) {
-		var key = matches[1];
-		var value = matches[2];
-		obj.attributes[key] = value;
-		matches = pattern.exec(str);
+	lines.map((line) => {
+	    var ts_regex = /timestamp\s+'([^\/\n\r\v]*)';/gi,
+		st_regex = /stoptime\s+'([^\/\n\r\v]*)';/gi,
+		tz_regex = /timezone\s+([^\/\n\r\v]*);/gi,
+		results;
+	    if (results = ts_regex.exec(line)) {
+		obj.attributes.push({
+		    name: 'Timestamp',
+		    value: results[1]
+		});
+	    }
+	    else if (results = st_regex.exec(line)) {
+		obj.attributes.push({
+		    name: 'Stoptime',
+		    value: results[1]
+		});
+	    }
+	    else if (results = tz_regex.exec(line)) {
+		obj.attributes.push({
+		    name: 'Timezone',
+		    value: results[1]
+		});
 	    }
 	});
 	return obj;
@@ -272,7 +290,6 @@ define([
 
     ImportGLM.prototype.parseSchedule = function(lines, obj) {
 	var self = this,
-	    lines = str.split('\n'),
 	    id = 0;
 	lines.map(function(line) {
 	    var pattern = /([\s]+[\d\*\.]+[\-\.\d]*)+/gi; 
@@ -303,12 +320,35 @@ define([
     };
 
     ImportGLM.prototype.parseModule = function(lines, obj) {
+	var self = this;
+	lines.map(function(line) {
+	});
 	return obj;
     };
 
     ImportGLM.prototype.parseClass = function(lines, obj) {
 	var self = this;
-	lines.map(function(line) {
+	lines.map((line) => {
+	});
+	return obj;
+    };
+
+    ImportGLM.prototype.parseObject = function(lines, obj) {
+	var self = this;
+	lines.map((line) => {
+	    var attr_regex = /(\w+)\s+(.*);/gm,
+		results;
+	    if (results = attr_regex.exec(line)) {
+		var attr = {
+		    name: results[1],
+		    value: results[2]
+		};
+		//self.logger.info('got attr: '+attr.name + ': '+attr.value);
+		obj.attributes.push(attr);
+		if (attr.name == 'name') {
+		    obj.name = attr.value;
+		}
+	    }
 	});
 	return obj;
     };
