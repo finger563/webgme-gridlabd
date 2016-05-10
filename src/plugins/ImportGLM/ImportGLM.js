@@ -420,81 +420,50 @@ define([
     // self.core.getValidAttributeNames(self.META[<type>])
     // self.core.getValidPointerNames(self.META[<type>])
     
-    ImportGLM.prototype.saveObject = function(obj, parent) {
+    ImportGLM.prototype.saveObject = function(obj) {
 	var self = this;
-	if ( obj.type == 'schedule' ){
-	    self.saveSchedule(obj, parent);
-	}
-	else if ( obj.type ) {
-	    var newNode = self.core.createNode({parent: parent, base: self.META[obj.type]});
-	    if (obj.name) {
-		self.core.setAttribute(newNode, 'name', obj.name);
+	var base = obj.type || obj.base;
+	var newNode = self.core.createNode({parent: self.newModel.node, base: self.META[base]});
+	self.core.setAttribute(newNode, 'name', obj.name);
+	obj.attributes.map((attr) => {
+	    // set any attributes here
+	    self.core.setAttribute(newNode, attr.name, attr.value);
+	});
+	obj.pointers.map((ptr) => {
+	    // create any pointers here
+	    var ptrObj = self.createdObjects[ptr.target];
+	    if (!ptrObj) {
+		self.saveObject(ptr.target);
 	    }
-	    for (var a in obj.attributes) {
-		var val = obj.attributes[a];
-		self.core.setAttribute(newNode, a, val);
+	    self.core.setPointer(newNode, ptr.name, ptrObj.node);
+	});
+	obj.node = newNode;
+	if (obj.parent) {
+	    // create parent object with src/dst here
+	    var parentObj = self.createdObjects[obj.parent];
+	    if (!parentObj) {
+		self.saveObject(obj.parent);
 	    }
-	    obj.node = newNode;
-	    obj.children.map(function(child) {
-		self.saveObject(child, newNode);
-	    });
+	    var parent = self.core.createNode({parent: self.newModel.node, base: self.META.Parent});
+	    self.core.setPointer(parent, 'src', obj.node);
+	    self.core.setPointer(parent, 'dst', parentObj);
 	}
-    };
-
-    ImportGLM.prototype.getObjectName = function(str) {
-	var self = this;
-	var name = str;
-	if ( name && name.indexOf(':') > -1 ) {
-	    name = name.split(':')[1];
-	}
-	return name;
-    };
-
-    ImportGLM.prototype.resolveReferences = function(obj, modelNode) {
-	var self = this;
-	if ( obj.attributes.parent ) {
-	    var src = obj.node;
-	    var p = self.getObjectName(obj.attributes.parent);
-	    var dst = self.newModel.children.filter(function(c) { return c.name == p; })[0].node;
-	    var link = self.core.createNode({parent:modelNode, base: self.META.FCO});
-	    self.core.setAttribute(link, 'name', 'parent');
-	    self.core.setPointer(link, 'src', src);
-	    self.core.setPointer(link, 'dst', dst);
-	    self.core.delAttribute(obj.node, 'parent');
-	}
-	var pointerAttrs = self.objectTypeToPointerMap(obj.type);
-	if (pointerAttrs) {
-	    pointerAttrs.map(function(pointerAttr) {
-		var attrName = pointerAttr[0];
-		var pointerName = pointerAttr[1];
-		var dst = self.getObjectName(obj.attributes[attrName]);
-		if (dst) {
-		    var dstObj = self.newModel.children.filter(function(c) { return c.name == dst; })[0];
-		    if ( dstObj ) {
-			self.core.setPointer(obj.node, pointerName, dstObj.node);
-			self.core.delAttribute(obj.node, attrName);
-		    }
-		}
-	    });
-	}
+	self.createdObjects[obj.name] = obj;
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
 	// use self.newModel
 	var self = this;
-	var fcoNode = self.core.getBaseRoot(self.activeNode);
+	self.createdObjects = {};
 	var modelMetaNode = self.META.Model;
 	var modelNode = self.core.createNode({parent: self.activeNode, base: modelMetaNode});
 	self.core.setAttribute(modelNode, 'name', self.newModel.name);
-	for (var ai in self.newModel.attributes) {
-	    var val = self.newModel.attributes[ai];
-	    self.core.setAttribute(modelNode, ai, val);
-	}
+	self.newModel.attributes.map((attr) => {
+	    self.core.setAttribute(modelNode, attr.name, attr.value);
+	});
+	self.newModel.node = modelNode;
 	self.newModel.children.map(function(obj) {
 	    self.saveObject(obj, modelNode);
-	});
-	self.newModel.children.map(function(obj) {
-	    self.resolveReferences(obj, modelNode);
 	});
     };
 
