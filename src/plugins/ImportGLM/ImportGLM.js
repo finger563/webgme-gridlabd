@@ -155,8 +155,6 @@ define([
 		if (objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
-		if (obj.base == 'class' || obj.base == 'module')
-		    self.logger.error(obj);
 		// add to model
 		objDict[obj.name] = obj;
 		self.newModel.children.push(obj);
@@ -200,6 +198,34 @@ define([
 	    }
 	});
     };
+    
+
+    var objNames = {};
+
+    ImportGLM.prototype.parseObjectName = function(name, obj) {
+	name = name.replace(/[^:]*:/g,'');
+	if (obj.base == 'object') {
+	    var index = name.indexOf('..');
+	    if (index == 0) { // ..<count>
+		if (objNames[obj.type] == undefined) {
+		    objNames[obj.type] = 0;
+		}
+		name = obj.type + objNames[obj.type];
+		objNames[obj.type]++;
+	    }
+	    else if (index > 0) { // <start id>..<end id>
+		var splits = name.split('..');
+		var startId = +splits[0];
+		var endId = +splits[1];
+		if (objNames[obj.type] == undefined) {
+		    objNames[obj.type] = startId;
+		}
+		name = obj.type + objNames[obj.type];
+		objNames[obj.type]++;
+	    }
+	}
+	return name;
+    }
 
     ImportGLM.prototype.getObjStub = function(line) {
 	var container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
@@ -224,7 +250,8 @@ define([
 	    }
 	    else if (obj.base == 'object') {
 		obj.type = results[2];
-		obj.name = results[3];
+		if (results[3])
+		    obj.name = this.parseObjectName(results[3], obj);
 	    }
 	}
 	return obj;
@@ -334,6 +361,7 @@ define([
 	    var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
 	    if ( splits.length >= 5 ) {
 		var entry = {
+		    base: 'Entry',
 		    name: 'Entry_' + id,
 		    attributes: [
 			{
