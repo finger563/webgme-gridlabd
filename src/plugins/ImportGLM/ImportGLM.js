@@ -117,7 +117,8 @@ define([
     ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
 	var self = this,
-	    objByDepth = [];
+	    objByDepth = [],
+	    results;
 	// remove the comments
 	glmFile = self.removeComments(glmFile);
 	// split the file into lines
@@ -131,8 +132,13 @@ define([
 		var obj = self.parseMacro(line, self.newModel);
 		self.newModel.children.push(obj);
 	    }
-	    else if (module_def_regex.test(line)) {
+	    else if (results=module_def_regex.exec(line)) {
 		// simple module def
+		var obj = self.getObjStub(line);
+		obj.base = 'module';
+		obj.name = results[1];
+		self.logger.error(obj);
+		self.newModel.children.push(obj);
 	    }
 	    else if (container_regex.test(line)) {
 		// start object / module / class / clock / schedule
@@ -145,12 +151,11 @@ define([
 		// work out parent
 		if (objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
-		    self.logger.info('obj: '+obj.name+' parent: '+obj.parent);
 		}
 		// add to model
 		self.newModel.children.push(obj);
 	    }
-	    else if (line.length > 0){
+	    else if (line.length > 0 && objByDepth.length){
 		var obj = objByDepth[objByDepth.length - 1];
 		// parse based on the specific type
 		if (obj.base == 'object') {
@@ -184,17 +189,19 @@ define([
 		pointers: []
 	    },
 	    results = container_regex.exec(line);
-	obj.base = results[1];
-	if (obj.base == 'clock') {
-	}
-	else if (obj.base == 'schedule' ||
-		 obj.base == 'module' ||
-		 obj.base == 'class') {
-	    obj.name = results[2];
-	}
-	else if (obj.base == 'object') {
-	    obj.type = results[2];
-	    obj.name = results[3];
+	if (results) {
+	    obj.base = results[1];
+	    if (obj.base == 'clock') {
+	    }
+	    else if (obj.base == 'schedule' ||
+		     obj.base == 'module' ||
+		     obj.base == 'class') {
+		obj.name = results[2];
+	    }
+	    else if (obj.base == 'object') {
+		obj.type = results[2];
+		obj.name = results[3];
+	    }
 	}
 	return obj;
     };
@@ -310,7 +317,7 @@ define([
 			    name: "Weekdays",
 			    value: splits[4]
 			}
-		    }
+		    ]
 		};
 		if (splits.length > 5)
 		    entry.attributes.push({
@@ -351,7 +358,6 @@ define([
 		obj.name = attr.value;
 	    }
 	}
-	self.logger.error(obj);
 	return obj;
     };
 
