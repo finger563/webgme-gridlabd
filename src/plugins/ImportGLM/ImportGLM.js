@@ -123,11 +123,15 @@ define([
 	var lines = glmFile.split('\n');
 	lines.map((line) => {
 	    var macro_regex = /^#/gm,
+		module_def_regex = /module\s+(\w+);/gm,
 		container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
 		container_end_regex = /};?$/gm;
 	    if (macro_regex.test(line)) {
 		var obj = self.parseMacro(line, self.newModel);
 		self.newModel.children.push(obj);
+	    }
+	    else if (module_def_regex.test(line)) {
+		// simple module def
 	    }
 	    else if (container_regex.test(line)) {
 		// start object / module / class / clock / schedule
@@ -138,10 +142,27 @@ define([
 		// end object / module / class / clock / schedule
 		var obj = objByDepth.pop();
 		var objLines = objLinesByDepth.pop();
-		obj = self.parseObject(objLines, obj);
+		// parse based on the specific type
+		if (obj.base == 'object') {
+		    obj = self.parseObject(objLines, obj);
+		}
+		else if (obj.base == 'class') {
+		    obj = self.parseClass(objLines, obj);
+		}
+		else if (obj.base == 'module') {
+		    obj = self.parseModule(objLines, obj);
+		}
+		else if (obj.base == 'clock') {
+		    obj = self.parseClock(objLines, obj);
+		}
+		else if (obj.base == 'schedule') {
+		    obj = self.parseSchedule(objLines, obj);
+		}
+		// work out parent
 		if (objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
+		// add to model
 		self.newModel.children.push(obj);
 	    }
 	    else {
@@ -215,18 +236,17 @@ define([
     ImportGLM.prototype.parseVariable = function(line) {
 	// environment variables set by: #setenv <variable>=<expression>
 	var self = this,
-	    obj,
+	    obj = {
+		name: null,
+		base: 'Variable',
+		attributes: [
+		    {
+			name: 'Expression',
+			value: null
+		    }
+		]
+	    },
 	    regex = /#setenv\s+(\S+)\s*=\s*([\w '"]+);?/gim;
-	obj = {
-	    name: null,
-	    base: 'Variable',
-	    attributes: [
-		{
-		    name: 'Expression',
-		    value: null
-		}
-	    ]
-	};
 	return obj;
     };
 
@@ -261,8 +281,8 @@ define([
 		var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
 		if ( splits.length >= 5 ) {
 		    var entry = {
+			name: 'Entry_' + id++,
 			attributes: {
-			    name: 'Entry_' + id++,
 			    Minutes: splits[0],
 			    Hours: splits[1],
 			    Days: splits[2],
@@ -279,141 +299,18 @@ define([
 		}
 	    }
 	});
-	self.newModel.children.push(obj);
+	return obj;
     };
 
     ImportGLM.prototype.parseModule = function(lines, obj) {
-	regex = /^module (\w+);$/gim;
-	matches = regex.exec(str);
-	while (matches != null) {
-	    var moduleName = matches[1];
-	    var obj = {
-		name: moduleName,
-		type: 'module',
-		base: 'module',
-		children: [],
-		attributes: {},
-		pointers: {}
-	    };
-	    self.newModel.children.push(obj);
-	    matches = regex.exec(str);
-	}
+	return obj;
     };
 
-    ImportGLM.prototype.parseClass = function(str, obj) {
+    ImportGLM.prototype.parseClass = function(lines, obj) {
 	var self = this;
-	var splitString = /[\s;]+/gi;
-	var splits;
-	var lines = str.split('\n');
 	lines.map(function(line) {
-	    splits = line.split(splitString)
-		.filter(function(obj) { return obj.length > 0; });
-	    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
-		obj.attributes[splits[1]] = splits[0];
-	    }
 	});
-	self.newModel.children.push(obj);
-    };
-
-    ImportGLM.prototype.parseObject = function(str, parent) {
-	var self = this;
-	var splitString = /[\s\{]+/gi;
-	var submodel_str = '';
-	var submodels = [];
-	var currentObj = undefined;
-	var depth = 0;
-	var lines = str.split('\n');
-	var splits;
-	lines.map(function(line) {
-	    if ( !line ) return;
-	    if ( line.indexOf('{') > -1 ) {
-		if ( depth == 0 ) {
-		    splits = line.split(splitString).filter(function(obj) { return obj.length > 0; });
-		    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
-			var base = splits[0];
-			var type;
-			var name;
-			if (splits[1] && splits[1].indexOf(':') > -1) {
-			    var tmp = splits[1].split(':');
-			    type = tmp[0];
-			    name = tmp[1];
-			}
-			else if (splits[1]) {
-			    type = splits[1];
-			}
-			currentObj = {
-			    type: type,
-			    base: base,
-			    name: name,
-			    children: [],
-			    attributes: {},
-			    pointers: {}
-			};
-		    }
-		}
-		else {
-		    submodel_str += line +'\n';
-		}
-		depth += 1;
-	    }
-	    else if ( line.indexOf('}') > -1 ) {
-		depth -= 1;
-		if ( depth == 0 ) {
-		    if (currentObj) {
-			if (currentObj.base == 'clock') {
-			    currentObj.type = currentObj.base;
-			    currentObj.attributes = {};
-			    self.parseClock(submodel_str, currentObj);
-			}
-			else if (currentObj.base == 'schedule') {
-			    currentObj.name = currentObj.type;
-			    currentObj.type = currentObj.base;
-			    currentObj.attributes = {};
-			    self.parseSchedule(submodel_str, currentObj);
-			}
-			else if (currentObj.base == 'class') {
-			    currentObj.name = currentObj.type;
-			    currentObj.type = currentObj.base;
-			    currentObj.attributes = {};
-			    self.parseClass(submodel_str, currentObj);
-			}
-			else {
-			    submodels.push({string:submodel_str, object:currentObj});
-			}
-			currentObj = undefined;
-			submodel_str = '';
-		    }
-		}
-		else {
-		    submodel_str += line + '\n';
-		}
-	    }
-	    else {
-		if (depth >= 1) {
-		    // parse property here
-		    splits = line.split(/;/gi).filter(function(s) { return s.length > 0; });
-		    //self.logger.error(splits);
-		    if (splits && splits[0].indexOf('//') == -1) { // don't want comments
-			if (depth == 1) {
-			    var newSplits = splits[0].split(/\s/g).filter(function(s) { return s.length > 0; });
-			    var attr = newSplits[0];
-			    var val = newSplits.slice(1).join(' ').replace(/"/g,'');
-			    if (attr=='name') {
-				currentObj.name = val;
-			    }
-			    currentObj.attributes[attr] = val;
-			}
-			submodel_str += line + '\n';
-		    }
-		}
-	    }
-	});
-	submodels.map(function(subModel) {
-	    self.parseObject(subModel.string, subModel.object);
-	    if (parent !== self.newModel)
-		subModel.object.attributes.parent = parent.name;
-	    self.newModel.children.push(subModel.object);
-	});
+	return obj;
     };
 
     // When saving the objects, need to check against META to figure out what the relevant pointers and attributes are:
