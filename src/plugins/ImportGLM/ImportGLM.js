@@ -114,42 +114,123 @@ define([
 
     ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
-	var self = this;
-	self.parseHeader(glmFile);
-	self.parseObject(glmFile, self.newModel);
-	//self.logger.error(JSON.stringify(self.newModel,null,2));
+	var self = this,
+	    objLinesByDepth = [],
+	    objByDepth = [];
+	// remove the comments
+	glmFile = self.removeComments(glmFile);
+	// split the file into lines
+	var lines = glmFile.split('\n');
+	lines.map((line) => {
+	    var macro_regex = /^#/gm,
+		container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
+		container_end_regex = /};?$/gm;
+	    if (macro_regex.test(line)) {
+		var obj = self.parseMacro(line, self.newModel);
+		self.newModel.children.push(obj);
+	    }
+	    else if (container_regex.test(line)) {
+		// start object / module / class / clock / schedule
+		objByDepth.push( self.getObjStub(line) );
+		objLinesByDepth.push([line]);
+	    }
+	    else if (container_end_regex.test(line)) {
+		// end object / module / class / clock / schedule
+		var obj = objByDepth.pop();
+		var objLines = objLinesByDepth.pop();
+		obj = self.parseObject(objLines, obj);
+		if (objByDepth.length > 0) {
+		    obj.parent = objByDepth[objByDepth.length-1];
+		}
+		self.newModel.children.push(obj);
+	    }
+	    else {
+		// add to current object list
+		objLinesByDepth[objLinesByDepth.length - 1].push(line);
+	    }
+	});
     };
 
-    ImportGLM.prototype.parseHeader = function(str) {
-	var self = this;
-	var regex = /#(\S+)\s+(\S+)\s*=\s*([\S ]+)(?:;)?/gi;
-	var matches = regex.exec(str);
-	while (matches != null) {
-	    var cmd = matches[1];
-	    var variable = matches[2];
-	    var value = matches[3].replace(/;/gi,'').replace(/'/gi,'');
-	    self.newModel.attributes[variable] = value;
-	    //self.logger.error('got ' + cmd + ' for variable ' + variable + ' and value ' + value);
-	    matches = regex.exec(str);
+    ImportGLM.prototype.getObjStub = function(line) {
+	var container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
+	    obj = {
+		name: null,
+		type: null,
+		base: null,
+		attributes: [],
+		pointers: []
+	    },
+	    results = container_regex.exec(line);
+	obj.base = results[1];
+	if (obj.base == 'clock') {
 	}
-	regex = /^module (\w+);$/gim;
-	matches = regex.exec(str);
-	while (matches != null) {
-	    var moduleName = matches[1];
-	    var obj = {
-		name: moduleName,
-		type: 'module',
-		base: 'module',
-		children: [],
-		attributes: {},
-		pointers: {}
-	    };
-	    self.newModel.children.push(obj);
-	    matches = regex.exec(str);
+	else if (obj.base == 'schedule' ||
+		 obj.base == 'module' ||
+		 obj.base == 'class') {
+	    obj.name = results[2];
 	}
+	else if (obj.base == 'object') {
+	    obj.type = results[2];
+	    obj.name = results[3];
+	}
+	return obj;
     };
 
-    ImportGLM.prototype.parseClock = function(str, obj) {
+    ImportGLM.prototype.removeComments = function(str) {
+	var self = this,
+	    regex = /(?:[\s]*|^)\/\/.*$/gm;
+	return str.replace(regex, '');
+    };
+    
+    ImportGLM.prototype.parseMacro = function(line) {
+	// parses anything in GLM that starts with '#'
+	var self = this,
+	    obj;
+	if (line.indexOf('#setenv') > -1)
+	    obj = self.parseVariable(line);
+	else
+	    obj = self.parseGlobal(line);
+	return obj;
+    };
+
+    ImportGLM.prototype.parseGlobal = function(line) {
+	// globals set by: #set <global>="<value>"
+	//             or: #define <global>="<value>"
+	var self = this,
+	    obj,
+	    regex = /#(define|set)\s+(\S+)\s*=\s*([\w '"]+);?/gim;
+	obj = {
+	    name: null,
+	    base: 'Global',
+	    attributes: [
+		{
+		    name: 'Value',
+		    value: null
+		}
+	    ]
+	};
+	return obj;
+    };
+
+    ImportGLM.prototype.parseVariable = function(line) {
+	// environment variables set by: #setenv <variable>=<expression>
+	var self = this,
+	    obj,
+	    regex = /#setenv\s+(\S+)\s*=\s*([\w '"]+);?/gim;
+	obj = {
+	    name: null,
+	    base: 'Variable',
+	    attributes: [
+		{
+		    name: 'Expression',
+		    value: null
+		}
+	    ]
+	};
+	return obj;
+    };
+
+    ImportGLM.prototype.parseClock = function(lines, obj) {
 	var self = this;
 	var patterns = [
 		/(timestamp)\s+'([^\/\n\r\v]*)';/gi,
@@ -166,70 +247,57 @@ define([
 		matches = pattern.exec(str);
 	    }
 	});
-	self.newModel.children.push(obj);
+	return obj;
     };
 
-    ImportGLM.prototype.parseSchedule = function(str, obj) {
-	var self = this;
-	var lines = str.split('\n');
-	obj.entries = [];
+    ImportGLM.prototype.parseSchedule = function(lines, obj) {
+	var self = this,
+	    lines = str.split('\n'),
+	    id = 0;
 	lines.map(function(line) {
 	    var pattern = /([\s]+[\d\*\.]+[\-\.\d]*)+/gi; 
 	    var matches = pattern.exec(line);
 	    if (matches) {
 		var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
-		if ( splits.length >=5 ) {
+		if ( splits.length >= 5 ) {
 		    var entry = {
-			minutes: splits[0],
-			hours: splits[1],
-			days: splits[2],
-			months: splits[3],
-			weekdays: splits[4],
+			attributes: {
+			    name: 'Entry_' + id++,
+			    Minutes: splits[0],
+			    Hours: splits[1],
+			    Days: splits[2],
+			    Months: splits[3],
+			    Weekdays: splits[4]
+			}
 		    };
 		    if (splits.length > 5)
-			entry.value = splits[5];
-		    obj.entries.push(entry)
+			entry.attributes.Value = splits[5];
+		    obj.children.push(entry)
 		}
 		else {
-		    self.logger.error(line);
-		    self.logger.error(matches);
-		    self.logger.error(splits);
+		    throw new String('Schedule ' + obj.name + ' has improperly formmated entry: ' + line);
 		}
 	    }
 	});
 	self.newModel.children.push(obj);
     };
 
-    ImportGLM.prototype.saveSchedule = function(obj, parentNode) {
-	var self = this;
-	// save obj as node here (set the properties of the schedule)
-	var schedNode = self.core.createNode({parent: parentNode, base: self.META.schedule});
-	self.core.setAttribute(schedNode, 'name', obj.name);
-	var i =0;
-	obj.entries.map(function(entry) {
-	    var entryNode = self.core.createNode({parent: schedNode, base: self.META.schedule_entry});
-	    self.core.setAttribute(entryNode, 'name', 'Entry ' + i++);
-	    //self.logger.error(JSON.stringify(entry, null, 2));
-	    for (var a in entry) {
-		var val = entry[a];
-		self.core.setAttribute(entryNode, a, val);
-	    }
-	});
-    };
-
-    ImportGLM.prototype.parseMultiRecorder = function(str, obj) {
-	var self = this;
-	var splitString = /[\s;]+/gi;
-	var splits;
-	var lines = str.split('\n');
-	lines.map(function(line) {
-	    splits = line.split(splitString)
-		.filter(function(obj) { return obj.length > 0; });
-	    if ( splits.length > 0 && splits[0].indexOf('/') == -1 ) {
-		obj.attributes[splits[0]] = splits[1];
-	    }
-	});
-	self.newModel.children.push(obj);
+    ImportGLM.prototype.parseModule = function(lines, obj) {
+	regex = /^module (\w+);$/gim;
+	matches = regex.exec(str);
+	while (matches != null) {
+	    var moduleName = matches[1];
+	    var obj = {
+		name: moduleName,
+		type: 'module',
+		base: 'module',
+		children: [],
+		attributes: {},
+		pointers: {}
+	    };
+	    self.newModel.children.push(obj);
+	    matches = regex.exec(str);
+	}
     };
 
     ImportGLM.prototype.parseClass = function(str, obj) {
@@ -309,12 +377,6 @@ define([
 			    currentObj.attributes = {};
 			    self.parseClass(submodel_str, currentObj);
 			}
-			else if (currentObj.type == 'multi_recorder') {
-			    currentObj.name = currentObj.type;
-			    currentObj.type = currentObj.base;
-			    currentObj.attributes = {};
-			    self.parseMultiRecorder(submodel_str, currentObj);
-			}
 			else {
 			    submodels.push({string:submodel_str, object:currentObj});
 			}
@@ -354,6 +416,10 @@ define([
 	});
     };
 
+    // When saving the objects, need to check against META to figure out what the relevant pointers and attributes are:
+    // self.core.getValidAttributeNames(self.META[<type>])
+    // self.core.getValidPointerNames(self.META[<type>])
+    
     ImportGLM.prototype.saveObject = function(obj, parent) {
 	var self = this;
 	if ( obj.type == 'schedule' ){
@@ -382,60 +448,6 @@ define([
 	    name = name.split(':')[1];
 	}
 	return name;
-    };
-
-    ImportGLM.prototype.objectTypeToPointerMap = function(objType) {
-	var self = this;
-	// each entry in each array is an array of [attr name , pointer name]
-	var dict = {
-	    'underground_line': [
-		['from','src'],
-		['to','dst'],
-		['configuration','configuration'],
-	    ],
-	    'overhead_line': [
-		['from','src'],
-		['to','dst'],
-		['configuration','configuration'],
-	    ],
-	    'triplex_line': [
-		['from','src'],
-		['to','dst'],
-		['configuration','configuration'],
-	    ],
-	    'transformer': [
-		['from','src'],
-		['to','dst'],
-		['configuration','configuration'],
-	    ],
-	    'regulator': [
-		['from','src'],
-		['to','dst'],
-		['configuration','configuration'],
-		['sense_node','sense_node'],
-	    ],
-	    'line_configuration': [
-		['conductor_A','conductor_A'],
-		['conductor_B','conductor_B'],
-		['conductor_C','conductor_C'],
-		['conductor_N','conductor_N'],
-		['spacing','spacing'],
-	    ],
-	    'triplex_line_configuration': [
-		['conductor_1','conductor_1'],
-		['conductor_2','conductor_2'],
-		['conductor_N','conductor_N'],
-		['spacing','spacing'],
-	    ],
-	    'switch': [
-		['from','src'],
-		['to','dst'],
-	    ],
-	    'controller': [
-		['market','market'],
-	    ],
-	};
-	return dict[objType];
     };
 
     ImportGLM.prototype.resolveReferences = function(obj, modelNode) {
