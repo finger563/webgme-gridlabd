@@ -117,7 +117,6 @@ define([
     ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
 	var self = this,
-	    objLinesByDepth = [],
 	    objByDepth = [];
 	// remove the comments
 	glmFile = self.removeComments(glmFile);
@@ -139,43 +138,36 @@ define([
 		// start object / module / class / clock / schedule
 		var obj = self.getObjStub(line);
 		objByDepth.push(obj);
-		objLinesByDepth.push([line]);
 	    }
 	    else if (container_end_regex.test(line)) {
 		// end object / module / class / clock / schedule
 		var obj = objByDepth.pop();
-		var objLines = objLinesByDepth.pop();
-		// parse based on the specific type
-		if (obj.base == 'object') {
-		    obj = self.parseObject(objLines, obj);
-		}
-		else if (obj.base == 'class') {
-		    obj = self.parseClass(objLines, obj);
-		}
-		else if (obj.base == 'module') {
-		    obj = self.parseModule(objLines, obj);
-		}
-		else if (obj.base == 'clock') {
-		    obj = self.parseClock(objLines, obj);
-		}
-		else if (obj.base == 'schedule') {
-		    obj = self.parseSchedule(objLines, obj);
-		}
 		// work out parent
 		if (objByDepth.length > 0) {
-		    obj.attributes.push({
-			name: 'parent',
-			value: objByDepth[objByDepth.length-1]
-		    });
-		    self.logger.info('obj: '+obj.name+' parent: '+objByDepth[objByDepth.length-1].type);
+		    obj.parent = objByDepth[objByDepth.length-1];
+		    self.logger.info('obj: '+obj.name+' parent: '+obj.parent);
 		}
 		// add to model
 		self.newModel.children.push(obj);
 	    }
-	    else if (line.length > 0 && objLinesByDepth.length > 0){
-		// add to current object list
-		//self.logger.info('obj '+objByDepth[objByDepth.length-1].name+' adding line: '+line);
-		objLinesByDepth[objLinesByDepth.length - 1].push(line);
+	    else if (line.length > 0){
+		var obj = objByDepth[objByDepth.length - 1];
+		// parse based on the specific type
+		if (obj.base == 'object') {
+		    obj = self.parseObjectLine(line, obj);
+		}
+		else if (obj.base == 'class') {
+		    obj = self.parseClassLine(line, obj);
+		}
+		else if (obj.base == 'module') {
+		    obj = self.parseModuleLine(line, obj);
+		}
+		else if (obj.base == 'clock') {
+		    obj = self.parseClockLine(line, obj);
+		}
+		else if (obj.base == 'schedule') {
+		    obj = self.parseScheduleLine(line, obj);
+		}
 	    }
 	});
     };
@@ -186,6 +178,7 @@ define([
 		name: null,
 		type: null,
 		base: null,
+		parent: null,
 		attributes: [],
 		children: [],
 		pointers: []
@@ -259,97 +252,106 @@ define([
 	return obj;
     };
 
-    ImportGLM.prototype.parseClock = function(lines, obj) {
-	var self = this;
-	lines.map((line) => {
-	    var ts_regex = /timestamp\s+'([^\/\n\r\v]*)';/gi,
-		st_regex = /stoptime\s+'([^\/\n\r\v]*)';/gi,
-		tz_regex = /timezone\s+([^\/\n\r\v]*);/gi,
-		results;
-	    if (results = ts_regex.exec(line)) {
-		obj.attributes.push({
-		    name: 'Timestamp',
-		    value: results[1]
-		});
-	    }
-	    else if (results = st_regex.exec(line)) {
-		obj.attributes.push({
-		    name: 'Stoptime',
-		    value: results[1]
-		});
-	    }
-	    else if (results = tz_regex.exec(line)) {
-		obj.attributes.push({
-		    name: 'Timezone',
-		    value: results[1]
-		});
-	    }
-	});
-	return obj;
-    };
-
-    ImportGLM.prototype.parseSchedule = function(lines, obj) {
+    ImportGLM.prototype.parseClockLine = function(line, obj) {
 	var self = this,
-	    id = 0;
-	lines.map(function(line) {
-	    var pattern = /([\s]+[\d\*\.]+[\-\.\d]*)+/gi; 
-	    var matches = pattern.exec(line);
-	    if (matches) {
-		var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
-		if ( splits.length >= 5 ) {
-		    var entry = {
-			name: 'Entry_' + id++,
-			attributes: {
-			    Minutes: splits[0],
-			    Hours: splits[1],
-			    Days: splits[2],
-			    Months: splits[3],
-			    Weekdays: splits[4]
+	    ts_regex = /timestamp\s+'([^\/\n\r\v]*)';/gi,
+	    st_regex = /stoptime\s+'([^\/\n\r\v]*)';/gi,
+	    tz_regex = /timezone\s+([^\/\n\r\v]*);/gi,
+	    results;
+	if (results = ts_regex.exec(line)) {
+	    obj.attributes.push({
+		name: 'Timestamp',
+		value: results[1]
+	    });
+	}
+	else if (results = st_regex.exec(line)) {
+	    obj.attributes.push({
+		name: 'Stoptime',
+		value: results[1]
+	    });
+	}
+	else if (results = tz_regex.exec(line)) {
+	    obj.attributes.push({
+		name: 'Timezone',
+		value: results[1]
+	    });
+	}
+	return obj;
+    };
+
+    ImportGLM.prototype.parseScheduleLine = function(line, obj) {
+	var self = this,
+	    id = obj.children.length,
+	    pattern = /([\s]+[\d\*\.]+[\-\.\d]*)+/gi,
+	    matches = pattern.exec(line);
+	if (matches) {
+	    var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
+	    if ( splits.length >= 5 ) {
+		var entry = {
+		    name: 'Entry_' + id,
+		    attributes: [
+			{
+			    name: "Minutes",
+			    value: splits[0]
+			},
+			{
+			    name: "Hours",
+			    value: splits[1]
+			},
+			{
+			    name: "Days",
+			    value: splits[2]
+			},
+			{
+			    name: "Months",
+			    value: splits[3]
+			},
+			{
+			    name: "Weekdays",
+			    value: splits[4]
 			}
-		    };
-		    if (splits.length > 5)
-			entry.attributes.Value = splits[5];
-		    obj.children.push(entry)
-		}
-		else {
-		    throw new String('Schedule ' + obj.name + ' has improperly formmated entry: ' + line);
-		}
-	    }
-	});
-	return obj;
-    };
-
-    ImportGLM.prototype.parseModule = function(lines, obj) {
-	var self = this;
-	lines.map(function(line) {
-	});
-	return obj;
-    };
-
-    ImportGLM.prototype.parseClass = function(lines, obj) {
-	var self = this;
-	lines.map((line) => {
-	});
-	return obj;
-    };
-
-    ImportGLM.prototype.parseObject = function(lines, obj) {
-	var self = this;
-	lines.map((line) => {
-	    var attr_regex = /(\w+)\s+(.*);/gm,
-		results;
-	    if (results = attr_regex.exec(line)) {
-		var attr = {
-		    name: results[1],
-		    value: results[2]
+		    }
 		};
-		//self.logger.info('got attr: '+attr.name + ': '+attr.value);
-		obj.attributes.push(attr);
-		if (attr.name == 'name') {
-		    obj.name = attr.value;
-		}
+		if (splits.length > 5)
+		    entry.attributes.push({
+			name: "Value",
+			value: splits[5]
+		    });
+		obj.children.push(entry)
 	    }
-	});
+	    else {
+		throw new String('Schedule ' + obj.name + ' has improperly formmated entry: ' + line);
+	    }
+	}
+	return obj;
+    };
+
+    ImportGLM.prototype.parseModuleLine = function(line, obj) {
+	var self = this;
+	return obj;
+    };
+
+    ImportGLM.prototype.parseClassLine = function(line, obj) {
+	var self = this;
+	return obj;
+    };
+
+    ImportGLM.prototype.parseObjectLine = function(line, obj) {
+	var self = this,
+	    attr_regex = /(\w+)\s+(.*);/gm,
+	    results;
+	if (results = attr_regex.exec(line)) {
+	    var attr = {
+		name: results[1],
+		value: results[2]
+	    };
+	    //self.logger.info('got attr: '+attr.name + ': '+attr.value);
+	    obj.attributes.push(attr);
+	    if (attr.name == 'name') {
+		obj.name = attr.value;
+	    }
+	}
+	self.logger.error(obj);
 	return obj;
     };
 
