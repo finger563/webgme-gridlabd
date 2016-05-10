@@ -117,6 +117,7 @@ define([
     ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
 	var self = this,
+	    objDict = {},
 	    objByDepth = [],
 	    results;
 	// remove the comments
@@ -137,12 +138,14 @@ define([
 		var obj = self.getObjStub(line);
 		obj.base = 'module';
 		obj.name = results[1];
-		self.logger.error(obj);
+		objDict[obj.name] = obj;
 		self.newModel.children.push(obj);
 	    }
 	    else if (container_regex.test(line)) {
 		// start object / module / class / clock / schedule
 		var obj = self.getObjStub(line);
+		if (objDict[obj.name]) // for the case of modules
+		    obj = objDict[obj.name];
 		objByDepth.push(obj);
 	    }
 	    else if (container_end_regex.test(line)) {
@@ -153,6 +156,7 @@ define([
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
 		// add to model
+		objDict[obj.name] = obj;
 		self.newModel.children.push(obj);
 	    }
 	    else if (line.length > 0 && objByDepth.length){
@@ -172,6 +176,24 @@ define([
 		}
 		else if (obj.base == 'schedule') {
 		    obj = self.parseScheduleLine(line, obj);
+		}
+	    }
+	});
+	// handle 'parent' attributes here
+	Object.keys(objDict).map((key) => {
+	    var obj = objDict[key];
+	    var pAttr = obj.attributes.find((a) => { return a.name == 'parent'; });
+	    if (pAttr) {
+		var parentName = pAttr.value;
+		// map from parentName (e.g. node:412) to actual name (e.g. 412)
+		parentName = parentName.replace(/\w+:/g,'');
+		var p = objDict[parentName];
+		// set the parent
+		obj.parent = p;
+		// remove the parent attribute
+		var index = obj.attributes.indexOf(pAttr);
+		if (index >= 0) {
+		    obj.attributes.splice( index, 1 );
 		}
 	    }
 	});
@@ -207,8 +229,7 @@ define([
     };
 
     ImportGLM.prototype.removeComments = function(str) {
-	var self = this,
-	    regex = /(?:[\s]*|^)\/\/.*$/gm;
+	var regex = /(?:[\s]+|^|;)\/\/.*$/gm;
 	return str.replace(regex, '');
     };
     
@@ -227,15 +248,22 @@ define([
 	// globals set by: #set <global>="<value>"
 	//             or: #define <global>="<value>"
 	var self = this,
+	    name = null,
+	    value = null,
 	    obj,
-	    regex = /#(define|set)\s+(\S+)\s*=\s*([\w '"]+);?/gim;
+	    regex = /#(?:define|set)\s+(\S+)\s*=\s*([\S]+);?/gim,
+	    results = regex.exec(line);
+	if (results) {
+	    name = results[1];
+	    value = results[2];
+	}
 	obj = {
-	    name: null,
+	    name: name,
 	    base: 'Global',
 	    attributes: [
 		{
 		    name: 'Value',
-		    value: null
+		    value: value
 		}
 	    ]
 	};
@@ -245,25 +273,34 @@ define([
     ImportGLM.prototype.parseVariable = function(line) {
 	// environment variables set by: #setenv <variable>=<expression>
 	var self = this,
-	    obj = {
-		name: null,
-		base: 'Variable',
-		attributes: [
-		    {
-			name: 'Expression',
-			value: null
-		    }
-		]
-	    },
-	    regex = /#setenv\s+(\S+)\s*=\s*([\w '"]+);?/gim;
+	    name = null,
+	    value = null,
+	    obj,
+	    regex = /#setenv\s+(\S+)\s*=\s*([\w '"]+);?/gim,
+	    results = regex.exec(line);
+	if (results) {
+	    name = results[1];
+	    value = results[2];
+	}
+	obj = {
+	    name: name,
+	    base: 'Variable',
+	    attributes: [
+		{
+		    name: 'Expression',
+		    value: value
+		}
+	    ]
+	};
+	self.logger.error(obj);
 	return obj;
     };
 
     ImportGLM.prototype.parseClockLine = function(line, obj) {
 	var self = this,
-	    ts_regex = /timestamp\s+'([^\/\n\r\v]*)';/gi,
-	    st_regex = /stoptime\s+'([^\/\n\r\v]*)';/gi,
-	    tz_regex = /timezone\s+([^\/\n\r\v]*);/gi,
+	    ts_regex = /timestamp\s+'([^\/\n\r\v]*)';?/gi,
+	    st_regex = /stoptime\s+'([^\/\n\r\v]*)';?/gi,
+	    tz_regex = /timezone\s+([^\/\n\r\v]*);?/gi,
 	    results;
 	if (results = ts_regex.exec(line)) {
 	    obj.attributes.push({
@@ -345,14 +382,13 @@ define([
 
     ImportGLM.prototype.parseObjectLine = function(line, obj) {
 	var self = this,
-	    attr_regex = /(\w+)\s+(.*);/gm,
+	    attr_regex = /(\w+)\s+([^;]*);?/g,
 	    results;
 	if (results = attr_regex.exec(line)) {
 	    var attr = {
 		name: results[1],
 		value: results[2]
 	    };
-	    //self.logger.info('got attr: '+attr.name + ': '+attr.value);
 	    obj.attributes.push(attr);
 	    if (attr.name == 'name') {
 		obj.name = attr.value;
