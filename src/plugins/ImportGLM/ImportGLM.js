@@ -336,7 +336,7 @@ define([
 	    name = null,
 	    value = null,
 	    obj,
-	    regex = /#(?:define|set)\s+(\S+)\s*=\s*([\S]+);?/gim,
+	    regex = /#(?:define|set)\s+(\S+)\s*=\s*([^;]+);?/gi,
 	    results = regex.exec(line);
 	if (results) {
 	    name = results[1];
@@ -462,11 +462,17 @@ define([
 	    attr_regex = /(\w+)\s+([^;]*);/g,
 	    results;
 	if (results = attr_regex.exec(line)) {
-	    var attr = {
+	    var variable = {
+		base: "Variable",
 		name: results[1],
-		value: results[2]
+		attributes: [
+		    {
+			name: "Expression",
+			value: results[2]
+		    }
+		]
 	    };
-	    obj.attributes.push(attr);
+	    obj.children.push(variable);
 	}
 	return obj;
     };
@@ -524,7 +530,6 @@ define([
 	var base = obj.type || obj.base;
 	parentNode = parentNode || self.newModel.node;
 	var newNode = self.core.createNode({parent: parentNode, base: self.META[base]});
-	self.core.setAttribute(newNode, 'name', obj.name);
 	obj.node = newNode;
 	if (obj.attributes) {
 	    obj.attributes.map((attr) => {
@@ -532,6 +537,8 @@ define([
 		self.core.setAttribute(newNode, attr.name, attr.value);
 	    });
 	}
+	var name = obj.name || obj.type || obj.base;
+	self.core.setAttribute(newNode, 'name', name);
 	if (obj.children) {
 	    obj.children.map((child) => {
 		// create any children here
@@ -562,18 +569,6 @@ define([
 	// use self.newModel
 	var self = this;
 	self.saveObject(self.newModel, self.activeNode);
-	/*
-	var modelNode = self.core.createNode({parent: self.activeNode, base: modelMetaNode});
-	self.core.setAttribute(modelNode, 'name', self.newModel.name);
-	self.newModel.attributes.map((attr) => {
-	    self.core.setAttribute(modelNode, attr.name, attr.value);
-	});
-	self.newModel.node = modelNode;
-	self.newModel.children.map(function(obj) {
-	    if (!obj.node)
-		self.saveObject(obj);
-	});
-	*/
     };
 
     return ImportGLM;
