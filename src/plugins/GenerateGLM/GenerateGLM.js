@@ -9,23 +9,19 @@ define([
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
-    'common/util/ejs', // for ejs templates
-    'common/util/xmljsonconverter', // used to save model as json
     'gridlabd/meta',
     'gridlabd/modelLoader',
-    'plugin/GenerateGLM/GenerateGLM/Templates/Templates',
     'q'
 ], function (
     PluginConfig,
     pluginMetadata,
     PluginBase,
-    ejs,
-    Converter,
     MetaTypes,
     loader,
-    TEMPLATES,
     Q) {
     'use strict';
+
+    pluginMetadata = JSON.parse(pluginMetadata);
 
     /**
      * Initializes a new instance of GenerateGLM.
@@ -101,10 +97,9 @@ define([
 	self.fileData = '';
 	self.fileName = self.modelName + '.glm';
 
-	return loader.loadPowerModel(self.core, modelNode)
+	return loader.loadModel(self.core, modelNode)
 	    .then(function(powerModel) {
 		self.powerModel = powerModel;
-		//self.logger.error(JSON.stringify(self.powerModel,null,2));
 	    })
 	    .then(function() {
 		return self.renderFile();
@@ -129,124 +124,102 @@ define([
 
     GenerateGLM.prototype.renderFile = function() {
 	var self = this;
-	var glmTemplate = TEMPLATES['GLM.ejs'];
-	var commands = {
-	    'profiler': 'set',
-	    'threadcount': 'set',
-	    'randomseed': 'set',
-	    'relax_naming_rules': 'set',
-	    'pauseat': 'set',
-	    'iteration_limit': 'set',
-	    'stylesheet': 'define',
-	};
-	var childTypes = [
-	    'line_spacing',
-	    'underground_line',
-	    'underground_line_conductor',
-	    //'underground_line_configuration',
-	    'line_configuration',
-	    'overhead_line',
-	    'overhead_line_conductor',
-	    //'overhead_line_configuration',
-	    'triplex_line',
-	    'triplex_line_conductor',
-	    'triplex_line_configuration',
-	    'transformer',
-	    'transformer_configuration',
-	    'capacitor',
-	    'node',
-	    'load',
-	    'triplex_node',
-	    'triplex_meter',
-	    'regulator',
-	    'regulator_configuration',
-	    'auction',
-	    'house',
-	    'waterheater',
-	    'controller',
-	    'multi_recorder',
-	];
-	var pointerDict = {
-	    'underground_line': {
-		'src': 'from',
-		'dst': 'to',
-		'configuration': 'configuration',
-	    },
-	    'overhead_line': {
-		'src': 'from',
-		'dst': 'to',
-		'configuration': 'configuration',
-	    },
-	    'triplex_line': {
-		'src': 'from',
-		'dst': 'to',
-		'configuration': 'configuration',
-	    },
-	    'transformer': {
-		'src': 'from',
-		'dst': 'to',
-		'configuration': 'configuration',
-	    },
-	    'regulator': {
-		'src': 'from',
-		'dst': 'to',
-		'configuration': 'configuration',
-		'sense_node': 'sense_node',
-	    },
-	    'line_configuration': {
-		'conductor_A': 'conductor_A',
-		'conductor_B': 'conductor_B',
-		'conductor_C': 'conductor_C',
-		'conductor_N': 'conductor_N',
-		'spacing': 'spacing',
-	    },
-	    'triplex_line_configuration': {
-		'conductor_1': 'conductor_1',
-		'conductor_2': 'conductor_2',
-		'conductor_N': 'conductor_N',
-		'spacing': 'spacing',
-	    },
-	    'switch': {
-		'src': 'from',
-		'dst': 'to',
-	    },
-	    'node': {
-		'parent': 'parent',
-	    },
-	    'capacitor': {
-		'parent': 'parent',
-	    },
-	    'house': {
-		'parent': 'parent',
-	    },
-	    'waterheater': {
-		'parent': 'parent',
-	    },
-	    'controller': {
-		'market': 'market',
-		'parent': 'parent',
-	    },
-	};
-	var modules = [
-	    ['auction','market'],
-	    ['climate','climate'],
-	    ['multi_recorder','tape'],
-	];
-	try {
-	    self.fileData = ejs.render(
-		glmTemplate,
-		{
-		    model: self.powerModel, 
-		    commands: commands, 
-		    childTypes: childTypes,
-		    pointerDict: pointerDict,
-		    modules: modules
+	self.fileData = '';
+	// TODO: fix clock attribute names
+	// TODO: fix object pointer names (src/dst)
+	// TODO: handle parent relations
+	// Globals
+	if (self.powerModel.Global_list) {
+	    self.powerModel.Global_list.map((obj) => {
+		self.fileData += `#set ${obj.name}=${obj.Value};\n`;
+	    });
+	}
+	// Variables
+	if (self.powerModel.Variable_list) {
+	    self.powerModel.Variable_list.map((obj) => {
+		self.fileData += `#setenv ${obj.name}=${obj.Expression};\n`;
+	    });
+	}
+	// Modules
+	if (self.powerModel.module_list) {
+	    self.powerModel.module_list.map((obj) => {
+		if (obj.Variable_list || obj.class_list) {
+		    self.fileData += `module ${obj.name} \{\n`;
+		    // module variables
+		    if (obj.Variable_list) {
+			obj.Variable_list.map((v) => {
+			    self.fileData += `  ${v.name} ${v.Expression};\n`;
+			});
+		    }
+		    // module classes
+		    if (obj.class_list) {
+			obj.class_list.map((c) => {
+			    self.fileData += `  class ${c.name} \{\n`;
+			    // class properties
+			    if (c.PropertyDef_list) {
+				c.PropertyDef_list.map((p) => {
+				    if (p.Unit)
+					self.fileData += `    ${p.Type} ${p.name}[${p.Unit}];\n`;
+				    else
+					self.fileData += `    ${p.Type} ${p.name};\n`;
+				});
+			    }
+			    self.fileData += `  \};\n`;
+			});
+		    }
+		    self.fileData += `\};\n`;
 		}
-	    );
+		else {
+		    self.fileData += `module ${obj.name};\n`;
+		}
+	    });
 	}
-	catch (err) {
-	    throw new String('Rendering File failed: ' + err);
+	// Classes
+	// module classes
+	if (self.powerModel.class_list) {
+	    self.powerModel.class_list.map((c) => {
+		self.fileData += `class ${c.name} \{\n`;
+		// class properties
+		if (c.PropertyDef_list) {
+		    c.PropertyDef_list.map((p) => {
+			if (p.Unit)
+			    self.fileData += `  ${p.Type} ${p.name}[${p.Unit}];\n`;
+			else
+			    self.fileData += `  ${p.Type} ${p.name};\n`;
+		    });
+		}
+		self.fileData += `\};\n`;
+	    });
 	}
+	// Clock
+	if (self.powerModel.clock_list) {
+	    self.powerModel.clock_list.map((clock) => {
+		self.fileData += `clock \{\n`;
+		for (var attr in clock.attributes) {
+		    if (attr == 'name')
+			continue;
+		    self.fileData += `  ${attr} ${clock.attributes[attr]};\n`;
+		}
+		self.fileData += `\};\n`;
+	    });
+	}
+	// Schedules
+	if (self.powerModel.schedule_list) {
+	    self.powerModel.schedule_list.map((sched) => {
+		self.fileData += `schedule ${sched.name} \{\n`;
+		if (sched.Entry_list) {
+		    sched.Entry_list.map((entry) => {
+			self.fileData += `  ${entry.Minutes} ${entry.Hours} ${entry.Days} ${entry.Months} ${entry.Weekdays}`;
+			if (entry.Value.length)
+			    self.fileData += ` ${entry.Value}`;
+			self.fileData += '\n';
+		    });
+		}
+		self.fileData += `\};\n`;
+	    });
+	}
+	// Objects
+	self.notify('info', 'Rendered GLM.');
     };
 
     GenerateGLM.prototype.generateLocalArtifacts = function() {

@@ -75,7 +75,7 @@ define(['q'], function(Q) {
 			self.model.pathDict[nodeObj.path] = nodeObj;
 		    });
 		    self.resolvePointers(modelObjects);
-		    self.processModel(self.model);
+		    //self.processModel(self.model);
 		    return self.model;
 		});
 	},
@@ -105,8 +105,6 @@ define(['q'], function(Q) {
 			obj[pointer] = dst;
 		    else if (pointer != 'base' && path != null) 
 			throw new String(obj.name + ' has pointer ' +pointer+ ' to object not in the tree!');
-		    else if (path == null) 
-			throw new String(obj.name + ' has null pointer ' + pointer);
 		}
 		// follow set paths, these may not always be loaded!
 		for (var set in obj.sets) {
@@ -126,67 +124,6 @@ define(['q'], function(Q) {
 		    obj[set] = dsts;
 		}
 	    });
-	},
-	processModel: function(model) {
-	    // THIS FUNCTION HANDLES CREATION OF SOME CONVENIENCE MEMBERS
-	    // FOR SELECT OBJECTS IN THE MODEL
-	    // handle Component Required Types (convenience)
-	    var software_folder = model.Software_list[0];
-	    if (software_folder && software_folder.Package_list) {
-		software_folder.Package_list.map(function(pkgInfo) {
-		    if (pkgInfo.Component_list) {
-			pkgInfo.Component_list.map(function(compInfo) {
-			    compInfo.Types = []; 
-			    if (compInfo.Publisher_list) {
-				compInfo.Publisher_list.map(function(obj) {
-				    if ( compInfo.Types.indexOf(obj.Message) == -1)
-					compInfo.Types.push(obj.Message);
-				});
-			    }
-			    if (compInfo.Subscriber_list) {
-				compInfo.Subscriber_list.map(function(obj) {
-				    if ( compInfo.Types.indexOf(obj.Message) == -1)
-					compInfo.Types.push(obj.Message);
-				});
-			    }
-			    if (compInfo.Client_list) {
-				compInfo.Client_list.map(function(obj) {
-				    if ( compInfo.Types.indexOf(obj.Service) == -1)
-					compInfo.Types.push(obj.Service);
-				});
-			    }
-			    if (compInfo.Server_list) {
-				compInfo.Server_list.map(function(obj) {
-				    if ( compInfo.Types.indexOf(obj.Service) == -1)
-					compInfo.Types.push(obj.Service);
-				});
-			    }
-			});
-		    }
-		});
-	    }
-	    // handle Interface IP assignment here (until META is updated)
-	    var systems_folder = model.Systems_list[0];
-	    if (systems_folder && systems_folder.System_list) {
-		systems_folder.System_list.map(function(system) {
-		    if (system.Host_list) {
-			system.Host_list.map(function(host) {
-			    if (host.Interface_list) {
-				host.Interface_list.map(function(intf) {
-				    if (system.Link_list) {
-					var link = system.Link_list.filter(function(l) {
-					    return l.src == intf;
-					})[0];
-					if (link) {
-					    intf.IP = link.IP;
-					}
-				    }
-				});
-			    }
-			});
-		    }
-		});
-	    }
 	},
     }
 });
