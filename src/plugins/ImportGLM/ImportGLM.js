@@ -68,6 +68,7 @@ define([
 
 	// fill this out before creating the WebGME nodes
 	self.newModel = {
+	    base: 'Model',
 	    children: [],
 	    attributes: []
 	};
@@ -96,12 +97,12 @@ define([
 		return self.parseObjectsFromGLM(glmFile);
 	    })
 	    .then(function() {
-		//return self.createModelArtifacts();
+		return self.createModelArtifacts();
 	    })
 	    .then(function() {
 		// This will save the changes. If you don't want to save;
 		// exclude self.save and call callback directly from this scope.
-		//return self.save('ImportGLM updated model.');
+		return self.save('ImportGLM updated model.');
 	    })
 	    .then(function() {
 		self.result.setSuccess(true);
@@ -214,7 +215,7 @@ define([
 		    ptrObjName = ptrObjName.replace(/\w+:/g,'');
 		    var p = objDict[ptrObjName];
 		    obj.pointers.push({
-			name: attr.name,
+			name: self.convertPointerName(attr.name),
 			value: p
 		    });
 		    obj.attributes.splice(i, 1);
@@ -225,6 +226,14 @@ define([
 	    .then((hash) => {
 		self.result.addArtifact(hash);
 	    });
+    };
+
+    ImportGLM.prototype.convertPointerName = function(ptrName) {
+	if (ptrName == 'from')
+	    ptrName = 'src';
+	else if (ptrName == 'to')
+	    ptrName = 'dst';
+	return ptrName;
     };
 
     ImportGLM.prototype.filterPointerNames = function(ptrNames) {
@@ -510,42 +519,50 @@ define([
     // self.core.getValidAttributeNames(self.META[<type>])
     // self.core.getValidPointerNames(self.META[<type>])
     
-    ImportGLM.prototype.saveObject = function(obj) {
+    ImportGLM.prototype.saveObject = function(obj, parentNode) {
 	var self = this;
 	var base = obj.type || obj.base;
-	var newNode = self.core.createNode({parent: self.newModel.node, base: self.META[base]});
+	parentNode = parentNode || self.newModel.node;
+	var newNode = self.core.createNode({parent: parentNode, base: self.META[base]});
 	self.core.setAttribute(newNode, 'name', obj.name);
-	obj.attributes.map((attr) => {
-	    // set any attributes here
-	    self.core.setAttribute(newNode, attr.name, attr.value);
-	});
-	obj.pointers.map((ptr) => {
-	    // create any pointers here
-	    var ptrObj = self.createdObjects[ptr.target];
-	    if (!ptrObj) {
-		self.saveObject(ptr.target);
-	    }
-	    self.core.setPointer(newNode, ptr.name, ptrObj.node);
-	});
 	obj.node = newNode;
+	if (obj.attributes) {
+	    obj.attributes.map((attr) => {
+		// set any attributes here
+		self.core.setAttribute(newNode, attr.name, attr.value);
+	    });
+	}
+	if (obj.children) {
+	    obj.children.map((child) => {
+		// create any children here
+		if (!child.node)
+		    self.saveObject(child, newNode);
+	    });
+	}
+	if (obj.pointers) {
+	    obj.pointers.map((ptr) => {
+		// create any pointers here
+		if (!ptr.value.node)
+		    self.saveObject(ptr.value);
+		self.core.setPointer(newNode, ptr.name, ptr.value.node);
+	    });
+	}
 	if (obj.parent) {
 	    // create parent object with src/dst here
-	    var parentObj = self.createdObjects[obj.parent];
-	    if (!parentObj) {
+	    if (!obj.parent.node) {
 		self.saveObject(obj.parent);
 	    }
 	    var parent = self.core.createNode({parent: self.newModel.node, base: self.META.Parent});
 	    self.core.setPointer(parent, 'src', obj.node);
-	    self.core.setPointer(parent, 'dst', parentObj);
+	    self.core.setPointer(parent, 'dst', obj.parent.node);
 	}
-	self.createdObjects[obj.name] = obj;
     };
 
     ImportGLM.prototype.createModelArtifacts = function() {
 	// use self.newModel
 	var self = this;
-	self.createdObjects = {};
-	var modelMetaNode = self.META.Model;
+	self.saveObject(self.newModel, self.activeNode);
+	/*
 	var modelNode = self.core.createNode({parent: self.activeNode, base: modelMetaNode});
 	self.core.setAttribute(modelNode, 'name', self.newModel.name);
 	self.newModel.attributes.map((attr) => {
@@ -553,8 +570,10 @@ define([
 	});
 	self.newModel.node = modelNode;
 	self.newModel.children.map(function(obj) {
-	    self.saveObject(obj, modelNode);
+	    if (!obj.node)
+		self.saveObject(obj);
 	});
+	*/
     };
 
     return ImportGLM;
