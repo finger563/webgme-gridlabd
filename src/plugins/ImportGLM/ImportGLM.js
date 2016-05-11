@@ -152,12 +152,13 @@ define([
 		// end object / module / class / clock / schedule
 		var obj = objByDepth.pop();
 		// work out parent
-		if (objByDepth.length > 0) {
+		if (obj.base == 'object' && objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
 		// add to model
-		objDict[obj.name] = obj;
 		self.newModel.children.push(obj);
+		if (obj.name)
+		    objDict[obj.name] = obj;
 	    }
 	    else if (line.length > 0 && objByDepth.length){
 		var obj = objByDepth[objByDepth.length - 1];
@@ -173,6 +174,7 @@ define([
 		}
 		else if (obj.base == 'clock') {
 		    obj = self.parseClockLine(line, obj);
+		    self.logger.error('parsing clock line: '+line);
 		}
 		else if (obj.base == 'schedule') {
 		    obj = self.parseScheduleLine(line, obj);
@@ -197,6 +199,10 @@ define([
 		}
 	    }
 	});
+	return self.blobClient.putFile('model.json', JSON.stringify(self.newModel, null, 2))
+	    .then((hash) => {
+		self.result.addArtifact(hash);
+	    });
     };
     
 
