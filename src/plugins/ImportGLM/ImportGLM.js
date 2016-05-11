@@ -174,7 +174,6 @@ define([
 		}
 		else if (obj.base == 'clock') {
 		    obj = self.parseClockLine(line, obj);
-		    self.logger.error('parsing clock line: '+line);
 		}
 		else if (obj.base == 'schedule') {
 		    obj = self.parseScheduleLine(line, obj);
@@ -333,9 +332,9 @@ define([
 
     ImportGLM.prototype.parseClockLine = function(line, obj) {
 	var self = this,
-	    ts_regex = /timestamp\s+'([^\/\n\r\v]*)';?/gi,
-	    st_regex = /stoptime\s+'([^\/\n\r\v]*)';?/gi,
-	    tz_regex = /timezone\s+([^\/\n\r\v]*);?/gi,
+	    ts_regex = /timestamp\s+'([^\/\n\r\v;]*)';?/gi,
+	    st_regex = /stoptime\s+'([^\/\n\r\v;]*)';?/gi,
+	    tz_regex = /timezone\s+([^\/\n\r\v;]*);?/gi,
 	    results;
 	if (results = ts_regex.exec(line)) {
 	    obj.attributes.push({
