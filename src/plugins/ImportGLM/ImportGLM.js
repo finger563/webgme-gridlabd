@@ -198,12 +198,54 @@ define([
 		}
 	    }
 	});
-	return self.blobClient.putFile('model.json', JSON.stringify(self.newModel, null, 2))
+	// convert attributes that should be pointers according to the META
+	Object.keys(objDict).map((key) => {
+	    var obj = objDict[key];
+	    var metaNode = self.objToMeta(obj);
+	    if (!metaNode)
+		return;
+	    var ptrNames = self.filterPointerNames(self.core.getPointerNames(metaNode));
+	    if (!ptrNames.length)
+		return;
+	    for (var i = obj.attributes.length - 1; i >= 0; i--) {
+		var attr = obj.attributes[i];
+		if (ptrNames.indexOf(attr.name) > -1) {
+		    var ptrObjName = attr.value;
+		    ptrObjName = ptrObjName.replace(/\w+:/g,'');
+		    var p = objDict[ptrObjName];
+		    obj.pointers.push({
+			name: attr.name,
+			value: p
+		    });
+		    obj.attributes.splice(i, 1);
+		}
+	    }
+	});
+	return self.blobClient.putFile(self.newModel.name+'.json', JSON.stringify(self.newModel, null, 2))
 	    .then((hash) => {
 		self.result.addArtifact(hash);
 	    });
     };
+
+    ImportGLM.prototype.filterPointerNames = function(ptrNames) {
+	ptrNames.splice(ptrNames.indexOf('base'), 1);
+	ptrNames[ptrNames.indexOf('src')] = 'from';
+	ptrNames[ptrNames.indexOf('dst')] = 'to';
+	return ptrNames;
+    };
     
+    ImportGLM.prototype.objToMeta = function(obj) {
+	var metaNode = null;
+	if (obj.base == 'object') {
+	    if (obj.type) {
+		metaNode = this.META[obj.type];
+	    }
+	}
+	else if (obj.base) {
+	    metaNode = this.META[obj.base];
+	}
+	return metaNode;
+    };
 
     var objNames = {};
 
