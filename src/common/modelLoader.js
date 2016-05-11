@@ -53,6 +53,7 @@ define(['q'], function(Q) {
 			var nodeObj = {
 			    name: nodeName,
 			    path: nodePath,
+			    node: node,
 			    type: nodeType,
 			    parentPath: parentPath,
 			    childPaths: childPaths,

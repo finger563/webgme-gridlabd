@@ -219,6 +219,16 @@ define([
 	    });
 	}
 	// Objects
+	self.powerModel.childPaths.map((childPath) => {
+	    var child = self.powerModel.pathDict[childPath];
+	    if (self.core.isTypeOf(child.node, self.META.Object)) {
+		self.fileData += `object ${child.type} \{\n`;
+		for (var attr in child.attributes) {
+		    self.fileData += `  ${attr} ${child.attributes[attr]};\n`;
+		}
+		self.fileData += `\};\n`;
+	    }
+	});
 	self.notify('info', 'Rendered GLM.');
     };
 
