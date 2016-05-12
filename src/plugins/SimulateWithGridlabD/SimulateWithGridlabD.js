@@ -9,8 +9,6 @@ define([
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
-    'common/util/ejs', // for ejs templates
-    'common/util/xmljsonconverter', // used to save model as json
     'gridlabd/meta',
     'gridlabd/modelLoader',
     'q'
@@ -18,12 +16,12 @@ define([
     PluginConfig,
     pluginMetadata,
     PluginBase,
-    ejs,
-    Converter,
     MetaTypes,
     loader,
     Q) {
     'use strict';
+
+    pluginMetadata = JSON.parse(pluginMetadata);
 
     /**
      * Initializes a new instance of SimulateWithGridlabD.
