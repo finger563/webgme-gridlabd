@@ -20,6 +20,8 @@ config.seedProjects.defaultProject = "guest+GridlabD"
 
 config.requirejsPaths.gridlabd = "./src/common/"
 
+config.requirejsPaths.svgAssets = "./node_modules/webgme/src/client/assets"
+
 config.client.log.level = 'info'
 
 config.visualization.svgDirs = ["./src/svgs"] 

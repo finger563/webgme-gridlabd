@@ -9,12 +9,14 @@ define([
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
+    'svgAssets/decoratorSVG',
     'gridlabd/meta',
     'q'
 ], function (
     PluginConfig,
     pluginMetadata,
     PluginBase,
+    svgList,
     MetaTypes,
     Q) {
     'use strict';
@@ -65,6 +67,8 @@ define([
 	var currentConfig = self.getCurrentConfig(),
 	    metaFileHash = currentConfig.gldModHelp;
 
+	self.metaSetName = '';
+
 	self.blobClient.getMetadata(metaFileHash)
 	    .then(function(glmMetaData) {
 		var splitName = glmMetaData.name.split(".");
@@ -72,7 +76,8 @@ define([
 		for (var i=0;i<splitName.length-1;i++) {
 		    newName += splitName[i];
 		}
-		self.logger.info('loaded: ' + newName);
+		self.metaSetName = newName;
+		self.logger.info('loaded: ' + self.metaSetName);
 		return self.blobClient.getObjectAsString(metaFileHash);
 	    })
 	    .then(function(metaFile) {
@@ -247,6 +252,17 @@ define([
     UpdateGLDMeta.prototype.createModelArtifacts = function() {
 	var self = this,
 	    names = Object.keys(self.objects);
+	// create the meta sheet
+	var sheetsRegistry = this.core.getRegistry(self.rootNode, 'MetaSheets');
+	sheetsRegistry = JSON.parse(JSON.stringify(sheetsRegistry));
+	sheetsRegistry.push({
+	    SetID: this.metaSetName,
+	    order: sheetsRegistry.length,
+	    title: this.metaSetName
+	});
+	self.core.setRegistry(self.rootNode, 'MetaSheets', sheetsRegistry);
+	self.core.createSet(this.rootNode, this.metaSetName);
+
 	self.createdObjects = [];
 	self.nodeMap = {};
 	names.map((name) => {
@@ -337,15 +353,23 @@ define([
 	// add to the META sheet
 	this.core.addMember(this.rootNode, 'MetaAspectSet', node);
 
-	/*
 	// add to the specific sheet
-	var set = this.core.getSetNames(this.rootNode)
-	    .find(name => name !== 'MetaAspectSet');
-	this.core.addMember(this.rootNode, set, node);
-	*/
+	this.core.addMember(this.rootNode, this.metaSetName, node);
+	this.core.setMemberRegistry(
+	    this.rootNode,
+	    this.metaSetName,
+	    this.core.getPath(node),
+	    'position',
+	    {x: prevY, y: prevY}  // diagonal so that lots of attributes don't obscure
+	);
 
 	// position the node based on the position of the most recently created node on that sheet
 	this.core.setRegistry(node, 'position', {x: 100, y: prevY})
+	var iconName = 'svgs/' + name + '.svg';
+	if (svgList.DecoratorSVGIconList.indexOf(iconName) > -1) {
+	    this.core.setRegistry(node, 'SVGIcon', iconName);
+	    this.core.setRegistry(node, 'decorator', 'SVGDecorator');
+	}
 	prevY += 100;
 
 	// set the attributes
