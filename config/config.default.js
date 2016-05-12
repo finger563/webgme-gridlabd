@@ -3,6 +3,8 @@
 var config = require('./config.webgme'),
     validateConfig = require('webgme/config/validator');
 
+config.server.port = 8081;
+
 // Authentication
 config.authentication.enable = true;
 config.authentication.allowGuests = true;

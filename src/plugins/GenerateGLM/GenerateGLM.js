@@ -242,6 +242,7 @@ define([
 			if (ptr == 'src' || ptr == 'dst') {
 			    ptrName = (ptr == 'src') ? 'from' : 'to';
 			}
+			var nameRegex = /[a-zA-Z\-_]/g;
 			if (!nameRegex.exec(ptrObj.name))
 			    self.fileData += `  ${ptrName} ${ptrObj.type}:${ptrObj.name};\n`;
 			else
