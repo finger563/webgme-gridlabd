@@ -194,7 +194,10 @@ define([
 		for (var attr in clock.attributes) {
 		    if (attr == 'name')
 			continue;
-		    self.fileData += `  ${attr} '${clock.attributes[attr]}';\n`;
+		    if (clock.attributes[attr].indexOf(' ') > -1)
+			self.fileData += `  ${attr} '${clock.attributes[attr]}';\n`;
+		    else
+			self.fileData += `  ${attr} ${clock.attributes[attr]};\n`;
 		}
 		self.fileData += `\};\n`;
 	    });
