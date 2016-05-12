@@ -75,8 +75,9 @@ define(['q'], function(Q) {
 			modelObjects.push(nodeObj);
 			self.model.pathDict[nodeObj.path] = nodeObj;
 		    });
+		    self.updateNames(modelObjects);
 		    self.resolvePointers(modelObjects);
-		    //self.processModel(self.model);
+		    self.processModel(self.model);
 		    return self.model;
 		});
 	},
@@ -123,6 +124,27 @@ define(['q'], function(Q) {
 			    throw new String(obj.name + ' has set '+set+' containing null pointer!'); // shouldn't be possible!
 		    });
 		    obj[set] = dsts;
+		}
+	    });
+	},
+	processModel: function(model) {
+	    // convert Parent objects to pointers of src objects
+	    if (model.Parent_list) {
+		model.Parent_list.map((parent) => {
+		    parent.src.pointers.parent = parent.dst;
+		    parent.src.parent = parent.dst;
+		});
+	    }
+	},
+	updateNames: function(modelObjects) {
+	    var numObjs = {};
+	    modelObjects.map((obj) => {
+		if (obj.name == obj.type) {
+		    if (!numObjs[obj.type])
+			numObjs[obj.type] = 0;
+		    obj.name += numObjs[obj.type];
+		    obj.attributes.name += numObjs[obj.type];
+		    numObjs[obj.type]++;
 		}
 	    });
 	},

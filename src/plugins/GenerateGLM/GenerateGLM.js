@@ -125,9 +125,6 @@ define([
     GenerateGLM.prototype.renderFile = function() {
 	var self = this;
 	self.fileData = '';
-	// TODO: fix clock attribute names
-	// TODO: fix object pointer names (src/dst)
-	// TODO: handle parent relations
 	// Globals
 	if (self.powerModel.Global_list) {
 	    self.powerModel.Global_list.map((obj) => {
@@ -175,7 +172,6 @@ define([
 	    });
 	}
 	// Classes
-	// module classes
 	if (self.powerModel.class_list) {
 	    self.powerModel.class_list.map((c) => {
 		self.fileData += `class ${c.name} \{\n`;
@@ -195,11 +191,12 @@ define([
 	if (self.powerModel.clock_list) {
 	    self.powerModel.clock_list.map((clock) => {
 		self.fileData += `clock \{\n`;
-		for (var attr in clock.attributes) {
-		    if (attr == 'name')
-			continue;
-		    self.fileData += `  ${attr} ${clock.attributes[attr]};\n`;
-		}
+		if (clock.Timestamp.length)
+		    self.fileData += `  timestamp '${clock.Timestamp}';\n`;
+		if (clock.Stoptime.length)
+		    self.fileData += `  stoptime '${clock.Stoptime}';\n`;
+		if (clock.Timezone.length)
+		    self.fileData += `  timezone ${clock.Timezone};\n`;
 		self.fileData += `\};\n`;
 	    });
 	}
@@ -225,6 +222,16 @@ define([
 		self.fileData += `object ${child.type} \{\n`;
 		for (var attr in child.attributes) {
 		    self.fileData += `  ${attr} ${child.attributes[attr]};\n`;
+		}
+		for (var ptr in child.pointers) {
+		    if (ptr == 'base')
+			continue;
+		    var ptrName = ptr;
+		    if (ptr == 'src' || ptr == 'dst') {
+			ptrName = (ptr == 'src') ? 'from' : 'to';
+		    }
+		    if (child[ptr])
+			self.fileData += `  ${ptrName} ${child.pointers[ptr].type}:${child.pointers[ptr].name};\n`;
 		}
 		self.fileData += `\};\n`;
 	    }
