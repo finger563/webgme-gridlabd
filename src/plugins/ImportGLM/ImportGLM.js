@@ -315,7 +315,7 @@ define([
 
     ImportGLM.prototype.removeComments = function(str) {
 	var regex = /(?:[\s]+|^|;)\/\/.*$/gm;
-	return str.replace(regex, '');
+	return str.replace(regex, '').replace(/\r/gm,'');
     };
     
     ImportGLM.prototype.parseMacro = function(line) {
@@ -389,19 +389,19 @@ define([
 	    results;
 	if (results = ts_regex.exec(line)) {
 	    obj.attributes.push({
-		name: 'Timestamp',
+		name: 'timestamp',
 		value: results[1]
 	    });
 	}
 	else if (results = st_regex.exec(line)) {
 	    obj.attributes.push({
-		name: 'Stoptime',
+		name: 'stoptime',
 		value: results[1]
 	    });
 	}
 	else if (results = tz_regex.exec(line)) {
 	    obj.attributes.push({
-		name: 'Timezone',
+		name: 'timezone',
 		value: results[1]
 	    });
 	}

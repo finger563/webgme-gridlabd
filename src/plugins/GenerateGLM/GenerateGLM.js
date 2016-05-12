@@ -191,12 +191,11 @@ define([
 	if (self.powerModel.clock_list) {
 	    self.powerModel.clock_list.map((clock) => {
 		self.fileData += `clock \{\n`;
-		if (clock.Timestamp.length)
-		    self.fileData += `  timestamp '${clock.Timestamp}';\n`;
-		if (clock.Stoptime.length)
-		    self.fileData += `  stoptime '${clock.Stoptime}';\n`;
-		if (clock.Timezone.length)
-		    self.fileData += `  timezone ${clock.Timezone};\n`;
+		for (var attr in clock.attributes) {
+		    if (attr == 'name')
+			continue;
+		    self.fileData += `  ${attr} '${clock.attributes[attr]}';\n`;
+		}
 		self.fileData += `\};\n`;
 	    });
 	}
