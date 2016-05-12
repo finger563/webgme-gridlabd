@@ -131,8 +131,8 @@ define(['q'], function(Q) {
 	    // convert Parent objects to pointers of src objects
 	    if (model.Parent_list) {
 		model.Parent_list.map((parent) => {
-		    parent.src.pointers.parent = parent.dst;
-		    parent.src.parent = parent.dst;
+		    parent.src.pointers.parent = parent.pointers.dst;
+		    parent.src.parent = parent.pointers.dst;
 		});
 	    }
 	},
