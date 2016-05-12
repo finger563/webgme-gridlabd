@@ -222,7 +222,13 @@ define([
 	    var child = self.powerModel.pathDict[childPath];
 	    if (self.core.isTypeOf(child.node, self.META.Object)) {
 		self.fileData += `object ${child.type} \{\n`;
+		if (child.name.indexOf(/[a-zA-Z/) == -1)
+		    self.fileData += `:${child.name} \{\n`;
+		self.fileData += ` \{\n`;
 		for (var attr in child.attributes) {
+		    if (attr == 'name' and child.name.indexOf(/[a-zA-Z/) == -1) {
+			continue;
+		    }
 		    self.fileData += `  ${attr} ${child.attributes[attr]};\n`;
 		}
 		for (var ptr in child.pointers) {
