@@ -513,7 +513,7 @@ define([
 		return obj;
 	    var attr = {
 		name: results[1],
-		value: results[2]
+		value: results[2].replace(/'/g,'').replace(/"/g,'')
 	    };
 	    obj.attributes.push(attr);
 	    if (attr.name == 'name') {
