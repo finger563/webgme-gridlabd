@@ -249,6 +249,8 @@ define([
 	return obj;
     };
 
+    var prevY = 100;
+
     UpdateGLDMeta.prototype.createModelArtifacts = function() {
 	var self = this,
 	    names = Object.keys(self.objects);
@@ -262,6 +264,8 @@ define([
 	});
 	self.core.setRegistry(self.rootNode, 'MetaSheets', sheetsRegistry);
 	self.core.createSet(this.rootNode, this.metaSetName);
+
+	prevY = 0;
 
 	self.createdObjects = [];
 	self.nodeMap = {};
@@ -287,8 +291,6 @@ define([
 	    }
 	});
     };
-
-    var prevY = 100;
 
     UpdateGLDMeta.prototype.createMetaNode = function(name, base, attrs, ptrs) {
 	if (this.META[name] || this.nodeMap[name]) {
