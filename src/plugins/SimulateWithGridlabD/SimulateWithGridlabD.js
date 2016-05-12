@@ -172,6 +172,9 @@ define([
 	    self.notify('info', 'Simulation exited with code: ' + code);
 	    deferred.resolve();
 	});
+	self.simProcess.on('error', (err) => {
+	    deferred.reject('Couldnt run simulation: ' + err);
+	});
 	
 	return deferred.promise;
     };
