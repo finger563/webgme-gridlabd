@@ -509,6 +509,8 @@ define([
 	    attr_regex = /(\w+)\s+([^;]*);?/g,
 	    results;
 	if (results = attr_regex.exec(line)) {
+	    if (results[1] == 'name' && obj.name)
+		return obj;
 	    var attr = {
 		name: results[1],
 		value: results[2]

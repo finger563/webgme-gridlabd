@@ -192,7 +192,7 @@ define([
 	    self.powerModel.clock_list.map((clock) => {
 		self.fileData += `clock \{\n`;
 		for (var attr in clock.attributes) {
-		    if (attr == 'name')
+		    if (attr == 'name' || clock.attributes[attr].length == 0)
 			continue;
 		    if (clock.attributes[attr].indexOf(' ') > -1)
 			self.fileData += `  ${attr} '${clock.attributes[attr]}';\n`;
@@ -221,25 +221,32 @@ define([
 	self.powerModel.childPaths.map((childPath) => {
 	    var child = self.powerModel.pathDict[childPath];
 	    if (self.core.isTypeOf(child.node, self.META.Object)) {
+		var nameRegex = /[a-zA-Z\-_]/g;
+		var nameTest = nameRegex.exec(child.name);
 		self.fileData += `object ${child.type}`;
-		if (child.name.indexOf(/[a-zA-Z]/) == -1)
+		if (!nameTest)
 		    self.fileData += `:${child.name}`;
 		self.fileData += ` \{\n`;
 		for (var attr in child.attributes) {
-		    if (attr == 'name' && child.name.indexOf(/[a-zA-Z]/) == -1) {
-			continue;
+		    if (child.attributes[attr]) {
+			if (attr == 'name' && !nameTest) {
+			    continue;
+			}
+			self.fileData += `  ${attr} ${child.attributes[attr]};\n`;
 		    }
-		    self.fileData += `  ${attr} ${child.attributes[attr]};\n`;
 		}
 		for (var ptr in child.pointers) {
-		    if (ptr == 'base')
-			continue;
-		    var ptrName = ptr;
-		    if (ptr == 'src' || ptr == 'dst') {
-			ptrName = (ptr == 'src') ? 'from' : 'to';
+		    var ptrObj = self.powerModel.pathDict[child.pointers[ptr]];
+		    if (ptrObj) {
+			var ptrName = ptr;
+			if (ptr == 'src' || ptr == 'dst') {
+			    ptrName = (ptr == 'src') ? 'from' : 'to';
+			}
+			if (!nameRegex.exec(ptrObj.name))
+			    self.fileData += `  ${ptrName} ${ptrObj.type}:${ptrObj.name};\n`;
+			else
+			    self.fileData += `  ${ptrName} ${ptrObj.name};\n`;
 		    }
-		    if (child[ptr])
-			self.fileData += `  ${ptrName} ${child.pointers[ptr].type}:${child.pointers[ptr].name};\n`;
 		}
 		self.fileData += `\};\n`;
 	    }
