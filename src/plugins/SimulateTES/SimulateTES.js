@@ -274,10 +274,54 @@ define([
 
     SimulateTES.prototype.startFedMgr = function() {
 	// run-cpp-feds.sh 0
+	var self = this;
+	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
+	var cp = require('child_process');
+	var deferred = Q.defer();
+
+	var fedMgr = child_process.spawn('bash', [], {cwd:basePath});
+	fedMgr.stdout.on('data', function (data) {});
+	fedMgr.stderr.on('data', function (error) {
+	});
+	fedMgr.on('exit', function (code) {
+	    if (code == 0) {
+		deferred.resolve(code);
+	    }
+	    else {
+		deferred.reject('fedMgr:: child process exited with code ' + code);
+	    }
+	});
+	setTimeout(function() {
+	    fedMgr.stdin.write('./run-cpp-feds.sh 0\n');
+	    fedMgr.stdin.end();
+	}, 1000);
+	return deferred.promise;
     };
 
     SimulateTES.prototype.startExperimentFederates = function() {
 	// run-cpp-feds.sh
+	var self = this;
+	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
+	var cp = require('child_process');
+	var deferred = Q.defer();
+
+	var feds = child_process.spawn('bash', [], {cwd:basePath});
+	feds.stdout.on('data', function (data) {});
+	feds.stderr.on('data', function (error) {
+	});
+	feds.on('exit', function (code) {
+	    if (code == 0) {
+		deferred.resolve(code);
+	    }
+	    else {
+		deferred.reject('feds:: child process exited with code ' + code);
+	    }
+	});
+	setTimeout(function() {
+	    feds.stdin.write('./run-cpp-feds.sh\n');
+	    feds.stdin.end();
+	}, 1000);
+	return deferred.promise;
     };
 
     SimulateTES.prototype.monitorContainers = function() {
@@ -285,6 +329,7 @@ define([
 	var deferred = Q.defer();
 	var monitorFunc = function() {
 	    // run docker-compose ps to figure out the currently running containers
+	    // by grepping for the other container names
 	    // if the fedMgr container is the only one left, resolve the deferred promise
 	    deferred.resolve();
 	    setTimeout(monitorFunc, 1000);
@@ -295,6 +340,28 @@ define([
 
     SimulateTES.prototype.killFedMgr = function() {
 	// kill-all.sh
+	var self = this;
+	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
+	var cp = require('child_process');
+	var deferred = Q.defer();
+
+	var stopFeds = child_process.spawn('bash', [], {cwd:basePath});
+	stopFeds.stdout.on('data', function (data) {});
+	stopFeds.stderr.on('data', function (error) {
+	});
+	stopFeds.on('exit', function (code) {
+	    if (code == 0) {
+		deferred.resolve(code);
+	    }
+	    else {
+		deferred.reject('stopFeds:: child process exited with code ' + code);
+	    }
+	});
+	setTimeout(function() {
+	    stopFeds.stdin.write('./kill-all.sh\n');
+	    stopFeds.stdin.end();
+	}, 1000);
+	return deferred.promise;
     };
 
     SimulateTES.prototype.copyArtifacts = function() {
