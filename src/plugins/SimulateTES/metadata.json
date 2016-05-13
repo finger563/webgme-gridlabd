@@ -8,7 +8,7 @@
 	"src": ""
     },
     "disableServerSideExecution": false,
-    "disableBrowserSideExecution": false,
+    "disableBrowserSideExecution": true,
     "writeAccessRequired": false,
     "configStructure": [
         {
@@ -72,7 +72,7 @@
             "displayName": "Return the Logs?",
             "description": "Adds the output logs to the results of the plugin.",
             "value": "true",
-            "valueType": "bool",
+            "valueType": "boolean",
             "readOnly": false
         }
     ]

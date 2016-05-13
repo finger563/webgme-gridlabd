@@ -157,7 +157,7 @@ define([
 
     SimulateTES.prototype.renderModel = function() {
 	var self = this;
-	self.fileData = renderer.renderGLM(self.powerModel, self.core);
+	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
     };
 
     SimulateTES.prototype.runSimulation = function() {

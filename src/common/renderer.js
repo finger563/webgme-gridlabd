@@ -3,7 +3,7 @@
 define(['q'], function(Q) {
     'use strict';
     return {
-	renderGLM: function(model, core) {
+	renderGLM: function(model, core, META) {
 	    var fileData = '';
 	    // Globals
 	    if (model.Global_list) {
@@ -100,7 +100,7 @@ define(['q'], function(Q) {
 	    // Objects
 	    model.childPaths.map((childPath) => {
 		var child = model.pathDict[childPath];
-		if (core.isTypeOf(child.node, self.META.Object)) {
+		if (core.isTypeOf(child.node, META.Object)) {
 		    var nameRegex = /[a-zA-Z\-_]/g;
 		    var nameTest = nameRegex.exec(child.name);
 		    fileData += `object ${child.type}`;

@@ -126,7 +126,7 @@ define([
 
     GenerateGLM.prototype.renderFile = function() {
 	var self = this;
-	self.fileData = renderer.renderGLM(self.powerModel, self.core);
+	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
 	self.notify('info', 'Rendered GLM.');
     };
 
