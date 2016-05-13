@@ -233,6 +233,22 @@ define([
 
 	var fname = path.join(self.root_dir, self.fileName);
 
+	// start fed manager
+	/*
+	return self.startFedMgr()
+	    .then(function() {
+		return self.startExperimentFederates();
+	    })
+	    .then(function() {
+		return self.monitorContainers();
+	    })
+	    .then(function() {
+		return self.killFedMgr();
+	    });
+	*/
+
+	// old code below:
+
 	self.sim_stdout = '';
 	self.sim_stderr = '';
 	self.simProcess = cp.spawn('gridlabd', [fname], {
@@ -254,6 +270,31 @@ define([
 	});
 	
 	return deferred.promise;
+    };
+
+    SimulateTES.prototype.startFedMgr = function() {
+	// run-cpp-feds.sh 0
+    };
+
+    SimulateTES.prototype.startExperimentFederates = function() {
+	// run-cpp-feds.sh
+    };
+
+    SimulateTES.prototype.monitorContainers = function() {
+	var cp = require('child_process');
+	var deferred = Q.defer();
+	var monitorFunc = function() {
+	    // run docker-compose ps to figure out the currently running containers
+	    // if the fedMgr container is the only one left, resolve the deferred promise
+	    deferred.resolve();
+	    setTimeout(monitorFunc, 1000);
+	};
+	setTimeout(monitorFunc, 1000);
+	return deferred.promise;
+    };
+
+    SimulateTES.prototype.killFedMgr = function() {
+	// kill-all.sh
     };
 
     SimulateTES.prototype.copyArtifacts = function() {
