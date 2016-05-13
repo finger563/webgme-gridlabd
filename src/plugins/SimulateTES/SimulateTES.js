@@ -10,11 +10,19 @@
 define([
     'plugin/PluginConfig',
     'text!./metadata.json',
-    'plugin/PluginBase'
+    'plugin/PluginBase',
+    'gridlabd/meta',
+    'gridlabd/modelLoader',
+    'gridlabd/renderer',
+    'q'
 ], function (
     PluginConfig,
     pluginMetadata,
-    PluginBase) {
+    PluginBase,
+    MetaTypes,
+    loader,
+    renderer,
+    Q) {
     'use strict';
 
     pluginMetadata = JSON.parse(pluginMetadata);
@@ -30,6 +38,7 @@ define([
         // Call base class' constructor.
         PluginBase.call(this);
         this.pluginMetadata = pluginMetadata;
+        this.metaTypes = MetaTypes;
     };
 
     /**
@@ -42,6 +51,21 @@ define([
     // Prototypical inheritance from PluginBase.
     SimulateTES.prototype = Object.create(PluginBase.prototype);
     SimulateTES.prototype.constructor = SimulateTES;
+
+    SimulateWithTES.prototype.notify = function(level, msg) {
+	var self = this;
+	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
+	if (level=='error')
+	    self.logger.error(msg);
+	else if (level=='debug')
+	    self.logger.debug(msg);
+	else if (level=='info')
+	    self.logger.info(msg);
+	else if (level=='warning')
+	    self.logger.warn(msg);
+	self.createMessage(self.activeNode, msg, level);
+	self.sendNotification(prefix+msg);
+    };
 
     /**
      * Main function for the plugin to execute. This will perform the execution.
@@ -56,35 +80,149 @@ define([
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            nodeObject;
+        modelNode;
 
+	self.result.success = false;
 
-        // Using the logger.
-        self.logger.debug('This is a debug message.');
-        self.logger.info('This is an info message.');
-        self.logger.warn('This is a warning message.');
-        self.logger.error('This is an error message.');
+        if (typeof WebGMEGlobal !== 'undefined') {
+	    var msg = 'You must run this plugin on the server!';
+	    self.notify('error', msg);
+	    callback(new Error(msg), self.result);
+        }
 
-        // Using the coreAPI to make changes.
+	self.updateMETA(self.metaTypes);
 
-        nodeObject = self.activeNode;
+	// What did the user select for our configuration?
+	var currentConfig = self.getCurrentConfig();
+	self.simulationTime = currentConfig.simulationTime;
+	self.bandwidth = currentConfig.bandwidth;
+	self.delay = currentConfig.delay;
+	self.community1 = currentConfig.community1;
+	self.community2 = currentConfig.community2;
+	self.generator1 = currentConfig.generator1;
+	self.generator2 = currentConfig.generator2;
+	self.returnZip = currentConfig.returnZip;
 
-        self.core.setAttribute(nodeObject, 'name', 'My new obj');
-        self.core.setRegistry(nodeObject, 'position', {x: 70, y: 70});
+        modelNode = self.activeNode;
+	self.modelName = self.core.getAttribute(modelNode, 'name');
+	self.fileName = self.modelName + '.glm';
 
+	var path = require('path');
+	var filendir = require('filendir');
+	self.root_dir = path.join(process.cwd(), 
+				  'generated', 
+				  self.project.projectId, 
+				  self.branchName,
+				  'models');
 
-        // This will save the changes. If you don't want to save;
-        // exclude self.save and call callback directly from this scope.
-        self.save('SimulateTES updated model.')
-            .then(function () {
-                self.result.setSuccess(true);
-                callback(null, self.result);
-            })
-            .catch(function (err) {
-                // Result success is false at invocation.
-                callback(null, self.result);
-            });
+	return loader.loadModel(self.core, modelNode)
+	    .then(function(powerModel) {
+		self.powerModel = powerModel;
+	    })
+	    .then(function() {
+		return self.clean();
+	    })
+	    .then(function() {
+		return self.renderModel();
+	    })
+	    .then(function() {
+		return self.runSimulation();
+	    })
+	    .then(function() {
+		return self.copyArtifacts();
+	    })
+	    .then(function() {
+		return self.plotLogs();
+	    })
+	    .then(function() {
+		return self.clean();
+	    })
+	    .then(function() {
+		return self.generateBlobArtifacts();
+	    })
+	    .then(function() {
+		self.result.success = true;
+		self.createMessage(self.activeNode, 'Simulation Complete.');
+		callback(null, self.result);
+	    })
+	    .catch(function(err) {
+		self.result.success = false;
+		self.createMessage(self.activeNode, err, 'error');
+		callback(err, self.result);
+	    });
+    };
 
+    SimulateTES.prototype.clean = function() {
+    };
+
+    SimulateTES.prototype.renderModel = function() {
+	var self = this;
+	self.fileData = renderer.renderGLM(self.powerModel, self.core);
+    };
+
+    SimulateTES.prototype.runSimulation = function() {
+	var self = this;
+	var path = require('path');
+	var cp = require('child_process');
+
+	self.notify('info', 'Starting Simulation');
+
+	var deferred = Q.defer();
+
+	var fname = path.join(self.root_dir, self.fileName);
+
+	self.sim_stdout = '';
+	self.sim_stderr = '';
+	self.simProcess = cp.spawn('gridlabd', [fname], {
+	    cwd: self.root_dir
+	});
+
+	self.simProcess.stdout.on('data', (data) => {
+	    self.sim_stdout += data;
+	});
+	self.simProcess.stderr.on('data', (data) => {
+	    self.sim_stderr += data;
+	});
+	self.simProcess.on('close', (code) => {
+	    self.notify('info', 'Simulation exited with code: ' + code);
+	    deferred.resolve();
+	});
+	self.simProcess.on('error', (err) => {
+	    deferred.reject('Couldnt run simulation: ' + err);
+	});
+	
+	return deferred.promise;
+    };
+
+    SimulateTES.prototype.copyArtifacts = function() {
+    };
+
+    SimulateTES.prototype.plotLogs = function() {
+    };
+
+    SimulateTES.prototype.generateBlobArtifacts = function() {
+	var self = this;
+	if (!self.returnZip) {
+	    self.notify('info', 'User did not request the output to be returned.');
+	    return;
+	}
+
+	var path = require('path');
+	var stdoutFile = self.modelName + '.stdout';
+	var stderrFile = self.modelName + '.stderr';
+	
+	self.notify('info', 'Returning output to user.');
+
+	return self.blobClient.putFile(stdoutFile, self.sim_stdout)
+	    .then(function (hash) {
+		self.result.addArtifact(hash);
+	    })
+	    .then(function() {
+		return self.blobClient.putFile(stderrFile, self.sim_stderr);
+	    })
+	    .then(function (hash) {
+		self.result.addArtifact(hash);
+	    });
     };
 
     return SimulateTES;

@@ -1,14 +1,79 @@
 {
-  "id": "SimulateTES",
-  "name": "SimulateTES",
-  "version": "0.1.0",
-  "description": "",
-  "icon": {
-    "class": "glyphicon glyphicon-cog",
-    "src": ""
-  },
-  "disableServerSideExecution": false,
-  "disableBrowserSideExecution": false,
-  "writeAccessRequired": false,
-  "configStructure": []
+    "id": "SimulateTES",
+    "name": "SimulateTES",
+    "version": "0.1.0",
+    "description": "",
+    "icon": {
+	"class": "glyphicon glyphicon-cog",
+	"src": ""
+    },
+    "disableServerSideExecution": false,
+    "disableBrowserSideExecution": false,
+    "writeAccessRequired": false,
+    "configStructure": [
+        {
+            "name": "simulationTime",
+            "displayName": "Simulation Time",
+            "description": "How many seconds should be simulated?",
+            "value": "50",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "bandwidth",
+            "displayName": "Network Bandwidth",
+            "description": "Bits/second capacity on each network link",
+            "value": "50000.0",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "delay",
+            "displayName": "Delay",
+            "description": "Seconds of latency on each network link.",
+            "value": "5.0",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "community1",
+            "displayName": "Community 1 Threshold",
+            "description": "Price threshold used by community 1 for selecting generators.",
+            "value": "50",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "community2",
+            "displayName": "Community 2 Threshold",
+            "description": "Price threshold used by community 2 for selecting generators.",
+            "value": "50",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "generator1",
+            "displayName": "Generator 1 Threshold",
+            "description": "Load threshold used by generator 1 for setting its price.",
+            "value": "100",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "generator2",
+            "displayName": "Generator 2 Threshold",
+            "description": "Load threshold used by generator 2 for setting its price.",
+            "value": "100",
+            "valueType": "float",
+            "readOnly": false
+        },
+        {
+            "name": "returnZip",
+            "displayName": "Return the Logs?",
+            "description": "Adds the output logs to the results of the plugin.",
+            "value": "true",
+            "valueType": "bool",
+            "readOnly": false
+        }
+    ]
 }

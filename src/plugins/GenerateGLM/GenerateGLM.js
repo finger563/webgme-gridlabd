@@ -11,6 +11,7 @@ define([
     'plugin/PluginBase',
     'gridlabd/meta',
     'gridlabd/modelLoader',
+    'gridlabd/renderer',
     'q'
 ], function (
     PluginConfig,
@@ -18,6 +19,7 @@ define([
     PluginBase,
     MetaTypes,
     loader,
+    renderer,
     Q) {
     'use strict';
 
@@ -124,134 +126,7 @@ define([
 
     GenerateGLM.prototype.renderFile = function() {
 	var self = this;
-	self.fileData = '';
-	// Globals
-	if (self.powerModel.Global_list) {
-	    self.powerModel.Global_list.map((obj) => {
-		self.fileData += `#set ${obj.name}=${obj.Value};\n`;
-	    });
-	}
-	// Variables
-	if (self.powerModel.Variable_list) {
-	    self.powerModel.Variable_list.map((obj) => {
-		self.fileData += `#setenv ${obj.name}=${obj.Expression};\n`;
-	    });
-	}
-	// Modules
-	if (self.powerModel.module_list) {
-	    self.powerModel.module_list.map((obj) => {
-		if (obj.Variable_list || obj.class_list) {
-		    self.fileData += `module ${obj.name} \{\n`;
-		    // module variables
-		    if (obj.Variable_list) {
-			obj.Variable_list.map((v) => {
-			    self.fileData += `  ${v.name} ${v.Expression};\n`;
-			});
-		    }
-		    // module classes
-		    if (obj.class_list) {
-			obj.class_list.map((c) => {
-			    self.fileData += `  class ${c.name} \{\n`;
-			    // class properties
-			    if (c.PropertyDef_list) {
-				c.PropertyDef_list.map((p) => {
-				    if (p.Unit)
-					self.fileData += `    ${p.Type} ${p.name}[${p.Unit}];\n`;
-				    else
-					self.fileData += `    ${p.Type} ${p.name};\n`;
-				});
-			    }
-			    self.fileData += `  \};\n`;
-			});
-		    }
-		    self.fileData += `\};\n`;
-		}
-		else {
-		    self.fileData += `module ${obj.name};\n`;
-		}
-	    });
-	}
-	// Classes
-	if (self.powerModel.class_list) {
-	    self.powerModel.class_list.map((c) => {
-		self.fileData += `class ${c.name} \{\n`;
-		// class properties
-		if (c.PropertyDef_list) {
-		    c.PropertyDef_list.map((p) => {
-			if (p.Unit)
-			    self.fileData += `  ${p.Type} ${p.name}[${p.Unit}];\n`;
-			else
-			    self.fileData += `  ${p.Type} ${p.name};\n`;
-		    });
-		}
-		self.fileData += `\};\n`;
-	    });
-	}
-	// Clock
-	if (self.powerModel.clock_list) {
-	    self.powerModel.clock_list.map((clock) => {
-		self.fileData += `clock \{\n`;
-		for (var attr in clock.attributes) {
-		    if (attr == 'name' || clock.attributes[attr].length == 0)
-			continue;
-		    if (clock.attributes[attr].indexOf(' ') > -1)
-			self.fileData += `  ${attr} '${clock.attributes[attr]}';\n`;
-		    else
-			self.fileData += `  ${attr} ${clock.attributes[attr]};\n`;
-		}
-		self.fileData += `\};\n`;
-	    });
-	}
-	// Schedules
-	if (self.powerModel.schedule_list) {
-	    self.powerModel.schedule_list.map((sched) => {
-		self.fileData += `schedule ${sched.name} \{\n`;
-		if (sched.Entry_list) {
-		    sched.Entry_list.map((entry) => {
-			self.fileData += `  ${entry.Minutes} ${entry.Hours} ${entry.Days} ${entry.Months} ${entry.Weekdays}`;
-			if (entry.Value.length)
-			    self.fileData += ` ${entry.Value}`;
-			self.fileData += '\n';
-		    });
-		}
-		self.fileData += `\};\n`;
-	    });
-	}
-	// Objects
-	self.powerModel.childPaths.map((childPath) => {
-	    var child = self.powerModel.pathDict[childPath];
-	    if (self.core.isTypeOf(child.node, self.META.Object)) {
-		var nameRegex = /[a-zA-Z\-_]/g;
-		var nameTest = nameRegex.exec(child.name);
-		self.fileData += `object ${child.type}`;
-		if (!nameTest)
-		    self.fileData += `:${child.name}`;
-		self.fileData += ` \{\n`;
-		for (var attr in child.attributes) {
-		    if (child.attributes[attr]) {
-			if (attr == 'name' && !nameTest) {
-			    continue;
-			}
-			self.fileData += `  ${attr} ${child.attributes[attr]};\n`;
-		    }
-		}
-		for (var ptr in child.pointers) {
-		    var ptrObj = self.powerModel.pathDict[child.pointers[ptr]];
-		    if (ptrObj) {
-			var ptrName = ptr;
-			if (ptr == 'src' || ptr == 'dst') {
-			    ptrName = (ptr == 'src') ? 'from' : 'to';
-			}
-			var nameRegex = /[a-zA-Z\-_]/g;
-			if (!nameRegex.exec(ptrObj.name))
-			    self.fileData += `  ${ptrName} ${ptrObj.type}:${ptrObj.name};\n`;
-			else
-			    self.fileData += `  ${ptrName} ${ptrObj.name};\n`;
-		    }
-		}
-		self.fileData += `\};\n`;
-	    }
-	});
+	self.fileData = renderer.renderGLM(self.powerModel, self.core);
 	self.notify('info', 'Rendered GLM.');
     };
 
