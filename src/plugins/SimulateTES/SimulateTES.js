@@ -52,7 +52,7 @@ define([
     SimulateTES.prototype = Object.create(PluginBase.prototype);
     SimulateTES.prototype.constructor = SimulateTES;
 
-    SimulateWithTES.prototype.notify = function(level, msg) {
+    SimulateTES.prototype.notify = function(level, msg) {
 	var self = this;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
 	if (level=='error')
