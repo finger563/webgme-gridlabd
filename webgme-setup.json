@@ -16,6 +16,10 @@
       "UpdateGLDMeta": {
         "src": "src/plugins/UpdateGLDMeta",
         "test": "test/plugins/UpdateGLDMeta"
+      },
+      "SimulateTES": {
+        "src": "src/plugins/SimulateTES",
+        "test": "test/plugins/SimulateTES"
       }
     },
     "addons": {
