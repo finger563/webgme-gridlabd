@@ -11,6 +11,9 @@ define([
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
+    'common/util/ejs', // for ejs templates
+    'common/util/xmljsonconverter', // used to save model as json
+    'plugin/SimulateTES/SimulateTES/Templates/Templates',
     'gridlabd/meta',
     'gridlabd/modelLoader',
     'gridlabd/renderer',
@@ -19,6 +22,9 @@ define([
     PluginConfig,
     pluginMetadata,
     PluginBase,
+    ejs,
+    Converter,
+    TEMPLATES,
     MetaTypes,
     loader,
     renderer,
@@ -126,6 +132,9 @@ define([
 		return self.renderModel();
 	    })
 	    .then(function() {
+		return self.writeInputs();
+	    })
+	    .then(function() {
 		return self.runSimulation();
 	    })
 	    .then(function() {
@@ -153,11 +162,64 @@ define([
     };
 
     SimulateTES.prototype.clean = function() {
+	var self = this,
+	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo",
+	path = require('path'),
+	child_process = require('child_process');
+
+	// clear out any previous inputs
+	child_process.execSync('rm -rf ' + basepath + '/input/*');
+	// clear out any previous outputs
+	child_process.execSync('rm -rf ' + basepath + '/output/*');
+
+	// need to kill docker container processes with sudo pkill
     };
 
     SimulateTES.prototype.renderModel = function() {
 	var self = this;
 	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
+    };
+
+    SimulateTES.prototype.writeInputs = function() {
+	var self = this,
+	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/input/",
+	inputFiles = {
+	    "model.glm": self.fileData,
+	    "Community1DemandController.config": JSON.stringify({ "Threshold": self.community1 }, null, 2),
+	    "Community2DemandController.config": JSON.stringify({ "Threshold": self.community2 }, null, 2),
+	    "Generator1PriceController.config": JSON.stringify({ "Threshold": self.generator1 }, null, 2),
+	    "Generator2PriceController.config": JSON.stringify({ "Threshold": self.generator2 }, null, 2),
+	    "script.xml": ejs.render(
+		TEMPLATES['script.xml.ejs'], 
+		{ 
+		    simEnd: self.simulationTime,
+		    bandwidth: self.bandwidth,
+		    delay: self.delay
+		})
+	},
+	fs = require('fs'),
+	path = require('path'),
+	filendir = require('filendir');
+	
+	var fileNames = Object.keys.(inputFiles);
+	var tasks = fileNames.map((fileName) => {
+	    var deferred = Q.defer();
+	    var data = inputFiles[fileName];
+	    filendir.writeFile(path.join(basePath, fileName), data, (err) => {
+		if (err) {
+		    deferred.reject('Couldnt write ' + fileName + ': ' + err);
+		}
+		else {
+		    deferred.resolve();
+		}
+	    });
+	    return deferred.promise;
+	});
+
+	return Q.all(tasks)
+	    .then(function() {
+		self.notify('info', 'Generated artifacts.');
+	    });
     };
 
     SimulateTES.prototype.runSimulation = function() {
