@@ -39,7 +39,7 @@
             "name": "community1",
             "displayName": "Community 1 Threshold",
             "description": "Price threshold used by community 1 for selecting generators.",
-            "value": "50",
+            "value": "50.0",
             "valueType": "float",
             "readOnly": false
         },
@@ -47,7 +47,7 @@
             "name": "community2",
             "displayName": "Community 2 Threshold",
             "description": "Price threshold used by community 2 for selecting generators.",
-            "value": "50",
+            "value": "50.0",
             "valueType": "float",
             "readOnly": false
         },
@@ -55,7 +55,7 @@
             "name": "generator1",
             "displayName": "Generator 1 Threshold",
             "description": "Load threshold used by generator 1 for setting its price.",
-            "value": "100",
+            "value": "100.0",
             "valueType": "float",
             "readOnly": false
         },
@@ -63,7 +63,7 @@
             "name": "generator2",
             "displayName": "Generator 2 Threshold",
             "description": "Load threshold used by generator 2 for setting its price.",
-            "value": "100",
+            "value": "100.0",
             "valueType": "float",
             "readOnly": false
         },

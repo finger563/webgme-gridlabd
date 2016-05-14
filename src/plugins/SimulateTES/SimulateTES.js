@@ -185,10 +185,10 @@ define([
 	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/input/",
 	inputFiles = {
 	    "model.glm": self.fileData,
-	    "Community1DemandController.config": JSON.stringify({ "Threshold": self.community1 }, null, 2),
-	    "Community2DemandController.config": JSON.stringify({ "Threshold": self.community2 }, null, 2),
-	    "Generator1PriceController.config": JSON.stringify({ "Threshold": self.generator1 }, null, 2),
-	    "Generator2PriceController.config": JSON.stringify({ "Threshold": self.generator2 }, null, 2),
+	    "Community1DemandController.config": JSON.stringify({ "Threshold": +self.community1 }, null, 2),
+	    "Community2DemandController.config": JSON.stringify({ "Threshold": +self.community2 }, null, 2),
+	    "Generator1PriceController.config": JSON.stringify({ "Threshold": +self.generator1 }, null, 2),
+	    "Generator2PriceController.config": JSON.stringify({ "Threshold": +self.generator2 }, null, 2),
 	    "script.xml": ejs.render(
 		TEMPLATES['script.xml.ejs'], 
 		{ 
