@@ -147,9 +147,6 @@ define([
 		return self.clean();
 	    })
 	    .then(function() {
-		return self.generateBlobArtifacts();
-	    })
-	    .then(function() {
 		self.result.success = true;
 		self.createMessage(self.activeNode, 'Simulation Complete.');
 		callback(null, self.result);
@@ -342,6 +339,47 @@ define([
     };
 
     SimulateTES.prototype.copyArtifacts = function() {
+	var self = this;
+	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/output";
+	
+	self.notify('info', 'Copying output.');
+	
+	return new Promise(function(resolve, reject) {
+	    var zlib = require('zlib'),
+	    tar = require('tar'),
+	    fstream = require('fstream'),
+	    input = basePath;
+
+	    var bufs = [];
+	    var packer = tar.Pack()
+		.on('error', function(e) { reject(e); });
+
+	    var gzipper = zlib.Gzip()
+		.on('error', function(e) { reject(e); })
+		.on('data', function(d) { bufs.push(d); })
+		.on('end', function() {
+		    var buf = Buffer.concat(bufs);
+		    self.blobClient.putFile('output.tar.gz',buf)
+			.then(function (hash) {
+			    self.result.addArtifact(hash);
+			    resolve();
+			})
+			.catch(function(err) {
+			    reject(err);
+			})
+			    .done();
+		});
+
+	    var reader = fstream.Reader({ 'path': input, 'type': 'Directory' })
+		.on('error', function(e) { reject(e); });
+
+	    reader
+		.pipe(packer)
+		.pipe(gzipper);
+	})
+	    .then(function() {
+		self.notify('info', 'Created archive.');
+	    });
     };
 
     SimulateTES.prototype.plotLogs = function() {
