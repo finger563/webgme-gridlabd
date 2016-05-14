@@ -148,12 +148,12 @@ define([
 	    })
 	    .then(function() {
 		self.result.success = true;
-		self.createMessage(self.activeNode, 'Simulation Complete.');
+		self.notify('info', 'Simulation Complete.');
 		callback(null, self.result);
 	    })
 	    .catch(function(err) {
 		self.result.success = false;
-		self.createMessage(self.activeNode, err, 'error');
+		self.notify('error', err);
 		callback(err, self.result);
 	    });
     };
@@ -305,9 +305,22 @@ define([
     };
 
     SimulateTES.prototype.monitorContainers = function() {
+	var self = this;
 	var cp = require('child_process');
 	var deferred = Q.defer();
-	//return deferred.promise;
+	
+	var stdout = cp.execSync('docker ps');
+	var regex = /(demo_c2wt_cpp_fedmgr_run_[\w+]*)/gi;
+	var results = regex.exec(stdout);
+	if (results) {
+	    var dockerName = results[1];
+	    self.notify('info', 'Waiting for simulation to complete when ' + dockerName + ' exits.');
+	    stdout = cp.execSync('docker wait ' + dockerName);
+	    self.notify('info', 'Docker federate exited with stdout: ' + stdout);
+	}
+	else {
+	    self.notify('error', 'Couldnt find the federate docker container in docker ps!');
+	}
     };
 
     SimulateTES.prototype.killFedMgr = function() {
