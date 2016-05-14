@@ -1,5 +1,5 @@
 /* Generated file based on ejs templates */
 define([], function() {
     return {
-    "script.xml.ejs": "<%- simEnd %>\n<%- bandwdith %>\n<%- delay %>"
+    "script.xml.ejs": "<?xml version=\"1.0\"?>\n<script>\n\t<expect federateType=\"Generator2PriceController\"/>\n\t<expect federateType=\"Community1DemandController\"/>\n\t<expect federateType=\"Generator1PriceController\"/>\n\t<expect federateType=\"OmnetFederate\"/>\n\t<expect federateType=\"Mapper\"/>\n\t<expect federateType=\"GridlabDFederate\"/>\n\t<expect federateType=\"Community2DemandController\"/>\n\n\t\n\t\n\t\n\t\n\t<coaNode ID=\"id-0067-00000047\" name=\"DelayGridlabDNode\" nodeType=\"Action\" interactionName=\"InteractionRoot.C2WInteractionRoot.ActionBase.OmnetCommand.StartDelayNodeAttack\" nodeFullPath=\"TES2016DemoNetwork.GridlabD\"\n\tdelayMean=\"<%- delayMean %>\"\n\tdelayStdDev=\"<%- delayStdDev %>\"/>\n\t<coaNode ID=\"id-0066-00000079\" name=\"t1sec\" nodeType=\"SyncPoint\" time=\"1.0\" minBranchesToSync=\"-1\"/>\n\t<coaNode ID=\"id-0066-00000078\" name=\"terminateSimAt\" nodeType=\"SyncPoint\" time=\"<%- simEnd %>\" minBranchesToSync=\"-1\"/>\n\n\t\n\t<coaEdge type=\"COAFlow\" flowID=\"\" fromNode=\"id-0066-00000079\" toNode=\"id-0067-00000047\" />\n\n\n</script>\n"
 }});

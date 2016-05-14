@@ -1,3 +1,25 @@
-<%- simEnd %>
-<%- bandwdith %>
-<%- delay %>
+<?xml version="1.0"?>
+<script>
+	<expect federateType="Generator2PriceController"/>
+	<expect federateType="Community1DemandController"/>
+	<expect federateType="Generator1PriceController"/>
+	<expect federateType="OmnetFederate"/>
+	<expect federateType="Mapper"/>
+	<expect federateType="GridlabDFederate"/>
+	<expect federateType="Community2DemandController"/>
+
+	
+	
+	
+	
+	<coaNode ID="id-0067-00000047" name="DelayGridlabDNode" nodeType="Action" interactionName="InteractionRoot.C2WInteractionRoot.ActionBase.OmnetCommand.StartDelayNodeAttack" nodeFullPath="TES2016DemoNetwork.GridlabD"
+	delayMean="<%- delayMean %>"
+	delayStdDev="<%- delayStdDev %>"/>
+	<coaNode ID="id-0066-00000079" name="t1sec" nodeType="SyncPoint" time="1.0" minBranchesToSync="-1"/>
+	<coaNode ID="id-0066-00000078" name="terminateSimAt" nodeType="SyncPoint" time="<%- simEnd %>" minBranchesToSync="-1"/>
+
+	
+	<coaEdge type="COAFlow" flowID="" fromNode="id-0066-00000079" toNode="id-0067-00000047" />
+
+
+</script>

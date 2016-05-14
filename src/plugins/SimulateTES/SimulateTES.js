@@ -101,8 +101,8 @@ define([
 	// What did the user select for our configuration?
 	var currentConfig = self.getCurrentConfig();
 	self.simulationTime = currentConfig.simulationTime;
-	self.bandwidth = currentConfig.bandwidth;
-	self.delay = currentConfig.delay;
+	self.delayMean = currentConfig.delayMean;
+	self.delayStdDev = currentConfig.delayStdDev;
 	self.community1 = currentConfig.community1;
 	self.community2 = currentConfig.community2;
 	self.generator1 = currentConfig.generator1;
@@ -165,14 +165,15 @@ define([
 	var self = this,
 	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo",
 	path = require('path'),
-	child_process = require('child_process');
+	cp = require('child_process');
 
 	// clear out any previous inputs
-	child_process.execSync('rm -rf ' + basepath + '/input/*');
+	cp.execSync('rm -rf ' + basePath + '/input/*');
 	// clear out any previous outputs
-	child_process.execSync('rm -rf ' + basepath + '/output/*');
+	cp.execSync('rm -rf ' + basePath + '/output/*');
 
 	// need to kill docker container processes with sudo pkill
+	cp.execSync('docker stop $(docker ps -a -q)');
     };
 
     SimulateTES.prototype.renderModel = function() {
@@ -193,15 +194,15 @@ define([
 		TEMPLATES['script.xml.ejs'], 
 		{ 
 		    simEnd: self.simulationTime,
-		    bandwidth: self.bandwidth,
-		    delay: self.delay
+		    delayMean: self.delayMean,
+		    delayStdDev: self.delayStdDev
 		})
 	},
 	fs = require('fs'),
 	path = require('path'),
 	filendir = require('filendir');
 	
-	var fileNames = Object.keys.(inputFiles);
+	var fileNames = Object.keys(inputFiles);
 	var tasks = fileNames.map((fileName) => {
 	    var deferred = Q.defer();
 	    var data = inputFiles[fileName];
@@ -234,7 +235,6 @@ define([
 	var fname = path.join(self.root_dir, self.fileName);
 
 	// start fed manager
-	/*
 	return self.startFedMgr()
 	    .then(function() {
 		return self.startExperimentFederates();
@@ -245,12 +245,9 @@ define([
 	    .then(function() {
 		return self.killFedMgr();
 	    });
-	*/
 
-	// old code below:
+	// old code, not used anymore below:
 
-	self.sim_stdout = '';
-	self.sim_stderr = '';
 	self.simProcess = cp.spawn('gridlabd', [fname], {
 	    cwd: self.root_dir
 	});
@@ -279,7 +276,7 @@ define([
 	var cp = require('child_process');
 	var deferred = Q.defer();
 
-	var fedMgr = child_process.spawn('bash', [], {cwd:basePath});
+	var fedMgr = cp.spawn('bash', [], {cwd:basePath});
 	fedMgr.stdout.on('data', function (data) {});
 	fedMgr.stderr.on('data', function (error) {
 	});
@@ -305,7 +302,7 @@ define([
 	var cp = require('child_process');
 	var deferred = Q.defer();
 
-	var feds = child_process.spawn('bash', [], {cwd:basePath});
+	var feds = cp.spawn('bash', [], {cwd:basePath});
 	feds.stdout.on('data', function (data) {});
 	feds.stderr.on('data', function (error) {
 	});
@@ -327,14 +324,6 @@ define([
     SimulateTES.prototype.monitorContainers = function() {
 	var cp = require('child_process');
 	var deferred = Q.defer();
-	var monitorFunc = function() {
-	    // run docker-compose ps to figure out the currently running containers
-	    // by grepping for the other container names
-	    // if the fedMgr container is the only one left, resolve the deferred promise
-	    deferred.resolve();
-	    setTimeout(monitorFunc, 1000);
-	};
-	setTimeout(monitorFunc, 1000);
 	return deferred.promise;
     };
 
@@ -345,7 +334,7 @@ define([
 	var cp = require('child_process');
 	var deferred = Q.defer();
 
-	var stopFeds = child_process.spawn('bash', [], {cwd:basePath});
+	var stopFeds = cp.spawn('bash', [], {cwd:basePath});
 	stopFeds.stdout.on('data', function (data) {});
 	stopFeds.stderr.on('data', function (error) {
 	});
@@ -358,7 +347,7 @@ define([
 	    }
 	});
 	setTimeout(function() {
-	    stopFeds.stdin.write('./kill-all.sh\n');
+	    stopFeds.stdin.write('docker stop $(docker ps -a -q)\n');
 	    stopFeds.stdin.end();
 	}, 1000);
 	return deferred.promise;

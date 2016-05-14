@@ -20,18 +20,18 @@
             "readOnly": false
         },
         {
-            "name": "bandwidth",
-            "displayName": "Network Bandwidth",
-            "description": "Bits/second capacity on each network link",
-            "value": "50000.0",
+            "name": "delayMean",
+            "displayName": "Mean Delay",
+            "description": "Mean latency in seconds for each network link.",
+            "value": "0.1",
             "valueType": "float",
             "readOnly": false
         },
         {
-            "name": "delay",
-            "displayName": "Delay",
-            "description": "Seconds of latency on each network link.",
-            "value": "5.0",
+            "name": "delayStdDev",
+            "displayName": "Delay Std Dev",
+            "description": "Std. Dev. for latency on each network link.",
+            "value": "0.0",
             "valueType": "float",
             "readOnly": false
         },
