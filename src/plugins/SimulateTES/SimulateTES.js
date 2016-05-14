@@ -167,6 +167,8 @@ define([
 	path = require('path'),
 	cp = require('child_process');
 
+	self.notify('info', 'Cleaning experiment artifacts and processes from system.');
+
 	// clear out any previous inputs
 	cp.execSync('rm -rf ' + basePath + '/input/*');
 	// clear out any previous outputs
