@@ -282,6 +282,7 @@ define([
 	});
 	fedMgr.on('exit', function (code) {
 	    if (code == 0) {
+		self.notify('info', 'Started Fed Mgr.');
 		deferred.resolve(code);
 	    }
 	    else {
@@ -308,6 +309,7 @@ define([
 	});
 	feds.on('exit', function (code) {
 	    if (code == 0) {
+		self.notify('info', 'Started experiment feds.');
 		deferred.resolve(code);
 	    }
 	    else {
@@ -324,7 +326,7 @@ define([
     SimulateTES.prototype.monitorContainers = function() {
 	var cp = require('child_process');
 	var deferred = Q.defer();
-	return deferred.promise;
+	//return deferred.promise;
     };
 
     SimulateTES.prototype.killFedMgr = function() {
@@ -340,6 +342,7 @@ define([
 	});
 	stopFeds.on('exit', function (code) {
 	    if (code == 0) {
+		self.notify('info', 'Killed all experiment feds.');
 		deferred.resolve(code);
 	    }
 	    else {
