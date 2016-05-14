@@ -246,26 +246,6 @@ define([
 		return self.killFedMgr();
 	    });
 
-	// old code, not used anymore below:
-
-	self.simProcess = cp.spawn('gridlabd', [fname], {
-	    cwd: self.root_dir
-	});
-
-	self.simProcess.stdout.on('data', (data) => {
-	    self.sim_stdout += data;
-	});
-	self.simProcess.stderr.on('data', (data) => {
-	    self.sim_stderr += data;
-	});
-	self.simProcess.on('close', (code) => {
-	    self.notify('info', 'Simulation exited with code: ' + code);
-	    deferred.resolve();
-	});
-	self.simProcess.on('error', (err) => {
-	    deferred.reject('Couldnt run simulation: ' + err);
-	});
-	
 	return deferred.promise;
     };
 
@@ -290,6 +270,7 @@ define([
 	    }
 	});
 	setTimeout(function() {
+	    self.notify('info', 'Starting Fed Mgr.');
 	    fedMgr.stdin.write('./run-cpp-feds.sh 0\n');
 	    fedMgr.stdin.end();
 	}, 1000);
@@ -317,6 +298,7 @@ define([
 	    }
 	});
 	setTimeout(function() {
+	    self.notify('info', 'Starting experiment feds.');
 	    feds.stdin.write('./run-cpp-feds.sh\n');
 	    feds.stdin.end();
 	}, 1000);
@@ -350,6 +332,7 @@ define([
 	    }
 	});
 	setTimeout(function() {
+	    self.notify('info', 'Killing experiment feds.');
 	    stopFeds.stdin.write('docker stop $(docker ps -a -q)\n');
 	    stopFeds.stdin.end();
 	}, 1000);
@@ -369,6 +352,9 @@ define([
 	    return;
 	}
 
+	// till we get output from the output folder
+	return;
+	
 	var path = require('path');
 	var stdoutFile = self.modelName + '.stdout';
 	var stderrFile = self.modelName + '.stderr';
