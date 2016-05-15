@@ -234,22 +234,19 @@ define([
 	var fname = path.join(self.root_dir, self.fileName);
 
 	// start fed manager
-	return self.startFedMgr()
-	    .then(function() {
-		return self.startExperimentFederates();
-	    })
+	return self.startFederates()
 	    .then(function() {
 		return self.monitorContainers();
 	    })
 	    .then(function() {
-		return self.killFedMgr();
+		return self.killFederates();
 	    });
 
 	return deferred.promise;
     };
 
-    SimulateTES.prototype.startFedMgr = function() {
-	// run-cpp-feds.sh 0
+    SimulateTES.prototype.startFederates = function() {
+	// run-cpp-feds.sh
 	var self = this;
 	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
 	var cp = require('child_process');
@@ -261,45 +258,17 @@ define([
 	});
 	fedMgr.on('exit', function (code) {
 	    if (code == 0) {
-		self.notify('info', 'Started Fed Mgr.');
+		self.notify('info', 'Started Federates.');
 		deferred.resolve(code);
 	    }
 	    else {
-		deferred.reject('fedMgr:: child process exited with code ' + code);
+		deferred.reject('federates:: child process exited with code ' + code);
 	    }
 	});
 	setTimeout(function() {
-	    self.notify('info', 'Starting Fed Mgr.');
-	    fedMgr.stdin.write('./run-cpp-feds.sh 0\n');
+	    self.notify('info', 'Starting Federates.');
+	    fedMgr.stdin.write('./run-cpp-feds.sh\n');
 	    fedMgr.stdin.end();
-	}, 1000);
-	return deferred.promise;
-    };
-
-    SimulateTES.prototype.startExperimentFederates = function() {
-	// run-cpp-feds.sh
-	var self = this;
-	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
-	var cp = require('child_process');
-	var deferred = Q.defer();
-
-	var feds = cp.spawn('bash', [], {cwd:basePath});
-	feds.stdout.on('data', function (data) {});
-	feds.stderr.on('data', function (error) {
-	});
-	feds.on('exit', function (code) {
-	    if (code == 0) {
-		self.notify('info', 'Started experiment feds.');
-		deferred.resolve(code);
-	    }
-	    else {
-		deferred.reject('feds:: child process exited with code ' + code);
-	    }
-	});
-	setTimeout(function() {
-	    self.notify('info', 'Starting experiment feds.');
-	    feds.stdin.write('./run-cpp-feds.sh\n');
-	    feds.stdin.end();
 	}, 1000);
 	return deferred.promise;
     };
@@ -323,7 +292,7 @@ define([
 	}
     };
 
-    SimulateTES.prototype.killFedMgr = function() {
+    SimulateTES.prototype.killFederates = function() {
 	// kill-all.sh
 	var self = this;
 	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
