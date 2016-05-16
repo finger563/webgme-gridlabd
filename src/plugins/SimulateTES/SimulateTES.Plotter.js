@@ -4,6 +4,8 @@ define(['d3', 'underscore'], function() {
     'use strict';
     return {
 	plotData: function(data) {
+	    var _ = require('underscore');
+	    var d3 = require('d3');
 	    if (_.isEmpty(data))
 		return;
 

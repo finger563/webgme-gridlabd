@@ -388,19 +388,24 @@ define([
 		    deferred.reject('Couldnt open ' + fileName + ': ' + err);
 		    return;
 		}
-		var logData = Parser.getDataFromLog(data);
-		var svg = Plotter.plotData(logData);
-		var resultFileName = controller + '.svg';
-		self.blobClient.putFile(resultFileName, svg.outerHTML)
-		    .then((hash) => {
-			self.result.addArtifact(hash);
-			var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
-			self.createMessage(self.activeNode, svg.outerHTML,'info');
-			deferred.resolve();
-		    })
-		    .catch((err) => {
-			deferred.reject('Couldnt add ' + resultFileName +' to blob');
-		    });
+		try {
+		    var logData = Parser.getDataFromLog(data);
+		    var svg = Plotter.plotData(logData);
+		    var resultFileName = controller + '.svg';
+		    self.blobClient.putFile(resultFileName, svg.outerHTML)
+			.then((hash) => {
+			    self.result.addArtifact(hash);
+			    var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
+			    self.createMessage(self.activeNode, svg.outerHTML,'info');
+			    deferred.resolve();
+			})
+			.catch((err) => {
+			    deferred.reject('Couldnt add ' + resultFileName +' to blob');
+			});
+		}
+		catch (err) {
+		    deferred.reject(err);
+		}
 	    });
 	    // add to blob
 	    // add to result
