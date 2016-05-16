@@ -1,6 +1,6 @@
 
 
-define(['d3'], function() {
+define(['d3', 'underscore'], function() {
     'use strict';
     return {
 	plotData: function(data) {
