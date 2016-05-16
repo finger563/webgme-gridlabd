@@ -156,9 +156,12 @@ define([
 		callback(null, self.result);
 	    })
 	    .catch(function(err) {
-		self.result.success = false;
-		self.notify('error', err);
-		callback(err, self.result);
+		self.clean()
+		    .then(() => {
+			self.result.success = false;
+			self.notify('error', err);
+			callback(err, self.result);
+		    });
 	    });
     };
 
