@@ -371,7 +371,7 @@ define([
     SimulateTES.prototype.plotLogs = function() {
 	var self = this;
 	var path = require('path');
-	var fs = requrie('fs');
+	var fs = require('fs');
 	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/output";
 	var controllers = [
 	    "Community1DemandController",
