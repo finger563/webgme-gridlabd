@@ -6,6 +6,8 @@ define(['d3', 'underscore'], function() {
 	plotData: function(data) {
 	    var _ = require('underscore');
 	    var d3 = require('d3');
+	    var jsdom = require('jsdom').jsdom;
+	    var document = jsdom(undefined, {});
 	    if (_.isEmpty(data))
 		return;
 
@@ -49,16 +51,16 @@ define(['d3', 'underscore'], function() {
 		y2: ydomain
 	    };
 
-	    var svg = document.createElementNS(d3.ns.prefix.svg, 'svg')
-		.attr('preserveAspectRatio', 'xMinYMin meet')
+	    var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
+	    svg.attr('preserveAspectRatio', 'xMinYMin meet')
 		.attr('viewBox', '0 0 '+(width+margin.left+margin.right) + ' '+(height +margin.bottom+margin.top))
-		//.attr("width", "100%")
-		//.attr("height", height + margin.top + margin.bottom)
 		.classed('svg-content-responsive', true)
 		.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
+	    //.attr("width", "100%")
+	    //.attr("height", height + margin.top + margin.bottom)
+	    
+	    
 	    var x = d3.scale.linear()
 		.domain([0, xdomain])
 		.range([0, width]);
