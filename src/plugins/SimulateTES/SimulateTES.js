@@ -406,8 +406,7 @@ define([
 			    .then((hash) => {
 				self.result.addArtifact(hash);
 				var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
-				self.createMessage(self.activeNode, controller + ' log plot:', 'info');
-				self.createMessage(self.activeNode, svgHtml,'info');
+				self.createMessage(self.activeNode, controller + ' log plot:' + svgHtml, 'info');
 				deferred.resolve();
 			    })
 			    .catch((err) => {

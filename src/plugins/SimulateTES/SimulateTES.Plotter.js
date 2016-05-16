@@ -93,10 +93,10 @@ define(['d3', 'underscore'], function() {
 		    // add axes
 		    svg.append("g")
 			.attr("class", "x axis")
-			.call(xAxis)
 			.style('fill', 'none')
 			.style('stroke', '#000')
 			.style('shape-rendering', 'crispEdges')
+			.call(xAxis)
 			.attr("transform", "translate(0," + height + ")");
 
 		    svg.append("g")
