@@ -39,7 +39,7 @@ define([], function() {
 		var time = parseFloat(result[1]);
 		var data1 = parseFloat(result[2]);
 		log_data[keys[0]].data.push([time, data1]);
-		if (results[3]) {
+		if (result[3]) {
 		    var data2 = parseFloat(result[3]);
 		    log_data[keys[1]].data.push([time, data2]);
 		}
