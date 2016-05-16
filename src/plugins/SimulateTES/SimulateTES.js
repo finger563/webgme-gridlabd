@@ -156,12 +156,9 @@ define([
 		callback(null, self.result);
 	    })
 	    .catch(function(err) {
-		self.clean()
-		    .then(() => {
-			self.result.success = false;
-			self.notify('error', err);
-			callback(err, self.result);
-		    });
+		self.notify('error', err);
+		self.result.success = false;
+		callback(err, self.result);
 	    });
     };
 
@@ -173,13 +170,19 @@ define([
 
 	self.notify('info', 'Cleaning experiment artifacts and processes from system.');
 
-	// clear out any previous inputs
-	cp.execSync('rm -rf ' + basePath + '/input/*');
-	// clear out any previous outputs
-	cp.execSync('rm -rf ' + basePath + '/output/*');
-
-	// need to kill docker container processes with sudo pkill
-	cp.execSync('docker stop $(docker ps -a -q)');
+	var funcs = [
+	    'rm -rf ' + basePath + '/input/*',
+	    'rm -rf ' + basePath + '/output/*',
+	    'docker stop $(docker ps -a -q)'
+	];
+	var tasks = funcs.map((func) => {
+	    var deferred = Q.defer();
+	    cp.exec(func, (error, stdout, stderr) => {
+		deferred.resolve();
+	    });
+	    return deferred.promise;
+	});
+	return Q.all(tasks);
     };
 
     SimulateTES.prototype.renderModel = function() {
@@ -382,6 +385,9 @@ define([
 	    "Generator1PriceController",
 	    "Generator2PriceController"
 	];
+
+	self.notify('info', 'Plotting logs.');
+
 	var tasks = controllers.map((controller) => {
 	    var fileName = path.join(basePath, controller.toLowerCase(), controller + '.log');
 	    var deferred = Q.defer();
@@ -391,27 +397,23 @@ define([
 		    deferred.reject('Couldnt open ' + fileName + ': ' + err);
 		    return;
 		}
-		try {
-		    var logData = Parser.getDataFromLog(data);
-		    var svg = Plotter.plotData(logData);
-		    var resultFileName = controller + '.svg';
-		    self.blobClient.putFile(resultFileName, svg.outerHTML)
-			.then((hash) => {
-			    self.result.addArtifact(hash);
-			    var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
-			    self.createMessage(self.activeNode, svg.outerHTML,'info');
-			    deferred.resolve();
-			})
-			.catch((err) => {
-			    deferred.reject('Couldnt add ' + resultFileName +' to blob');
-			});
-		}
-		catch (err) {
-		    deferred.reject(err);
-		}
+		var logData = Parser.getDataFromLog(data);
+		Plotter.logger = self.logger;
+		Plotter.plotData(logData)
+		    .then((svgHtml) => {
+			var resultFileName = controller + '.svg';
+			self.blobClient.putFile(resultFileName, svgHtml)
+			    .then((hash) => {
+				self.result.addArtifact(hash);
+				var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
+				self.createMessage(self.activeNode, svgHtml,'info');
+				deferred.resolve();
+			    })
+			    .catch((err) => {
+				deferred.reject('Couldnt add ' + resultFileName +' to blob');
+			    });
+		    });
 	    });
-	    // add to blob
-	    // add to result
 	    return deferred.promise;
 	});
 	return Q.all(tasks);
