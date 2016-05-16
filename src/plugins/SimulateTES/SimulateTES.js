@@ -380,7 +380,7 @@ define([
 	    "Generator2PriceController"
 	];
 	var tasks = controllers.map((controller) => {
-	    var fileName = path.join(basePath, controller, controller + '.log');
+	    var fileName = path.join(basePath, controller.toLowerCase(), controller + '.log');
 	    var deferred = Q.defer();
 	    // load the file
 	    fs.readFile(fileName, (err, data) => {
