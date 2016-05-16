@@ -14,6 +14,8 @@ define([
     'common/util/ejs', // for ejs templates
     'common/util/xmljsonconverter', // used to save model as json
     'plugin/SimulateTES/SimulateTES/Templates/Templates',
+    'plugin/SimulateTES/SimulateTES/SimulateTES.Parser',
+    'plugin/SimulateTES/SimulateTES/SimulateTES.Plotter',
     'gridlabd/meta',
     'gridlabd/modelLoader',
     'gridlabd/renderer',
@@ -25,6 +27,8 @@ define([
     ejs,
     Converter,
     TEMPLATES,
+    Parser,
+    Plotter,
     MetaTypes,
     loader,
     renderer,
@@ -365,34 +369,44 @@ define([
     };
 
     SimulateTES.prototype.plotLogs = function() {
-    };
-
-    SimulateTES.prototype.generateBlobArtifacts = function() {
 	var self = this;
-	if (!self.returnZip) {
-	    self.notify('info', 'User did not request the output to be returned.');
-	    return;
-	}
-
-	// till we get output from the output folder
-	return;
-	
 	var path = require('path');
-	var stdoutFile = self.modelName + '.stdout';
-	var stderrFile = self.modelName + '.stderr';
-	
-	self.notify('info', 'Returning output to user.');
-
-	return self.blobClient.putFile(stdoutFile, self.sim_stdout)
-	    .then(function (hash) {
-		self.result.addArtifact(hash);
-	    })
-	    .then(function() {
-		return self.blobClient.putFile(stderrFile, self.sim_stderr);
-	    })
-	    .then(function (hash) {
-		self.result.addArtifact(hash);
+	var fs = requrie('fs');
+	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/output";
+	var controllers = [
+	    "Community1DemandController",
+	    "Community2DemandController",
+	    "Generator1PriceController",
+	    "Generator2PriceController"
+	];
+	var tasks = controllers.map((controller) => {
+	    var fileName = path.join(basePath, controller, controller + '.log');
+	    var deferred = Q.defer();
+	    // load the file
+	    fs.readFile(fileName, (err, data) => {
+		if (err) {
+		    deferred.reject('Couldnt open ' + fileName + ': ' + err);
+		    return;
+		}
+		var logData = Parser.getDataFromLog(data);
+		var svg = Plotter.plotData(logData);
+		var resultFileName = controller + '.svg';
+		self.blobClient.putFile(resultFileName, svg.outerHTML)
+		    .then((hash) => {
+			self.result.addArtifact(hash);
+			var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
+			self.createMessage(self.activeNode, svg.outerHTML,'info');
+			deferred.resolve();
+		    });
+		    .catch((err) => {
+			deferred.reject('Couldnt add ' + resultFileName +' to blob');
+		    });
 	    });
+	    // add to blob
+	    // add to result
+	    return deferred.promise;
+	});
+	return Q.all(tasks);
     };
 
     return SimulateTES;
