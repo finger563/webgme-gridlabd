@@ -397,7 +397,7 @@ define([
 			var resultUrl = '/rest/blob/download/' + hash + '/' + resultFileName;
 			self.createMessage(self.activeNode, svg.outerHTML,'info');
 			deferred.resolve();
-		    });
+		    })
 		    .catch((err) => {
 			deferred.reject('Couldnt add ' + resultFileName +' to blob');
 		    });
