@@ -167,16 +167,9 @@ define([
 
 	var fedMgr = cp.spawn('bash', [], {cwd:basePath});
 	fedMgr.stdout.on('data', function (data) {});
-	fedMgr.stderr.on('data', function (error) {
-	});
+	fedMgr.stderr.on('data', function (error) {});
 	fedMgr.on('exit', function (code) {
-	    if (code == 0) {
-		self.notify('info', 'Started Federates.');
-		deferred.resolve(code);
-	    }
-	    else {
-		deferred.reject('federates:: child process exited with code ' + code);
-	    }
+	    deferred.resolve();
 	});
 	setTimeout(function() {
 	    self.notify('info', 'Cleaning experiment artifacts and processes from system.');
