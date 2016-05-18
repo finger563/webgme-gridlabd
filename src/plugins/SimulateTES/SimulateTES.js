@@ -148,9 +148,6 @@ define([
 		return self.plotLogs();
 	    })
 	    .then(function() {
-		return self.clean();
-	    })
-	    .then(function() {
 		self.result.success = true;
 		self.notify('info', 'Simulation Complete.');
 		callback(null, self.result);
@@ -163,26 +160,32 @@ define([
     };
 
     SimulateTES.prototype.clean = function() {
-	var self = this,
-	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo",
-	path = require('path'),
-	cp = require('child_process');
+	var self = this;
+	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
+	var cp = require('child_process');
+	var deferred = Q.defer();
 
-	self.notify('info', 'Cleaning experiment artifacts and processes from system.');
-
-	var funcs = [
-	    'rm -rf ' + basePath + '/input/*',
-	    'rm -rf ' + basePath + '/output/*',
-	    'docker stop $(docker ps -a -q)'
-	];
-	var tasks = funcs.map((func) => {
-	    var deferred = Q.defer();
-	    cp.exec(func, (error, stdout, stderr) => {
-		deferred.resolve();
-	    });
-	    return deferred.promise;
+	var fedMgr = cp.spawn('bash', [], {cwd:basePath});
+	fedMgr.stdout.on('data', function (data) {});
+	fedMgr.stderr.on('data', function (error) {
 	});
-	return Q.all(tasks);
+	fedMgr.on('exit', function (code) {
+	    if (code == 0) {
+		self.notify('info', 'Started Federates.');
+		deferred.resolve(code);
+	    }
+	    else {
+		deferred.reject('federates:: child process exited with code ' + code);
+	    }
+	});
+	setTimeout(function() {
+	    self.notify('info', 'Cleaning experiment artifacts and processes from system.');
+	    fedMgr.stdin.write('rm -rf input/*\n');
+	    fedMgr.stdin.write('rm -rf output/*\n');
+	    fedMgr.stdin.write('./kill-all.sh\n');
+	    fedMgr.stdin.end();
+	}, 1000);
+	return deferred.promise;
     };
 
     SimulateTES.prototype.renderModel = function() {
