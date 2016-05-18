@@ -13,8 +13,6 @@ define(['d3', 'underscore'], function() {
 	    var Q = require('q');
 	    var jsdom = require('jsdom').jsdom;
 
-	    var htmlStub = '<html><body><svg id="plot"></svg></body></html>';
-
 	    var deferred = Q.defer();
 
 	    var names = Object.keys(data);
@@ -92,19 +90,19 @@ define(['d3', 'underscore'], function() {
 
 		    // add axes
 		    svg.append("g")
+			.call(xAxis)
 			.attr("class", "x axis")
 			.style('fill', 'none')
 			.style('stroke', '#000')
 			.style('shape-rendering', 'crispEdges')
-			.call(xAxis)
 			.attr("transform", "translate(0," + height + ")");
 
 		    svg.append("g")
+			.call(yAxis)
 			.attr("class", "y axis")
 			.style('fill', 'none')
 			.style('stroke', '#000')
-			.style('shape-rendering', 'crispEdges')
-			.call(yAxis)
+			.style('shape-rendering', 'crispEdges');
 
 		    // add clipping for plot
 		    svg.append("clipPath")
@@ -118,6 +116,7 @@ define(['d3', 'underscore'], function() {
 			svg.append("path")
 			    .datum(data[alias].data)
 			    .attr("class", "line line" + alias)
+			    .style('fill', 'none')
 			    .attr("clip-path", "url(#clip)")
 			    .style("stroke", colorMap[alias])
 			    .attr("d", line);
@@ -129,8 +128,8 @@ define(['d3', 'underscore'], function() {
 		    var legend = svg.append("g")
 			.style('padding', '5px')
 			.style('font', '10px sans-serif')
-			.style('background', 'yellow')
-			.style('box-shadow', '2px 2px 1px #888')
+			//.style('background', 'yellow')
+			//.style('box-shadow', '2px 2px 1px #888')
 			.attr("class", "legend")
 			.attr("height", 100)
 			.attr("width", legendWidth * 2)
@@ -157,7 +156,7 @@ define(['d3', 'underscore'], function() {
 				.text(d);
 
 			});
-		    deferred.resolve(window.d3.select("body").html());
+		    deferred.resolve(window.d3.select("body").html().replace(/<script [^]*><\/script>/g, ''));
 		}
 	    );
 	    return deferred.promise;
