@@ -20,6 +20,10 @@
       "SimulateTES": {
         "src": "src/plugins/SimulateTES",
         "test": "test/plugins/SimulateTES"
+      },
+      "SimulateTESCluster": {
+        "src": "src\\plugins\\SimulateTESCluster",
+        "test": "test\\plugins\\SimulateTESCluster"
       }
     },
     "addons": {

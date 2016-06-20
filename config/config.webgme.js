@@ -12,9 +12,6 @@ config.plugin.basePaths.push('src/plugins');
 config.addOn.basePaths.push('src/addons');
 
 config.addOn.enable = true;
-
-
-
 // Visualizer descriptors
 
 // Add requirejs paths
