@@ -9,6 +9,7 @@ define([
     'plugin/PluginConfig',
     'plugin/PluginBase',
     'text!./metadata.json',
+    'text!./task_template.json.tpl',
     'gridlabd/meta',
     'gridlabd/modelLoader',
     'gridlabd/renderer',
@@ -17,6 +18,7 @@ define([
     PluginConfig,
     PluginBase,
     pluginMetadata,
+    marathonTaskTemplate,
     MetaTypes,
     loader,
     renderer,
@@ -24,6 +26,19 @@ define([
     'use strict';
 
     pluginMetadata = JSON.parse(pluginMetadata);
+
+    // fixed vars
+    var marathonUrl = "10.100.0.11";
+    var inputfilesServerHost = "10.100.0.11";
+    var inputfilesServerPort = 8081;
+    var LATEST_DOCKER_TAG = {
+	JAVA: 'v5',
+	CPP: 'v2',
+	OMNET: 'v3'
+    }
+
+    var logPathBase = "/mnt/nfs/demo-share/";
+
 
     /**
      * Initializes a new instance of SimulateTESCluster.
@@ -45,7 +60,7 @@ define([
     SimulateTESCluster.prototype = Object.create(PluginBase.prototype);
     SimulateTESCluster.prototype.constructor = SimulateTESCluster;
 
-    SimulateTES.prototype.notify = function(level, msg) {
+    SimulateTESCluster.prototype.notify = function(level, msg) {
 	var self = this;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
 	if (level=='error')
@@ -96,6 +111,19 @@ define([
 	self.generator2 = currentConfig.generator2;
 	self.returnZip = currentConfig.returnZip;
 
+	// FEDERATION STUFF
+	// should be unique!
+	var timestamp = (new Date()).getTime();
+	var fedNumber = Math.floor(Math.random() * 250 + 1);
+	var federateGroupName = "tesdemo2016-" + fedNumber;
+	var weaveNet = "10."+ fedNumber + ".1.0";
+	var federateFolder = "tesdemo2016_"+fedNumber+"_"+timestamp;
+
+	self.federateGroupName = federateGroupName;
+	self.weaveNet = weaveNet;
+	self.federateFolder = federateFolder;
+	// END FEDERATION STUFF
+
         modelNode = self.activeNode;
 	self.modelName = self.core.getAttribute(modelNode, 'name');
 	self.fileName = self.modelName + '.glm';
@@ -139,12 +167,191 @@ define([
 	    });
     };
 
-    SimulateTES.prototype.renderModel = function() {
+    SimulateTESCluster.prototype.renderModel = function() {
 	var self = this;
 	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
     };
 
-    SimulateTES.prototype.writeInputs = function() {
+    SimulateTESCluster.prototype.getFederationManagerTaskData = function() {
+	var Mustache = require('mustache');
+
+	var federationManagerData = {
+	    federateGroupName: this.federateGroupName,
+	    federateName: "federation-manager",
+	    dockerExecuteScript: "/root/Projects/c2wt/generated/TES2016Demo/scripts/docker-scripts/baseline-Dep/docker-execute--FederationManager.sh",
+	    cpu: 0.6,
+	    mem: 1024,
+	    dockerImageName: "c2wtng/tesdemo2016_java",
+	    dockerImageTag: LATEST_DOCKER_TAG.JAVA,
+	    dockerHostName: "fedmgr.net."+this.federateGroupName,
+	    marathonUrl: marathonUrl,
+	    inputfilesServerHost: inputfilesServerHost,
+	    inputfilesServerPort: inputfilesServerPort,
+	    weaveNet: this.weaveNet,
+	    inputfilesList: "tesdemo2016/script.xml;tesdemo2016/model.glm",
+	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/fedmgr"
+	};
+
+	var taskData = Mustache.render(marathonTaskTemplate, federationManagerData);
+	return taskData;
+    };
+
+    SimulateTESCluster.prototype.getCommunityDemandControllerTaskData = function(idx) {
+	var Mustache = require('mustache');
+
+	var communityDemandControllerData = {
+	    federateGroupName: this.federateGroupName,
+	    federateName: "community"+idx+"-demandcontroller",
+	    dockerExecuteScript: "/root/Projects/c2wt/generated/TES2016Demo/scripts/docker-scripts/baseline-Dep/docker-execute--Community"+idx+"DemandController.sh && sleep 20",
+	    cpu: 0.4,
+	    mem: 512,
+	    dockerImageName: "c2wtng/tesdemo2016_cpp",
+	    dockerImageTag: LATEST_DOCKER_TAG.CPP,
+	    dockerHostName: "c"+idx+"demandctrl.net."+this.federateGroupName,
+	    marathonUrl: marathonUrl,
+	    inputfilesServerHost: inputfilesServerHost,
+	    inputfilesServerPort: inputfilesServerPort,
+	    weaveNet: this.weaveNet,
+	    inputfilesList: "tesdemo2016/Community"+idx+"DemandController.config;tesdemo2016/model.glm",
+	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/communitydemandcontroller"+idx
+	};
+
+	var taskData = Mustache.render(marathonTaskTemplate, communityDemandControllerData);
+	return taskData;
+    };
+
+    SimulateTESCluster.prototype.getGeneratorPriceControllerTaskData = function(idx) {
+	var Mustache = require('mustache');
+
+	var generatorPriceControllerData = {
+	    federateGroupName: this.federateGroupName,
+	    federateName: "generator"+idx+"-pricecontroller",
+	    dockerExecuteScript: "/root/Projects/c2wt/generated/TES2016Demo/scripts/docker-scripts/baseline-Dep/docker-execute--Generator"+idx+"PriceController.sh && sleep 20",
+	    cpu: 0.4,
+	    mem: 512,
+	    dockerImageName: "c2wtng/tesdemo2016_cpp",
+	    dockerImageTag: LATEST_DOCKER_TAG.CPP,
+	    dockerHostName: "gpc"+idx+".net."+this.federateGroupName,
+	    marathonUrl: marathonUrl,
+	    inputfilesServerHost: inputfilesServerHost,
+	    inputfilesServerPort: inputfilesServerPort,
+	    weaveNet: this.weaveNet,
+	    inputfilesList: "tesdemo2016/Generator"+idx+"PriceController.config;tesdemo2016/model.glm",
+	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/generatorpricecontroller"+idx
+	};
+	var taskData = Mustache.render(marathonTaskTemplate, generatorPriceControllerData);
+	return taskData;
+    };
+
+    SimulateTESCluster.prototype.getGridlabdTaskData = function() {
+	var Mustache = require('mustache');
+
+	var gridlabdData = {
+	    federateGroupName: this.federateGroupName,
+	    federateName: "gridlabd",
+	    dockerExecuteScript: "/root/Projects/c2wt/generated/TES2016Demo/scripts/docker-scripts/baseline-Dep/docker-execute--GridlabDFederate.sh && sleep 20",
+	    cpu: 0.6,
+	    mem: 768,
+	    dockerImageName: "c2wtng/tesdemo2016_cpp",
+	    dockerImageTag: LATEST_DOCKER_TAG.CPP,
+	    dockerHostName: "gridlabd.net."+this.federateGroupName,
+	    marathonUrl: marathonUrl,
+	    inputfilesServerHost: inputfilesServerHost,
+	    inputfilesServerPort: inputfilesServerPort,
+	    weaveNet: this.weaveNet,
+	    inputfilesList: "tesdemo2016/model.glm",
+	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/gridlabd"
+	};
+
+	var taskData = Mustache.render(marathonTaskTemplate, gridlabdData);
+	return taskData;
+    };
+
+    SimulateTESCluster.prototype.getMapperTaskData = function() {
+	var Mustache = require('mustache');
+
+	var mapperData = {
+	    federateGroupName: this.federateGroupName,
+	    federateName: "mapper",
+	    dockerExecuteScript: "/root/Projects/c2wt/generated/TES2016Demo/scripts/docker-scripts/baseline-Dep/docker-execute--Mapper.sh && sleep 20",
+	    cpu: 0.6,
+	    mem: 1024,
+	    dockerImageName: "c2wtng/tesdemo2016_java",
+	    dockerImageTag: LATEST_DOCKER_TAG.JAVA,
+	    dockerHostName: "mapper.net."+this.federateGroupName,
+	    marathonUrl: marathonUrl,
+	    inputfilesServerHost: inputfilesServerHost,
+	    inputfilesServerPort: inputfilesServerPort,
+	    weaveNet: this.weaveNet,
+	    inputfilesList: "tesdemo2016/model.glm",
+	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/mapper"
+	};
+
+	var taskData = Mustache.render(marathonTaskTemplate, mapperData);
+	return taskData;
+    };
+
+    SimulateTESCluster.prototype.getOmnetTaskData = function() {
+	var Mustache = require('mustache');
+
+	var omnetData = {
+	    federateGroupName: this.federateGroupName,
+	    federateName: "omnet",
+	    dockerExecuteScript: "/root/Projects/c2wt/generated/TES2016Demo/scripts/docker-scripts/baseline-Dep/docker-execute--OmnetFederate.sh && sleep 20",
+	    cpu: 0.6,
+	    mem: 1024,
+	    dockerImageName: "c2wtng/tesdemo2016_omnet",
+	    dockerImageTag: LATEST_DOCKER_TAG.OMNET,
+	    dockerHostName: "omnet.net."+this.federateGroupName,
+	    marathonUrl: marathonUrl,
+	    inputfilesServerHost: inputfilesServerHost,
+	    inputfilesServerPort: inputfilesServerPort,
+	    weaveNet: this.weaveNet,
+	    inputfilesList: "tesdemo2016/model.glm",
+	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/omnet"
+	};
+
+	var taskData = Mustache.render(marathonTaskTemplate, omnetData);
+	return taskData;
+    };
+
+    SimulateTESCluster.prototype.POST = function(jsonData, cb) {
+	var http = require('http');
+	var options = {
+	    hostname: 'demo-c2wt-master',
+	    port: 8080,
+	    path: '/v2/apps',
+	    method: 'POST',
+	    headers: {
+		'Content-Type': 'application/json',
+	    }
+	};
+
+	// TEMP
+	var _json = JSON.parse(jsonData);
+
+	var req = http.request(options, function(res) {
+	    //console.log('Status: ' + res.statusCode);
+	    //console.log('Headers: ' + JSON.stringify(res.headers));
+	    console.log("Requesting " + _json.id);
+	    res.setEncoding('utf8');
+	    res.on('data', function (body) {
+		//console.log('RESPONSE:\n' + body);
+		cb(null);
+	    });
+	});
+
+	req.on('error', function(e) {
+	    console.log('problem with request: ' + e.message);
+	    cb(e);
+	});
+
+	// write data to request body
+	req.write(jsonData);
+	req.end();
+    };
+
+    SimulateTESCluster.prototype.writeInputs = function() {
 	var self = this,
 	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/input/",
 	inputFiles = {
@@ -186,7 +393,7 @@ define([
 	    });
     };
 
-    SimulateTES.prototype.runSimulation = function() {
+    SimulateTESCluster.prototype.runSimulation = function() {
 	var self = this;
 	var path = require('path');
 	var cp = require('child_process');
@@ -209,7 +416,7 @@ define([
 	return deferred.promise;
     };
 
-    SimulateTES.prototype.startFederates = function() {
+    SimulateTESCluster.prototype.startFederates = function() {
 	// run-cpp-feds.sh
 	var self = this;
 	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
@@ -237,7 +444,7 @@ define([
 	return deferred.promise;
     };
 
-    SimulateTES.prototype.monitorContainers = function() {
+    SimulateTESCluster.prototype.monitorContainers = function() {
 	var self = this;
 	var cp = require('child_process');
 	var deferred = Q.defer();
@@ -256,7 +463,7 @@ define([
 	}
     };
 
-    SimulateTES.prototype.killFederates = function() {
+    SimulateTESCluster.prototype.killFederates = function() {
 	// kill-all.sh
 	var self = this;
 	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
@@ -284,7 +491,7 @@ define([
 	return deferred.promise;
     };
 
-    SimulateTES.prototype.copyArtifacts = function() {
+    SimulateTESCluster.prototype.copyArtifacts = function() {
 	var self = this;
 	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/output";
 	
@@ -328,7 +535,7 @@ define([
 	    });
     };
 
-    SimulateTES.prototype.plotLogs = function() {
+    SimulateTESCluster.prototype.plotLogs = function() {
 	var self = this;
 	var path = require('path');
 	var fs = require('fs');
