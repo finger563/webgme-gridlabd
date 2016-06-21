@@ -88,7 +88,7 @@ define([
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-        modelNode;
+            modelNode;
 
 	self.result.success = false;
 
@@ -353,24 +353,24 @@ define([
 
     SimulateTESCluster.prototype.writeInputs = function() {
 	var self = this,
-	basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/input/",
-	inputFiles = {
-	    "model.glm": self.fileData,
-	    "Community1DemandController.config": JSON.stringify({ "Threshold": +self.community1 }, null, 2),
-	    "Community2DemandController.config": JSON.stringify({ "Threshold": +self.community2 }, null, 2),
-	    "Generator1PriceController.config": JSON.stringify({ "Threshold": +self.generator1 }, null, 2),
-	    "Generator2PriceController.config": JSON.stringify({ "Threshold": +self.generator2 }, null, 2),
-	    "script.xml": ejs.render(
-		TEMPLATES['script.xml.ejs'], 
-		{ 
-		    simEnd: self.simulationTime,
-		    delayMean: self.delayMean,
-		    delayStdDev: self.delayStdDev
-		})
-	},
-	fs = require('fs'),
-	path = require('path'),
-	filendir = require('filendir');
+	    basePath = "/",
+	    inputFiles = {
+		"model.glm": self.fileData,
+		"Community1DemandController.config": JSON.stringify({ "Threshold": +self.community1 }, null, 2),
+		"Community2DemandController.config": JSON.stringify({ "Threshold": +self.community2 }, null, 2),
+		"Generator1PriceController.config": JSON.stringify({ "Threshold": +self.generator1 }, null, 2),
+		"Generator2PriceController.config": JSON.stringify({ "Threshold": +self.generator2 }, null, 2),
+		"script.xml": ejs.render(
+		    TEMPLATES['script.xml.ejs'], 
+		    { 
+			simEnd: self.simulationTime,
+			delayMean: self.delayMean,
+			delayStdDev: self.delayStdDev
+		    })
+	    },
+	    fs = require('fs'),
+	    path = require('path'),
+	    filendir = require('filendir');
 	
 	var fileNames = Object.keys(inputFiles);
 	var tasks = fileNames.map((fileName) => {
@@ -395,113 +395,38 @@ define([
 
     SimulateTESCluster.prototype.runSimulation = function() {
 	var self = this;
-	var path = require('path');
-	var cp = require('child_process');
 
 	self.notify('info', 'Starting Simulation');
 
-	var deferred = Q.defer();
-
-	var fname = path.join(self.root_dir, self.fileName);
-
-	// start fed manager
 	return self.startFederates()
 	    .then(function() {
 		return self.monitorContainers();
-	    })
-	    .then(function() {
-		return self.killFederates();
 	    });
-
-	return deferred.promise;
     };
 
     SimulateTESCluster.prototype.startFederates = function() {
 	// run-cpp-feds.sh
 	var self = this;
-	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
-	var cp = require('child_process');
 	var deferred = Q.defer();
 
-	var fedMgr = cp.spawn('bash', [], {cwd:basePath});
-	fedMgr.stdout.on('data', function (data) {});
-	fedMgr.stderr.on('data', function (error) {
-	});
-	fedMgr.on('exit', function (code) {
-	    if (code == 0) {
-		self.notify('info', 'Started Federates.');
-		deferred.resolve(code);
-	    }
-	    else {
-		deferred.reject('federates:: child process exited with code ' + code);
-	    }
-	});
-	setTimeout(function() {
-	    self.notify('info', 'Starting Federates.');
-	    fedMgr.stdin.write('./run-cpp-feds.sh\n');
-	    fedMgr.stdin.end();
-	}, 1000);
 	return deferred.promise;
     };
 
     SimulateTESCluster.prototype.monitorContainers = function() {
 	var self = this;
-	var cp = require('child_process');
-	var deferred = Q.defer();
-	
-	var stdout = cp.execSync('docker ps');
-	var regex = /(demo_c2wt_cpp_fedmgr_run_[\w+]*)/gi;
-	var results = regex.exec(stdout);
-	if (results) {
-	    var dockerName = results[1];
-	    self.notify('info', 'Waiting for simulation to complete when ' + dockerName + ' exits.');
-	    stdout = cp.execSync('docker wait ' + dockerName);
-	    self.notify('info', 'Docker federate exited with stdout: ' + stdout);
-	}
-	else {
-	    self.notify('error', 'Couldnt find the federate docker container in docker ps!');
-	}
-    };
-
-    SimulateTESCluster.prototype.killFederates = function() {
-	// kill-all.sh
-	var self = this;
-	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/";
-	var cp = require('child_process');
-	var deferred = Q.defer();
-
-	var stopFeds = cp.spawn('bash', [], {cwd:basePath});
-	stopFeds.stdout.on('data', function (data) {});
-	stopFeds.stderr.on('data', function (error) {
-	});
-	stopFeds.on('exit', function (code) {
-	    if (code == 0) {
-		self.notify('info', 'Killed all experiment feds.');
-		deferred.resolve(code);
-	    }
-	    else {
-		deferred.reject('stopFeds:: child process exited with code ' + code);
-	    }
-	});
-	setTimeout(function() {
-	    self.notify('info', 'Killing experiment feds.');
-	    stopFeds.stdin.write('docker stop $(docker ps -a -q)\n');
-	    stopFeds.stdin.end();
-	}, 1000);
-	return deferred.promise;
     };
 
     SimulateTESCluster.prototype.copyArtifacts = function() {
 	var self = this;
-	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/output";
+	var basePath = "/";
 	
 	self.notify('info', 'Copying output.');
 	
 	return new Promise(function(resolve, reject) {
 	    var zlib = require('zlib'),
-	    tar = require('tar'),
-	    fstream = require('fstream'),
-	    input = basePath;
+		tar = require('tar'),
+		fstream = require('fstream'),
+		input = basePath;
 
 	    var bufs = [];
 	    var packer = tar.Pack()
