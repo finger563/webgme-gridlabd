@@ -84,7 +84,14 @@ define([
 	else if (level=='warning')
 	    self.logger.warn(msg);
 	self.createMessage(self.activeNode, msg, level);
-	self.sendNotification(prefix+msg);
+	if (msg.length < max_msg_len)
+	    self.sendNotification(prefix+msg);
+	else {
+	    var splitMsgs = utils.chunkString(msg, max_msg_len);
+	    splitMsgs.map(function(splitMsg) {
+		self.sendNotification(prefix+splitMsg);
+	    });
+	}
     };
 
     /**
@@ -208,7 +215,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: path.join(this.remoteInputDir, "script.xml"),
+	    inputfilesList: "inputs/"+this.federateGroupName+"/script.xml",
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/fedmgr"
 	};
 
@@ -232,7 +239,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: path.join(this.remoteInputDir, "Community"+idx+"DemandController.config"),
+	    inputfilesList: "inputs/"+this.federateGroupName+"/Community"+idx+"DemandController.config",
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/communitydemandcontroller"+idx
 	};
 
@@ -256,7 +263,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: path.join(this.remoteInputDir, "Generator"+idx+"PriceController.config"),
+	    inputfilesList: "inputs/"+this.federateGroupName+"/Generator"+idx+"PriceController.config",
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/generatorpricecontroller"+idx
 	};
 	var taskData = Mustache.render(marathonTaskTemplate, generatorPriceControllerData);
@@ -279,7 +286,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: path.join(this.remoteInputDir, "model.glm"),
+	    inputfilesList: "inputs/"+this.federateGroupName+"/model.glm",
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/gridlabd"
 	};
 
