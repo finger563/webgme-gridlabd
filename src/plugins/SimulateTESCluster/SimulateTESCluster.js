@@ -444,12 +444,32 @@ define([
 
     SimulateTESCluster.prototype.monitorContainers = function() {
 	var self = this;
+	var host = self.marathonIP;
+	var port = 8080;
+	var path = '/v2/groups/' + this.federateGroupName;
 
 	// curl http://demo-c2wt-master:8080/v2/groups/{{
 	// federateGroupName }} -- if you're polling this, it'll give
 	// you results back while running. when it's done, should give
 	// back a reply like this: {"message":"Group '/tesdemo2016'
 	// does not exist"}%
+	var deferred = Q.defer();
+
+	var queryFunc = function() {
+	    utils.GET(host, port, path)
+		.then(function(result) {
+		    if (result.indexOf('does not exist') == -1) {
+			setTimeout(queryFunc, 1000);
+		    }
+		    else {
+			deferred.resolve();
+		    }
+		});
+	};
+
+	queryFunc();
+	
+	return deferred.promise;
     };
 
     SimulateTESCluster.prototype.copyArtifacts = function() {
