@@ -199,7 +199,7 @@ define(['q'], function(Q) {
 	    req.end();
 
 	    return deferred.promise;
-	}
+	},
 	GET: function(host, port, path) {
 	    var http = require('http');
 	    var options = {

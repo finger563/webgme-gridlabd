@@ -9,6 +9,9 @@ define([
     'plugin/PluginConfig',
     'plugin/PluginBase',
     'text!./metadata.json',
+    'common/util/ejs', // for ejs templates
+    'common/util/xmljsonconverter', // used to save model as json
+    'plugin/SimulateTES/SimulateTES/Templates/Templates',
     'text!./task_template.json.tpl',
     'gridlabd/meta',
     'gridlabd/modelLoader',
@@ -19,6 +22,9 @@ define([
     PluginConfig,
     PluginBase,
     pluginMetadata,
+    ejs,
+    Converter,
+    TEMPLATES,
     marathonTaskTemplate,
     MetaTypes,
     loader,
