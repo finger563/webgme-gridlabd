@@ -179,11 +179,8 @@ define(['q'], function(Q) {
 	    };
 	    var deferred = Q.defer();
 
-	    // TEMP
-	    var _json = JSON.parse(jsonData);
-
 	    var req = http.request(options, function(res) {
-		//console.log("Requesting " + _json.id);
+		//console.log('Status code: '+ res.statusCode);
 		res.setEncoding('utf8');
 		res.on('data', function (body) {
 		    deferred.resolve(body);

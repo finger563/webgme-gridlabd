@@ -440,66 +440,73 @@ define([
 	    return deferred.promise;
 	}
 	
-	var host = self.marathonIP;
+	var host = marathonIP;
 	var port = 8080;
 	var path = '/v2/apps';
 
-	var tasks = [];
+	self.notify('info', 'POSTing FedMgr data');
 	return utils.POST(host, port, path, federationManagerTaskJSON)
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(1);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing Community1DemandController data');
 		return utils.POST(host, port, path, community1DemandControllerTaskJSON);
 	    })
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(2);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing Community2DemandController data');
 		return utils.POST(host, port, path, community2DemandControllerTaskJSON);
 	    })
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(2);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing Generator1PriceController data');
 		return utils.POST(host, port, path, generator1PriceControllerTaskJSON);
 	    })
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(2);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing Generator2PriceController data');
 		return utils.POST(host, port, path, generator2PriceControllerTaskJSON);
 	    })
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(2);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing GridlabD data');
 		return utils.POST(host, port, path, gridlabdTaskJSON);
 	    })
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(2);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing Mapper data');
 		return utils.POST(host, port, path, mapperTaskJSON);
 	    })
 	    .then(function(body) {
-		self.notify('info', body);
+		//self.notify('info', 'Response: ' + body);
 		return sleep(2);
 	    })
 	    .then(function() {
+		self.notify('info', 'POSTing Omnet data');
 		return utils.POST(host, port, path, omnetTaskJSON);
 	    });
     };
 
     SimulateTESCluster.prototype.monitorContainers = function() {
 	var self = this;
-	var host = self.marathonIP;
+	var host = marathonIP;
 	var port = 8080;
 	var path = '/v2/groups/' + this.federateGroupName;
 
@@ -513,7 +520,6 @@ define([
 	var queryFunc = function() {
 	    utils.GET(host, port, path)
 		.then(function(result) {
-		    self.notify('info', 'Monitor result: ' + result);
 		    if (result.indexOf('does not exist') == -1) {
 			setTimeout(queryFunc, 1000);
 		    }
@@ -532,7 +538,7 @@ define([
 
     SimulateTESCluster.prototype.copyArtifacts = function() {
 	var self = this;
-	var basePath = "/";
+	var basePath = "";
 	
 	self.notify('info', 'Copying output.');
 
