@@ -538,46 +538,51 @@ define([
 
     SimulateTESCluster.prototype.copyArtifacts = function() {
 	var self = this;
-	var basePath = "";
+	var path = require('path');
+	var localPath = path.join(self.generationDir,'outputs');
+	var remotePath = self.remoteOutputDir + '/*';
+	var host = marathonIP;
+	var user = marathonUser;
+	var key = marathonKey;
 	
 	self.notify('info', 'Copying output.');
 
-	// scp from http://129.59.107.73:8081/outputs/tesdemo2/ all
-	// folders and subfolders
-	
-	return new Promise(function(resolve, reject) {
-	    var zlib = require('zlib'),
-		tar = require('tar'),
-		fstream = require('fstream'),
-		input = basePath;
+	return utils.copyFromHost(remotePath, localPath, host, user, key)
+	    .then(function() {
+		return new Promise(function(resolve, reject) {
+		    var zlib = require('zlib'),
+		    tar = require('tar'),
+		    fstream = require('fstream'),
+		    input = loacalPath;
 
-	    var bufs = [];
-	    var packer = tar.Pack()
-		.on('error', function(e) { reject(e); });
+		    var bufs = [];
+		    var packer = tar.Pack()
+			.on('error', function(e) { reject(e); });
 
-	    var gzipper = zlib.Gzip()
-		.on('error', function(e) { reject(e); })
-		.on('data', function(d) { bufs.push(d); })
-		.on('end', function() {
-		    var buf = Buffer.concat(bufs);
-		    self.blobClient.putFile('output.tar.gz',buf)
-			.then(function (hash) {
-			    self.result.addArtifact(hash);
-			    resolve();
-			})
-			.catch(function(err) {
-			    reject(err);
-			})
-			    .done();
-		});
+		    var gzipper = zlib.Gzip()
+			.on('error', function(e) { reject(e); })
+			.on('data', function(d) { bufs.push(d); })
+			.on('end', function() {
+			    var buf = Buffer.concat(bufs);
+			    self.blobClient.putFile('output.tar.gz',buf)
+				.then(function (hash) {
+				    self.result.addArtifact(hash);
+				    resolve();
+				})
+				.catch(function(err) {
+				    reject(err);
+				})
+				    .done();
+			});
 
-	    var reader = fstream.Reader({ 'path': input, 'type': 'Directory' })
-		.on('error', function(e) { reject(e); });
+		    var reader = fstream.Reader({ 'path': input, 'type': 'Directory' })
+			.on('error', function(e) { reject(e); });
 
-	    reader
-		.pipe(packer)
-		.pipe(gzipper);
-	})
+		    reader
+			.pipe(packer)
+			.pipe(gzipper);
+		})
+	    })
 	    .then(function() {
 		self.notify('info', 'Created archive.');
 	    });
@@ -587,7 +592,7 @@ define([
 	var self = this;
 	var path = require('path');
 	var fs = require('fs');
-	var basePath = "/home/jeb/tesDemo/repo/c2wtng-fedimgs/dockerfeds/examples/TES2016Demo/Demo/output";
+	var basePath = path.join(self.generationDir, 'outputs');
 	var controllers = [
 	    "Community1DemandController",
 	    "Community2DemandController",
