@@ -11,7 +11,9 @@ define([
     'text!./metadata.json',
     'common/util/ejs', // for ejs templates
     'common/util/xmljsonconverter', // used to save model as json
-    'plugin/SimulateTES/SimulateTES/Templates/Templates',
+    'plugin/SimulateTESCluster/SimulateTESCluster/Templates/Templates',
+    'plugin/SimulateTESCluster/SimulateTESCluster/SimulateTESCluster.Parser',
+    'plugin/SimulateTESCluster/SimulateTESCluster/SimulateTESCluster.Plotter',
     'text!./task_template.json.tpl',
     'gridlabd/meta',
     'gridlabd/modelLoader',
@@ -25,6 +27,8 @@ define([
     ejs,
     Converter,
     TEMPLATES,
+    Parser,
+    Plotter,
     marathonTaskTemplate,
     MetaTypes,
     loader,
