@@ -405,7 +405,6 @@ define([
     SimulateTESCluster.prototype.startFederates = function() {
 	// run-cpp-feds.sh
 	var self = this;
-	var async = require('async');
 
 	var federationManagerTaskJSON = self.getFederationManagerTaskData();
 	var community1DemandControllerTaskJSON = self.getCommunityDemandControllerTaskData(1);
