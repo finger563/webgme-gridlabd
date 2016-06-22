@@ -12,7 +12,7 @@ define([
     'text!./task_template.json.tpl',
     'gridlabd/meta',
     'gridlabd/modelLoader',
-    'gridlabd/utils',
+    'gridlabd/remote_utils',
     'gridlabd/renderer',
     'q'
 ], function (
