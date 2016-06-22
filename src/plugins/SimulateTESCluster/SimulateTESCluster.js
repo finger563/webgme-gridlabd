@@ -327,42 +327,6 @@ define([
 	return taskData;
     };
 
-    SimulateTESCluster.prototype.POST = function(jsonData, cb) {
-	var http = require('http');
-	var options = {
-	    hostname: 'demo-c2wt-master',
-	    port: 8080,
-	    path: '/v2/apps',
-	    method: 'POST',
-	    headers: {
-		'Content-Type': 'application/json',
-	    }
-	};
-
-	// TEMP
-	var _json = JSON.parse(jsonData);
-
-	var req = http.request(options, function(res) {
-	    //console.log('Status: ' + res.statusCode);
-	    //console.log('Headers: ' + JSON.stringify(res.headers));
-	    console.log("Requesting " + _json.id);
-	    res.setEncoding('utf8');
-	    res.on('data', function (body) {
-		//console.log('RESPONSE:\n' + body);
-		cb(null);
-	    });
-	});
-
-	req.on('error', function(e) {
-	    console.log('problem with request: ' + e.message);
-	    cb(e);
-	});
-
-	// write data to request body
-	req.write(jsonData);
-	req.end();
-    };
-
     SimulateTESCluster.prototype.writeInputs = function() {
 	var self = this,
 	    basePath = self.generationDir,
@@ -446,35 +410,36 @@ define([
 	var mapperTaskJSON = self.getMapperTaskData();
 	var omnetTaskJSON = self.getOmnetTaskData();
 
-	var sleep = function(seconds, cb) {
+	var sleep = function(seconds) {
+	    var deferred = Q.defer();
 	    setTimeout(function() {
-		console.log('waited ' + seconds + ' seconds');
-		cb(null);
+		deferred.resolve();
 	    }, seconds*1000);
+	    return deferred.promise;
 	}
 	
-	var tasks = [];
-	tasks.push(function(cb) { self.POST(federationManagerTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(1, cb); });
-	tasks.push(function(cb) { self.POST(community1DemandControllerTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(2, cb); });
-	tasks.push(function(cb) { self.POST(community2DemandControllerTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(2, cb); });
-	tasks.push(function(cb) { self.POST(generator1PriceControllerTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(2, cb); });
-	tasks.push(function(cb) { self.POST(generator2PriceControllerTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(2, cb); });
-	tasks.push(function(cb) { self.POST(gridlabdTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(2, cb); });
-	tasks.push(function(cb) { self.POST(mapperTaskJSON, cb); });
-	tasks.push(function(cb) { sleep(2, cb); });
-	tasks.push(function(cb) { self.POST(omnetTaskJSON, cb); });
+	var host = self.marathonIP;
+	var port = 8080;
+	var path = '/v2/apps';
 
-	async.series(tasks, function(err, results) {
-	    if (err) {
-		throw new String(err);
-	    }
-	});
+	var tasks = [];
+	tasks.push(function() { utils.POST(host, port, path, federationManagerTaskJSON); });
+	tasks.push(function() { sleep(1); });
+	tasks.push(function() { utils.POST(host, port, path, community1DemandControllerTaskJSON); });
+	tasks.push(function() { sleep(2); });
+	tasks.push(function() { utils.POST(host, port, path, community2DemandControllerTaskJSON); });
+	tasks.push(function() { sleep(2); });
+	tasks.push(function() { utils.POST(host, port, path, generator1PriceControllerTaskJSON); });
+	tasks.push(function() { sleep(2); });
+	tasks.push(function() { utils.POST(host, port, path, generator2PriceControllerTaskJSON); });
+	tasks.push(function() { sleep(2); });
+	tasks.push(function() { utils.POST(host, port, path, gridlabdTaskJSON); });
+	tasks.push(function() { sleep(2); });
+	tasks.push(function() { utils.POST(host, port, path, mapperTaskJSON); });
+	tasks.push(function() { sleep(2); });
+	tasks.push(function() { utils.POST(host, port, path, omnetTaskJSON); });
+
+	return tasks.reduce(Q.when, Q());
     };
 
     SimulateTESCluster.prototype.monitorContainers = function() {

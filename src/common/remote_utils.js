@@ -12,7 +12,7 @@ define(['q'], function(Q) {
 	},
 	range: function(lowEnd,highEnd) {
 	    var arr = [],
-	    c = highEnd - lowEnd + 1;
+		c = highEnd - lowEnd + 1;
 	    while ( c-- ) {
 		arr[c] = highEnd--
 	    }
@@ -143,11 +143,11 @@ define(['q'], function(Q) {
 	    from = self.sanitizePath(from);
 	    to = self.sanitizePath(to);
 	    var url = require('url'),
-	    path = require('path'),
-	    fs = require('fs'),
-	    unzip = require('unzip'),
-	    fstream = require('fstream'),
-	    child_process = require('child_process');
+		path = require('path'),
+		fs = require('fs'),
+		unzip = require('unzip'),
+		fstream = require('fstream'),
+		child_process = require('child_process');
 	    
 	    var local = to;
 	    var remote = username + '@' + ip + ':' + from;
@@ -165,6 +165,62 @@ define(['q'], function(Q) {
 		}
 	    });
 	    return deferred.promise;
+	},
+	POST: function(host, port, path, jsonData) {
+	    var http = require('http');
+	    var options = {
+		hostname: host, //'demo-c2wt-master',
+		port: port,     //8080,
+		path: path,     //'/v2/apps',
+		method: 'POST',
+		headers: {
+		    'Content-Type': 'application/json',
+		}
+	    };
+	    var deferred = Q.defer();
+
+	    // TEMP
+	    var _json = JSON.parse(jsonData);
+
+	    var req = http.request(options, function(res) {
+		//console.log("Requesting " + _json.id);
+		res.setEncoding('utf8');
+		res.on('data', function (body) {
+		    deferred.resolve(body);
+		});
+	    });
+
+	    req.on('error', function(e) {
+		deferred.reject(e);
+	    });
+
+	    // write data to request body
+	    req.write(jsonData);
+	    req.end();
+
+	    return deferred.promise;
 	}
+	GET: function(host, port, path) {
+	    var http = require('http');
+	    var options = {
+		hostname: host,
+		port: port,
+		path: path
+	    };
+
+	    var deferred = Q.defer();
+
+	    http.get(options, function(res) {
+		res.setEncoding('utf8');
+		res.on('data', function (body) {
+		    deferred.resolve(body);
+		});
+	    }).on('error', function(e) {
+		deferred.reject(e);
+	    });
+
+	    return deferred.promise;
+	}
+	
     }
 });
