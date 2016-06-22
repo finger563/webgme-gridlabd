@@ -12,6 +12,7 @@ define([
     'text!./task_template.json.tpl',
     'gridlabd/meta',
     'gridlabd/modelLoader',
+    'gridlabd/utils',
     'gridlabd/renderer',
     'q'
 ], function (
@@ -21,6 +22,7 @@ define([
     marathonTaskTemplate,
     MetaTypes,
     loader,
+    utils,
     renderer,
     Q) {
     'use strict';
@@ -28,6 +30,10 @@ define([
     pluginMetadata = JSON.parse(pluginMetadata);
 
     // fixed vars
+    var marathonIP = "129.59.107.73";
+    var marathonUser = 'ubuntu';
+    var marathonKey = '/home/jeb/.ssh/id_rsa_marathon';
+
     var marathonUrl = "10.100.0.11";
     var inputfilesServerHost = "10.100.0.11";
     var inputfilesServerPort = 8081;
@@ -111,6 +117,14 @@ define([
 	self.generator2 = currentConfig.generator2;
 	self.returnZip = currentConfig.returnZip;
 
+	var path = require('path');
+	var filendir = require('filendir');
+	self.root_dir = path.join(process.cwd(), 
+				  'generated', 
+				  self.project.projectId, 
+				  self.branchName,
+				  'models');
+
 	// FEDERATION STUFF
 	// should be unique!
 	var timestamp = (new Date()).getTime();
@@ -118,6 +132,10 @@ define([
 	var federateGroupName = "tesdemo2016-" + fedNumber;
 	var weaveNet = "10."+ fedNumber + ".1.0";
 	var federateFolder = "tesdemo2016_"+fedNumber+"_"+timestamp;
+
+	self.generationDir = path.join(self.root_dir, federateGroupName);
+	self.remoteInputDir = "/home/ubuntu/demo-inputs/"+federateGroupName;
+	self.remoteOutputDir = "/home/ubuntu/demo-outputs/"+federateGroupName;
 
 	self.federateGroupName = federateGroupName;
 	self.weaveNet = weaveNet;
@@ -127,14 +145,6 @@ define([
         modelNode = self.activeNode;
 	self.modelName = self.core.getAttribute(modelNode, 'name');
 	self.fileName = self.modelName + '.glm';
-
-	var path = require('path');
-	var filendir = require('filendir');
-	self.root_dir = path.join(process.cwd(), 
-				  'generated', 
-				  self.project.projectId, 
-				  self.branchName,
-				  'models');
 
 	return loader.loadModel(self.core, modelNode)
 	    .then(function(powerModel) {
@@ -177,7 +187,7 @@ define([
 
     SimulateTESCluster.prototype.getFederationManagerTaskData = function() {
 	var Mustache = require('mustache');
-
+	var path = require('path');
 	var federationManagerData = {
 	    federateGroupName: this.federateGroupName,
 	    federateName: "federation-manager",
@@ -191,7 +201,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: "tesdemo2016/script.xml;tesdemo2016/model.glm",
+	    inputfilesList: path.join(this.remoteInputDir, "script.xml"),
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/fedmgr"
 	};
 
@@ -201,7 +211,7 @@ define([
 
     SimulateTESCluster.prototype.getCommunityDemandControllerTaskData = function(idx) {
 	var Mustache = require('mustache');
-
+	var path = require('path');
 	var communityDemandControllerData = {
 	    federateGroupName: this.federateGroupName,
 	    federateName: "community"+idx+"-demandcontroller",
@@ -215,7 +225,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: "tesdemo2016/Community"+idx+"DemandController.config;tesdemo2016/model.glm",
+	    inputfilesList: path.join(this.remoteInputDir, "Community"+idx+"DemandController.config"),
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/communitydemandcontroller"+idx
 	};
 
@@ -225,7 +235,7 @@ define([
 
     SimulateTESCluster.prototype.getGeneratorPriceControllerTaskData = function(idx) {
 	var Mustache = require('mustache');
-
+	var path = require('path');
 	var generatorPriceControllerData = {
 	    federateGroupName: this.federateGroupName,
 	    federateName: "generator"+idx+"-pricecontroller",
@@ -239,7 +249,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: "tesdemo2016/Generator"+idx+"PriceController.config;tesdemo2016/model.glm",
+	    inputfilesList: path.join(this.remoteInputDir, "Generator"+idx+"PriceController.config"),
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/generatorpricecontroller"+idx
 	};
 	var taskData = Mustache.render(marathonTaskTemplate, generatorPriceControllerData);
@@ -248,7 +258,7 @@ define([
 
     SimulateTESCluster.prototype.getGridlabdTaskData = function() {
 	var Mustache = require('mustache');
-
+	var path = require('path');
 	var gridlabdData = {
 	    federateGroupName: this.federateGroupName,
 	    federateName: "gridlabd",
@@ -262,7 +272,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: "tesdemo2016/model.glm",
+	    inputfilesList: path.join(this.remoteInputDir, "model.glm"),
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/gridlabd"
 	};
 
@@ -272,7 +282,6 @@ define([
 
     SimulateTESCluster.prototype.getMapperTaskData = function() {
 	var Mustache = require('mustache');
-
 	var mapperData = {
 	    federateGroupName: this.federateGroupName,
 	    federateName: "mapper",
@@ -286,7 +295,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: "tesdemo2016/model.glm",
+	    inputfilesList: "",
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/mapper"
 	};
 
@@ -310,7 +319,7 @@ define([
 	    inputfilesServerHost: inputfilesServerHost,
 	    inputfilesServerPort: inputfilesServerPort,
 	    weaveNet: this.weaveNet,
-	    inputfilesList: "tesdemo2016/model.glm",
+	    inputfilesList: "",
 	    dockerVolumeLogPath: logPathBase+this.federateGroupName+"/"+this.federateFolder+"/omnet"
 	};
 
@@ -356,7 +365,7 @@ define([
 
     SimulateTESCluster.prototype.writeInputs = function() {
 	var self = this,
-	    basePath = "/",
+	    basePath = self.generationDir,
 	    inputFiles = {
 		"model.glm": self.fileData,
 		"Community1DemandController.config": JSON.stringify({ "Threshold": +self.community1 }, null, 2),
@@ -397,8 +406,19 @@ define([
     };
 
     SimulateTESCluster.prototype.copyInputs = function() {
-	var self = this;
+	var self = this,
+	    srcDir = self.generationDir,
+	    dstDir = self.remoteInputDir,
+	    host = marathonIP,
+	    user = marathonUser,
+	    key = marathonKey;
+	
 	// scp the inputs over into the host
+	return utils.mkdirRemote(dstDir, host, user, key)
+	    .then(function () {
+		return utils.copyToHost(srcDir, dstDir, host, user, key);
+	    });
+	
     };
 
     SimulateTESCluster.prototype.runSimulation = function() {
@@ -426,6 +446,13 @@ define([
 	var mapperTaskJSON = self.getMapperTaskData();
 	var omnetTaskJSON = self.getOmnetTaskData();
 
+	var sleep = function(seconds, cb) {
+	    setTimeout(function() {
+		console.log('waited ' + seconds + ' seconds');
+		cb(null);
+	    }, seconds*1000);
+	}
+	
 	var tasks = [];
 	tasks.push(function(cb) { self.POST(federationManagerTaskJSON, cb); });
 	tasks.push(function(cb) { sleep(1, cb); });
@@ -452,6 +479,12 @@ define([
 
     SimulateTESCluster.prototype.monitorContainers = function() {
 	var self = this;
+
+	// curl http://demo-c2wt-master:8080/v2/groups/{{
+	// federateGroupName }} -- if you're polling this, it'll give
+	// you results back while running. when it's done, should give
+	// back a reply like this: {"message":"Group '/tesdemo2016'
+	// does not exist"}%
     };
 
     SimulateTESCluster.prototype.copyArtifacts = function() {
@@ -459,6 +492,9 @@ define([
 	var basePath = "/";
 	
 	self.notify('info', 'Copying output.');
+
+	// scp from http://129.59.107.73:8081/outputs/tesdemo2/ all
+	// folders and subfolders
 	
 	return new Promise(function(resolve, reject) {
 	    var zlib = require('zlib'),
