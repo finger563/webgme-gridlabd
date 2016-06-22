@@ -188,6 +188,7 @@ define([
 
     SimulateTESCluster.prototype.renderModel = function() {
 	var self = this;
+	self.notify('info', 'Rendering GLM');
 	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
     };
 
@@ -354,6 +355,8 @@ define([
 	    path = require('path'),
 	    filendir = require('filendir');
 	
+	self.notify('info', 'Creating input files');
+
 	var fileNames = Object.keys(inputFiles);
 	var tasks = fileNames.map((fileName) => {
 	    var deferred = Q.defer();
@@ -383,6 +386,8 @@ define([
 	    user = marathonUser,
 	    key = marathonKey;
 	
+	self.notify('info', 'Copying inputs to marathon');
+
 	// scp the inputs over into the host
 	return utils.mkdirRemote(dstDir, host, user, key)
 	    .then(function () {
@@ -415,8 +420,20 @@ define([
 	var mapperTaskJSON = self.getMapperTaskData();
 	var omnetTaskJSON = self.getOmnetTaskData();
 
+	/*
+	self.logger.info(federationManagerTaskJSON);
+	self.logger.info(community1DemandControllerTaskJSON);
+	self.logger.info(community2DemandControllerTaskJSON);
+	self.logger.info(generator1PriceControllerTaskJSON);
+	self.logger.info(generator2PriceControllerTaskJSON);
+	self.logger.info(gridlabdTaskJSON);
+	*/
+
+	self.notify('info', 'POSTing config data to marathon');
+
 	var sleep = function(seconds) {
 	    var deferred = Q.defer();
+	    self.notify('info', 'sleeping for ' + seconds + ' seconds');
 	    setTimeout(function() {
 		deferred.resolve();
 	    }, seconds*1000);
@@ -428,23 +445,56 @@ define([
 	var path = '/v2/apps';
 
 	var tasks = [];
-	tasks.push(function() { utils.POST(host, port, path, federationManagerTaskJSON); });
-	tasks.push(function() { sleep(1); });
-	tasks.push(function() { utils.POST(host, port, path, community1DemandControllerTaskJSON); });
-	tasks.push(function() { sleep(2); });
-	tasks.push(function() { utils.POST(host, port, path, community2DemandControllerTaskJSON); });
-	tasks.push(function() { sleep(2); });
-	tasks.push(function() { utils.POST(host, port, path, generator1PriceControllerTaskJSON); });
-	tasks.push(function() { sleep(2); });
-	tasks.push(function() { utils.POST(host, port, path, generator2PriceControllerTaskJSON); });
-	tasks.push(function() { sleep(2); });
-	tasks.push(function() { utils.POST(host, port, path, gridlabdTaskJSON); });
-	tasks.push(function() { sleep(2); });
-	tasks.push(function() { utils.POST(host, port, path, mapperTaskJSON); });
-	tasks.push(function() { sleep(2); });
-	tasks.push(function() { utils.POST(host, port, path, omnetTaskJSON); });
-
-	return tasks.reduce(Q.when, Q());
+	return utils.POST(host, port, path, federationManagerTaskJSON)
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(1);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, community1DemandControllerTaskJSON);
+	    })
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(2);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, community2DemandControllerTaskJSON);
+	    })
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(2);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, generator1PriceControllerTaskJSON);
+	    })
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(2);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, generator2PriceControllerTaskJSON);
+	    })
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(2);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, gridlabdTaskJSON);
+	    })
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(2);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, mapperTaskJSON);
+	    })
+	    .then(function(body) {
+		self.notify('info', body);
+		return sleep(2);
+	    })
+	    .then(function() {
+		return utils.POST(host, port, path, omnetTaskJSON);
+	    });
     };
 
     SimulateTESCluster.prototype.monitorContainers = function() {
@@ -463,6 +513,7 @@ define([
 	var queryFunc = function() {
 	    utils.GET(host, port, path)
 		.then(function(result) {
+		    self.notify('info', 'Monitor result: ' + result);
 		    if (result.indexOf('does not exist') == -1) {
 			setTimeout(queryFunc, 1000);
 		    }
@@ -471,6 +522,8 @@ define([
 		    }
 		});
 	};
+
+	self.notify('info', 'Monitoring ' + this.federateGroupName);
 
 	queryFunc();
 	
