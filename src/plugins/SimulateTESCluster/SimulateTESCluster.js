@@ -75,6 +75,7 @@ define([
     SimulateTESCluster.prototype.notify = function(level, msg) {
 	var self = this;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
+	var max_msg_len = 100;
 	if (level=='error')
 	    self.logger.error(msg);
 	else if (level=='debug')
@@ -143,12 +144,12 @@ define([
 	var timestamp = (new Date()).getTime();
 	var fedNumber = Math.floor(Math.random() * 250 + 1);
 	var federateGroupName = "tesdemo2016-" + fedNumber;
-	var weaveNet = "10."+ fedNumber + ".1.0";
+	var weaveNet = "10.33."+ fedNumber + ".0";
 	var federateFolder = "tesdemo2016_"+fedNumber+"_"+timestamp;
 
 	self.generationDir = path.join(self.root_dir, federateGroupName);
 	self.remoteInputDir = "/home/ubuntu/demo-inputs/"+federateGroupName;
-	self.remoteOutputDir = "/home/ubuntu/demo-outputs/"+federateGroupName;
+	self.remoteOutputDir = "/home/ubuntu/demo-outputs/"+federateGroupName + "/" + federateFolder;
 
 	self.federateGroupName = federateGroupName;
 	self.weaveNet = weaveNet;
@@ -440,7 +441,7 @@ define([
 
 	var sleep = function(seconds) {
 	    var deferred = Q.defer();
-	    self.notify('info', 'sleeping for ' + seconds + ' seconds');
+	    //self.notify('info', 'sleeping for ' + seconds + ' seconds');
 	    setTimeout(function() {
 		deferred.resolve();
 	    }, seconds*1000);
@@ -560,7 +561,7 @@ define([
 		    var zlib = require('zlib'),
 		    tar = require('tar'),
 		    fstream = require('fstream'),
-		    input = loacalPath;
+		    input = localPath;
 
 		    var bufs = [];
 		    var packer = tar.Pack()
@@ -610,7 +611,7 @@ define([
 	self.notify('info', 'Plotting logs.');
 
 	var tasks = controllers.map((controller) => {
-	    var fileName = path.join(basePath, controller.toLowerCase(), controller + '.log');
+	    var fileName = path.join(basePath, controller + '.log');
 	    var deferred = Q.defer();
 	    // load the file
 	    fs.readFile(fileName, (err, data) => {
