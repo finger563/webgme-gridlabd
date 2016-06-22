@@ -147,6 +147,9 @@ define([
 		return self.writeInputs();
 	    })
 	    .then(function() {
+		return self.copyInputs();
+	    })
+	    .then(function() {
 		return self.runSimulation();
 	    })
 	    .then(function() {
@@ -393,11 +396,16 @@ define([
 	    });
     };
 
+    SimulateTESCluster.prototype.copyInputs = function() {
+	var self = this;
+	// scp the inputs over into the host
+    };
+
     SimulateTESCluster.prototype.runSimulation = function() {
 	var self = this;
 
-	self.notify('info', 'Starting Simulation');
-
+	self.notify('info', 'Starting Simulation');	
+	
 	return self.startFederates()
 	    .then(function() {
 		return self.monitorContainers();
@@ -407,9 +415,39 @@ define([
     SimulateTESCluster.prototype.startFederates = function() {
 	// run-cpp-feds.sh
 	var self = this;
-	var deferred = Q.defer();
+	var async = require('async');
 
-	return deferred.promise;
+	var federationManagerTaskJSON = self.getFederationManagerTaskData();
+	var community1DemandControllerTaskJSON = self.getCommunityDemandControllerTaskData(1);
+	var community2DemandControllerTaskJSON = self.getCommunityDemandControllerTaskData(2);
+	var generator1PriceControllerTaskJSON = self.getGeneratorPriceControllerTaskData(1);
+	var generator2PriceControllerTaskJSON = self.getGeneratorPriceControllerTaskData(2);
+	var gridlabdTaskJSON = self.getGridlabdTaskData();
+	var mapperTaskJSON = self.getMapperTaskData();
+	var omnetTaskJSON = self.getOmnetTaskData();
+
+	var tasks = [];
+	tasks.push(function(cb) { self.POST(federationManagerTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(1, cb); });
+	tasks.push(function(cb) { self.POST(community1DemandControllerTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(2, cb); });
+	tasks.push(function(cb) { self.POST(community2DemandControllerTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(2, cb); });
+	tasks.push(function(cb) { self.POST(generator1PriceControllerTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(2, cb); });
+	tasks.push(function(cb) { self.POST(generator2PriceControllerTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(2, cb); });
+	tasks.push(function(cb) { self.POST(gridlabdTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(2, cb); });
+	tasks.push(function(cb) { self.POST(mapperTaskJSON, cb); });
+	tasks.push(function(cb) { sleep(2, cb); });
+	tasks.push(function(cb) { self.POST(omnetTaskJSON, cb); });
+
+	async.series(tasks, function(err, results) {
+	    if (err) {
+		throw new String(err);
+	    }
+	});
     };
 
     SimulateTESCluster.prototype.monitorContainers = function() {
