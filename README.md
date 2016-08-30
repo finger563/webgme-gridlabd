@@ -53,14 +53,50 @@ systems, and controllers.
 
 ![More complex Two Community model.](./images/simpleModel.png)
 
+### UpdateGLDMeta Plugin
+
+The UpdateGLDMeta plugin is useful for automatically updating or
+extending the webgme gridlabd meta language with information about the
+supported types from the current (or a selected) version of gridlabd. The plugin takes as input a type specification file ([example](./gld_schema/powerflow.cpp)) which can be automatically generated from gridlab-d in the following way:
+
+``` bash
+gridlabd --libinfo ${module_name} > ${module_name}.cpp
+```
+
+e.g.
+
+``` bash
+gridlabd --libinfo powerflow > powerflow.cpp
+```
+
+The information about gridlab-d's input arguments and how to run this
+command can be found
+[here](http://gridlab-d.sourceforge.net/wiki/index.php/Command_options)
+
 ### ImportGLM Plugin
+
+From the root level, you can run the ImportGLM plugin which takes as
+input an uploaded GLM file. The plugin parses this file and creates
+webgme objects in accordance with the current webgme meta. This means
+that any relevant meta types for that model should be present in the
+meta.
 
 ### GenerateGLM Plugin
 
+The GenerateGLM plugin performs the reverse transform of the ImportGLM
+plugin, allowing the user to serialize their webgme gridlabd model out
+into a simulatable GLM file.
+
 ### SimulateWithGridlabD Plugin
+
+The SimulateWithGridlabD plugin provides the user the ability to
+automatically test their gridlabd model. It assumes the user has run
+the GenerateGLM plugin on that model on the server previously, and if
+so then it executes that model in GridlabD (which must be installed on
+the server) and provides the stdout / stderr back to the user for
+inspection.
 
 ### SimulateTES Plugin
 
 ### SimulateTESCluster Plugin
 
-### UpdateGLDMeta Plugin
