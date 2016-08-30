@@ -60,13 +60,13 @@ extending the webgme gridlabd meta language with information about the
 supported types from the current (or a selected) version of gridlabd. The plugin takes as input a type specification file ([example](./gld_schema/powerflow.cpp)) which can be automatically generated from gridlab-d in the following way:
 
 ``` bash
-gridlabd --libinfo ${module_name} > ${module_name}.cpp
+gridlabd --modhelp ${module_name} > ${module_name}.cpp
 ```
 
 e.g.
 
 ``` bash
-gridlabd --libinfo powerflow > powerflow.cpp
+gridlabd --modhelp powerflow > powerflow.cpp
 ```
 
 The information about gridlab-d's input arguments and how to run this
