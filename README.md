@@ -73,6 +73,16 @@ The information about gridlab-d's input arguments and how to run this
 command can be found
 [here](http://gridlab-d.sourceforge.net/wiki/index.php/Command_options)
 
+When the UpdateGLDMeta plugin runs, it will check to see if the
+objects already exist, and if they don't it will create new
+meta-objects based on the file specification in a new `MetaAspect`
+sheet with the same name as the file. Additionally, if it finds a
+loaded svg (i.e. present in the `./src/svgs` folder with the same name
+as the meta type it is trying to create, it will automatically assign
+that svg to be the icon for that type of object. In this way it is
+very easy to create a useful graphical modeling language for gridlab-d
+with a minimal amount of effort.
+
 ### ImportGLM Plugin
 
 From the root level, you can run the ImportGLM plugin which takes as
