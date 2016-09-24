@@ -48,7 +48,7 @@ define([
 
     ImportGLM.prototype.notify = function(level, msg) {
 	var self = this;
-	if (!self.logDebug && level == 'debug')
+	if (!self.logDebug && level == 'info')
 	    return;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
 	if (level=='error')
@@ -133,6 +133,39 @@ define([
 	    });
     };
 
+    ImportGLM.prototype.objectToKey = function(obj) {
+	return obj.base +'_' + obj.type + '_' + obj.name;
+    };
+
+    ImportGLM.prototype.nameToKey = function(name, dict) {
+	var self = this;
+	self.notify('info', 'Looking up key for '+name);
+	var keys = Object.keys(dict);
+	var suffix = '_' + name;
+	var objKeys = keys.filter(function(val) {return val.substr(-suffix.length)===suffix;});
+	var objKey = '';
+	if (objKeys.length)
+	    objKey = objKeys[0];
+	self.notify('info', 'Got key: '+objKey + ' for ' + name);
+	return objKey;
+    };
+
+    ImportGLM.prototype.nameToObject = function(name, dict) {
+	var self = this;
+	var objKey = self.nameToKey(name, dict);
+	var p = dict[objKey];
+	if (!p) { // didn't find the name
+	    // map from objName (e.g. node:412) to actual name (e.g. 412)
+	    name = name.replace(/\w+:/g,'');
+	    objKey = self.nameToKey(name, dict);
+	    p = dict[objKey];
+	}
+	if (!p) {
+	    self.notify('error', "Couldn't get object by name: " + name);
+	}
+	return p;
+    };
+
     ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
 	var self = this,
@@ -145,7 +178,7 @@ define([
 	var lines = glmFile.split('\n');
 	var line_num = 0;
 	lines.map((line) => {
-	    self.notify('debug', 'parsing line number: '+line_num+':'+line);
+	    self.notify('info', 'parsing line number: '+line_num+':'+line);
 	    line_num++;
 	    var macro_regex = /^#/gm,
 		module_def_regex = /module\s+(\w+);/,
@@ -161,29 +194,31 @@ define([
 		var obj = self.getObjStub(line);
 		obj.base = 'module';
 		obj.name = results[1];
-		objDict[obj.name] = obj;
+		var key = self.objectToKey(obj);
+		objDict[key] = obj;
 		self.newModel.children.push(obj);
 	    }
 	    else if (container_regex.test(line)) {
 		// start object / module / class / clock / schedule
 		var obj = self.getObjStub(line);
-		if (objDict[obj.name]) // for the case of modules
-		    obj = objDict[obj.name];
-		self.notify('debug','pushing:'+obj.name);
+		var key = self.objectToKey(obj);
+		if (objDict[key]) // for the case of modules
+		    obj = objDict[key];
+		self.notify('info','pushing object '+key);
 		objByDepth.push(obj);
 	    }
 	    else if (container_end_regex.test(line)) {
 		// end object / module / class / clock / schedule
 		var obj = objByDepth.pop();
 		// work out parent
-		self.notify('debug', 'popped:'+obj);
+		var key = self.objectToKey(obj);
+		self.notify('info', 'popped object ' + key);
 		if (obj.base == 'object' && objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
 		// add to model
 		self.newModel.children.push(obj);
-		if (obj.name)
-		    objDict[obj.name] = obj;
+		objDict[key] = obj;
 	    }
 	    else if (line.length > 0 && objByDepth.length){
 		var obj = objByDepth[objByDepth.length - 1];
@@ -206,14 +241,16 @@ define([
 	    }
 	});
 	// handle 'parent' attributes here
-	Object.keys(objDict).map((key) => {
+	var keys = Object.keys(objDict);
+	keys.map((key) => {
 	    var obj = objDict[key];
 	    var pAttr = obj.attributes.find((a) => { return a.name == 'parent'; });
 	    if (pAttr) {
+		self.notify('info', 'Updating parent for ' + self.objectToKey(obj));
 		var parentName = pAttr.value;
 		// map from parentName (e.g. node:412) to actual name (e.g. 412)
 		parentName = parentName.replace(/\w+:/g,'');
-		var p = objDict[parentName];
+		var p = self.nameToObject(parentName, objDict);
 		// set the parent
 		obj.parent = p;
 		// remove the parent attribute
@@ -224,7 +261,7 @@ define([
 	    }
 	});
 	// convert attributes that should be pointers according to the META
-	Object.keys(objDict).map((key) => {
+	keys.map((key) => {
 	    var obj = objDict[key];
 	    var metaNode = self.objToMeta(obj);
 	    if (!metaNode)
@@ -232,28 +269,19 @@ define([
 	    var ptrNames = self.filterPointerNames(self.core.getPointerNames(metaNode));
 	    if (!ptrNames.length)
 		return;
+	    self.notify('info', 'Checking pointer attributes for ' + self.objectToKey(obj));
 	    for (var i = obj.attributes.length - 1; i >= 0; i--) {
 		var attr = obj.attributes[i];
+		self.notify('info', 'checking attribute ' + attr.name + ' to see if it is a pointer.');
 		if (ptrNames.indexOf(attr.name) > -1) {
-		    self.notify('debug', 'updating attribute ' + attr.name + ' to pointer');
+		    self.notify('info', 'updating attribute ' + attr.name + ' to pointer');
 		    var ptrObjName = attr.value;
-		    ptrObjName = ptrObjName.replace(/\w+:/g,'');
-		    var p = objDict[ptrObjName];
-		    if (p) {
-			obj.pointers.push({
-			    name: self.convertPointerName(attr.name),
-			    value: p
-			});
-		    }
-		    else { // didn't find the name
-			ptrObjName = ptrObjName.replace(/\w+:/g,'');
-			var p = objDict[ptrObjName];
-			obj.pointers.push({
-			    name: self.convertPointerName(attr.name),
-			    value: p
-			});
-		    }
-		    self.notify('debug', 'pointer goes to: ' + p.name);
+		    var p = self.nameToObject(ptrObjName, objDict)
+		    obj.pointers.push({
+			name: self.convertPointerName(attr.name),
+			value: p
+		    });
+		    self.notify('info', 'pointer goes to: ' + p.name);
 		    obj.attributes.splice(i, 1);
 		}
 	    }
@@ -371,12 +399,14 @@ define([
 	var self = this,
 	    name = null,
 	    value = null,
+	    type = null,
 	    obj,
-	    regex = /#(?:define|set)\s+(\S+)\s*=\s*([^;]+);?/gi,
+	    regex = /#(define|set)\s+(\S+)\s*=\s*([^;]+);?/gi,
 	    results = regex.exec(line);
 	if (results) {
-	    name = results[1];
-	    value = results[2];
+	    type = results[1];
+	    name = results[2];
+	    value = results[3];
 	}
 	obj = {
 	    name: name,
@@ -385,6 +415,10 @@ define([
 		{
 		    name: 'Value',
 		    value: value
+		},
+		{
+		    name: 'Type',
+		    value: type
 		}
 	    ]
 	};

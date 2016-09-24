@@ -9,7 +9,10 @@ define(['q'], function(Q) {
 	    // Globals
 	    if (root.Global_list) {
 		root.Global_list.map((obj) => {
-		    fileData += `#set ${obj.name}=${obj.Value};\n`;
+		    if (obj.Type == 'set')
+			fileData += `#${obj.Type} ${obj.name}=${obj.Value};\n`;
+		    else if (obj.Type == 'define')
+			fileData += `#${obj.Type} ${obj.name}=${obj.Value}\n`;
 		});
 	    }
 	    // Variables
