@@ -187,6 +187,8 @@ define([
 	    results;
 	// remove the comments
 	glmFile = self.removeComments(glmFile);
+	// fix any possible syntax issues
+	glmFile = self.fixSyntax(glmFile);
 	// split the file into lines
 	var lines = glmFile.split('\n');
 	var line_num = 0;
@@ -398,6 +400,14 @@ define([
     ImportGLM.prototype.removeComments = function(str) {
 	var regex = /(?:[\s]+|^|;)\/\/.*$/gm;
 	return str.replace(regex, '').replace(/\r/gm,'');
+    };
+    
+    ImportGLM.prototype.fixSyntax = function(str) {
+	var regex = /};\s*object/gm;
+	str = str.replace(regex, '};\nobject');
+	regex = /}\s*object/gm;
+	str = str.replace(regex, '}\nobject');
+	return str;
     };
     
     ImportGLM.prototype.parseMacro = function(line) {
