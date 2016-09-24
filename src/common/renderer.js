@@ -5,21 +5,22 @@ define(['q'], function(Q) {
     return {
 	renderGLM: function(model, core, META) {
 	    var fileData = '';
+	    var root = model.root;
 	    // Globals
-	    if (model.Global_list) {
-		model.Global_list.map((obj) => {
+	    if (root.Global_list) {
+		root.Global_list.map((obj) => {
 		    fileData += `#set ${obj.name}=${obj.Value};\n`;
 		});
 	    }
 	    // Variables
-	    if (model.Variable_list) {
-		model.Variable_list.map((obj) => {
+	    if (root.Variable_list) {
+		root.Variable_list.map((obj) => {
 		    fileData += `#setenv ${obj.name}=${obj.Expression};\n`;
 		});
 	    }
 	    // Modules
-	    if (model.module_list) {
-		model.module_list.map((obj) => {
+	    if (root.module_list) {
+		root.module_list.map((obj) => {
 		    if (obj.Variable_list || obj.class_list) {
 			fileData += `module ${obj.name} \{\n`;
 			// module variables
@@ -52,8 +53,8 @@ define(['q'], function(Q) {
 		});
 	    }
 	    // Classes
-	    if (model.class_list) {
-		model.class_list.map((c) => {
+	    if (root.class_list) {
+		root.class_list.map((c) => {
 		    fileData += `class ${c.name} \{\n`;
 		    // class properties
 		    if (c.PropertyDef_list) {
@@ -68,8 +69,8 @@ define(['q'], function(Q) {
 		});
 	    }
 	    // Clock
-	    if (model.clock_list) {
-		model.clock_list.map((clock) => {
+	    if (root.clock_list) {
+		root.clock_list.map((clock) => {
 		    fileData += `clock \{\n`;
 		    for (var attr in clock.attributes) {
 			if (attr == 'name' || clock.attributes[attr].length == 0)
@@ -83,8 +84,8 @@ define(['q'], function(Q) {
 		});
 	    }
 	    // Schedules
-	    if (model.schedule_list) {
-		model.schedule_list.map((sched) => {
+	    if (root.schedule_list) {
+		root.schedule_list.map((sched) => {
 		    fileData += `schedule ${sched.name} \{\n`;
 		    if (sched.Entry_list) {
 			sched.Entry_list.map((entry) => {
@@ -98,8 +99,8 @@ define(['q'], function(Q) {
 		});
 	    }
 	    // Objects
-	    model.childPaths.map((childPath) => {
-		var child = model.pathDict[childPath];
+	    root.childPaths.map((childPath) => {
+		var child = model.objects[childPath];
 		if (core.isTypeOf(child.node, META.Object)) {
 		    var nameRegex = /[a-zA-Z\-_]/g;
 		    var nameTest = nameRegex.exec(child.name);
@@ -116,7 +117,7 @@ define(['q'], function(Q) {
 			}
 		    }
 		    for (var ptr in child.pointers) {
-			var ptrObj = model.pathDict[child.pointers[ptr]];
+			var ptrObj = model.objects[child.pointers[ptr]];
 			if (ptrObj) {
 			    var ptrName = ptr;
 			    if (ptr == 'src' || ptr == 'dst') {

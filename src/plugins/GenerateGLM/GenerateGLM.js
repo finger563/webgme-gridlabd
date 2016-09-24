@@ -99,7 +99,7 @@ define([
 	self.fileData = '';
 	self.fileName = self.modelName + '.glm';
 
-	return loader.loadModel(self.core, modelNode)
+	return loader.loadModel(self.core, modelNode, true, true)
 	    .then(function(powerModel) {
 		self.powerModel = powerModel;
 	    })

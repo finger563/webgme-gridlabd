@@ -125,7 +125,7 @@ define([
 				  self.branchName,
 				  'models');
 
-	return loader.loadModel(self.core, modelNode)
+	return loader.loadModel(self.core, modelNode, true, true)
 	    .then(function(powerModel) {
 		self.powerModel = powerModel;
 	    })

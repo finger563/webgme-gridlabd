@@ -1,11 +1,15 @@
 
-
 define(['q'], function(Q) {
     'use strict';
     return {
-	loadModel: function(core, modelNode) {
+	loadModel: function(core, modelNode, doResolve, doProcessModel) {
 	    var self = this;
-	    var modelObjects = [];   // used to store the objects for handling pointers
+	    if (doResolve === undefined) {
+		doResolve = false;
+	    }
+	    if (doProcessModel === undefined) {
+		doProcessModel = false;
+	    }
 
 	    var nodeName = core.getAttribute(modelNode, 'name'),
 	    nodePath = core.getPath(modelNode),
@@ -16,29 +20,33 @@ define(['q'], function(Q) {
 	    pointers = core.getPointerNames(modelNode),
 	    sets = core.getSetNames(modelNode);
 
-	    self.model = {
+	    var model = {
+		'objects': {
+		},
+		'root': nodePath
+	    };
+	    model.objects[nodePath] = {
 		name: nodeName,
 		path: nodePath,
 		type: nodeType,
+		node: modelNode,
 		parentPath: parentPath,
 		childPaths: childPaths,
 		attributes: {},
 		pointers: {},
-		sets: {},
-		pathDict: {}  // for storing a path->obj dict for all objects in model
+		sets: {}
 	    };
 	    attributes.map(function(attribute) {
 		var val = core.getAttribute(modelNode, attribute);
-		self.model.attributes[attribute] = val;
-		self.model[attribute] = val;
+		model.objects[nodePath].attributes[attribute] = val;
+		model.objects[nodePath][attribute] = val;
 	    });
 	    pointers.map(function(pointer) {
-		self.model.pointers[pointer] = core.getPointerPath(modelNode, pointer);
+		model.objects[nodePath].pointers[pointer] = core.getPointerPath(modelNode, pointer);
 	    });
 	    sets.map(function(set) {
-		self.model.sets[set] = core.getMemberPaths(modelNode, set);
+		model.objects[nodePath].sets[set] = core.getMemberPaths(modelNode, set);
 	    });
-	    modelObjects.push(self.model);
 	    return core.loadSubTree(modelNode)
 		.then(function(nodes) {
 		    nodes.map(function(node) {
@@ -50,11 +58,11 @@ define(['q'], function(Q) {
 			childPaths = core.getChildrenPaths(node);
 			pointers = core.getPointerNames(node);
 			sets = core.getSetNames(node);
-			var nodeObj = {
+			model.objects[nodePath] = {
 			    name: nodeName,
 			    path: nodePath,
-			    node: node,
 			    type: nodeType,
+			    node: node,
 			    parentPath: parentPath,
 			    childPaths: childPaths,
 			    attributes: {},
@@ -63,32 +71,37 @@ define(['q'], function(Q) {
 			};
 			attributes.map(function(attribute) {
 			    var val = core.getAttribute(node, attribute);
-			    nodeObj.attributes[attribute] = val;
-			    nodeObj[attribute] = val;
+			    model.objects[nodePath].attributes[attribute] = val;
+			    model.objects[nodePath][attribute] = val;
 			});
 			pointers.map(function(pointer) {
-			    nodeObj.pointers[pointer] = core.getPointerPath(node, pointer);
+			    model.objects[nodePath].pointers[pointer] = core.getPointerPath(node, pointer);
 			});
 			sets.map(function(set) {
-			    nodeObj.sets[set] = core.getMemberPaths(node, set);
+			    model.objects[nodePath].sets[set] = core.getMemberPaths(node, set);
 			});
-			modelObjects.push(nodeObj);
-			self.model.pathDict[nodeObj.path] = nodeObj;
 		    });
-		    self.updateNames(modelObjects);
-		    self.resolvePointers(modelObjects);
-		    self.processModel(self.model);
-		    return self.model;
+
+		    if (doResolve)
+			self.resolvePointers(model.objects);
+
+		    if (doProcessModel)
+			self.processModel(model);
+
+		    model.root = model.objects[model.root]
+
+		    return model;
 		});
 	},
-	resolvePointers: function(modelObjects) {
-	    modelObjects.map(function(obj) {
+	resolvePointers: function(objects) {
+	    var self = this;
+            var objPaths = Object.keys(objects);
+	    objPaths.map(function(objPath) {
+                var obj = objects[objPath];
 		// Can't follow parent path: would lead to circular data structure (not stringifiable)
 		// follow children paths, these will always have been loaded
 		obj.childPaths.map(function(childPath) {
-		    var dst = modelObjects.filter(function (c) { 
-			return c.path == childPath; 
-		    })[0];
+		    var dst = objects[childPath];
 		    if (dst) {
 			var key = dst.type + '_list';
 			if (!obj[key]) {
@@ -100,45 +113,47 @@ define(['q'], function(Q) {
 		// follow pointer paths, these may not always be loaded!
 		for (var pointer in obj.pointers) {
 		    var path = obj.pointers[pointer];
-		    var dst = modelObjects.filter(function (c) { 
-			return c.path == path;
-		    })[0];
+		    var dst = objects[path];
 		    if (dst)
 			obj[pointer] = dst;
-		    else if (pointer != 'base' && path != null) 
-			throw new String(obj.name + ' has pointer ' +pointer+ ' to object not in the tree!');
+                    else if (pointer != 'base' && path != null)
+                        self.logger.error(
+                            'Cannot save pointer to object outside tree: ' + 
+                                pointer + ', ' + path);
 		}
 		// follow set paths, these may not always be loaded!
 		for (var set in obj.sets) {
 		    var paths = obj.sets[set];
 		    var dsts = [];
 		    paths.map(function(path) {
-			var dst = modelObjects.filter(function (c) {
-			    return c.path == path;
-			})[0];
+                        var dst = objects[path];
 			if (dst)
 			    dsts.push(dst);
-			else if (path != null)
-			    throw new String(obj.name + ' has set '+set+' containing pointer to object not in tree!');
-			else
-			    throw new String(obj.name + ' has set '+set+' containing null pointer!'); // shouldn't be possible!
-		    });
+                        else if (path != null)
+                            self.logger.error(
+                                'Cannot save set member not in tree: ' + 
+                                    set + ', ' + path);
+                    });
 		    obj[set] = dsts;
 		}
 	    });
 	},
 	processModel: function(model) {
 	    // convert Parent objects to pointers of src objects
-	    if (model.Parent_list) {
-		model.Parent_list.map((parent) => {
+	    var root = model.objects[model.root];
+	    if (root.Parent_list) {
+		root.Parent_list.map(function(parent) {
 		    parent.src.pointers.parent = parent.pointers.dst;
 		    parent.src.parent = parent.pointers.dst;
 		});
 	    }
+	    this.updateNames(model.objects);
 	},
-	updateNames: function(modelObjects) {
+	updateNames: function(objects) {
 	    var numObjs = {};
-	    modelObjects.map((obj) => {
+	    var objPaths = Object.keys(objects);
+	    objPaths.map(function(objPath) {
+		var obj = objects[objPath];
 		if (obj.name == obj.type) {
 		    if (!numObjs[obj.type])
 			numObjs[obj.type] = 0;

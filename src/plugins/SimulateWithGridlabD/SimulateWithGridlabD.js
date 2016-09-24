@@ -104,7 +104,16 @@ define([
 				  self.branchName,
 				  'models');
 
-	return self.checkModelFileExists()
+	return loader.loadModel(self.core, modelNode, true, true)
+	    .then(function(powerModel) {
+		self.powerModel = powerModel;
+	    })
+	    .then(function() {
+		return self.renderModel();
+	    })
+	    .then(function() {
+		return self.writeInputs();
+	    })
 	    .then(function() {
 		return self.runSimulation();
 	    })
@@ -124,25 +133,43 @@ define([
 
     };
 
-    SimulateWithGridlabD.prototype.checkModelFileExists = function() {
+    SimulateWithGridlabD.prototype.renderModel = function() {
 	var self = this;
-	var path = require('path');
-	var fs = require('fs');
+	self.notify('info', 'Rendering GLM');
+	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
+    };
 
-	self.notify('info', 'Checking existence of model file.');
+    SimulateTESCluster.prototype.writeInputs = function() {
+	var self = this,
+	    basePath = self.root_dir,
+	    inputFiles = {
+		"model.glm": self.fileData,
+	    },
+	    fs = require('fs'),
+	    path = require('path'),
+	    filendir = require('filendir');
+	
+	self.notify('info', 'Creating input files');
 
-	var deferred = Q.defer();
-
-	fs.access(path.join(self.root_dir, self.fileName), (err) => {
-	    if (err) {
-		deferred.reject('Model file has not been generated on the server! Make sure to run GenerateGLM on the server!');
-	    }
-	    else {
-		deferred.resolve();
-	    }
+	var fileNames = Object.keys(inputFiles);
+	var tasks = fileNames.map((fileName) => {
+	    var deferred = Q.defer();
+	    var data = inputFiles[fileName];
+	    filendir.writeFile(path.join(basePath, fileName), data, (err) => {
+		if (err) {
+		    deferred.reject('Couldnt write ' + fileName + ': ' + err);
+		}
+		else {
+		    deferred.resolve();
+		}
+	    });
+	    return deferred.promise;
 	});
 
-	return deferred.promise;
+	return Q.all(tasks)
+	    .then(function() {
+		self.notify('info', 'Generated artifacts.');
+	    });
     };
 
     SimulateWithGridlabD.prototype.runSimulation = function() {
