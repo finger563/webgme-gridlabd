@@ -48,6 +48,8 @@ define([
 
     ImportGLM.prototype.notify = function(level, msg) {
 	var self = this;
+	if (!self.logDebug && level == 'debug')
+	    return;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
 	if (level=='error')
 	    self.logger.error(msg);
@@ -90,6 +92,7 @@ define([
 
 	var currentConfig = self.getCurrentConfig(),
 	glmFileHash = currentConfig.glmFile;
+	self.logDebug = currentConfig.logDebug;
 
         // Using the coreAPI to make changes.
         nodeObject = self.activeNode;
@@ -142,7 +145,7 @@ define([
 	var lines = glmFile.split('\n');
 	var line_num = 0;
 	lines.map((line) => {
-	    self.notify('info', 'parsing line number: '+line_num+':'+line);
+	    self.notify('debug', 'parsing line number: '+line_num+':'+line);
 	    line_num++;
 	    var macro_regex = /^#/gm,
 		module_def_regex = /module\s+(\w+);/,
@@ -166,14 +169,14 @@ define([
 		var obj = self.getObjStub(line);
 		if (objDict[obj.name]) // for the case of modules
 		    obj = objDict[obj.name];
-		self.notify('info','pushing:'+obj.name);
+		self.notify('debug','pushing:'+obj.name);
 		objByDepth.push(obj);
 	    }
 	    else if (container_end_regex.test(line)) {
 		// end object / module / class / clock / schedule
 		var obj = objByDepth.pop();
 		// work out parent
-		self.notify('info', 'popped:'+obj);
+		self.notify('debug', 'popped:'+obj);
 		if (obj.base == 'object' && objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
@@ -232,13 +235,25 @@ define([
 	    for (var i = obj.attributes.length - 1; i >= 0; i--) {
 		var attr = obj.attributes[i];
 		if (ptrNames.indexOf(attr.name) > -1) {
+		    self.notify('debug', 'updating attribute ' + attr.name + ' to pointer');
 		    var ptrObjName = attr.value;
 		    ptrObjName = ptrObjName.replace(/\w+:/g,'');
 		    var p = objDict[ptrObjName];
-		    obj.pointers.push({
-			name: self.convertPointerName(attr.name),
-			value: p
-		    });
+		    if (p) {
+			obj.pointers.push({
+			    name: self.convertPointerName(attr.name),
+			    value: p
+			});
+		    }
+		    else { // didn't find the name
+			ptrObjName = ptrObjName.replace(/\w+:/g,'');
+			var p = objDict[ptrObjName];
+			obj.pointers.push({
+			    name: self.convertPointerName(attr.name),
+			    value: p
+			});
+		    }
+		    self.notify('debug', 'pointer goes to: ' + p.name);
 		    obj.attributes.splice(i, 1);
 		}
 	    }

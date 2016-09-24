@@ -5,6 +5,9 @@ var config = require('./config.webgme'),
 
 config.server.port = 8081;
 
+// line router
+config.client.defaultConnectionRouter = 'basic'
+
 // Authentication
 config.authentication.enable = true;
 config.authentication.allowGuests = true;
@@ -16,7 +19,6 @@ config.plugin.allowBrowserExecution = true;
 // Seeds
 config.seedProjects.enable = true;
 config.seedProjects.basePaths = ["./src/seeds"]
-config.seedProjects.defaultProject = "guest+GridlabD"
 
 config.requirejsPaths.gridlabd = "./src/common/"
 

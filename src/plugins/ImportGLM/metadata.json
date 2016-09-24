@@ -11,6 +11,14 @@
     "disableBrowserSideExecution": false,
     "configStructure": [
         {
+            "name": "logDebug",
+            "displayName": "Enable debug output.",
+            "description": "Outputs debug log from the parser / importer.",
+            "value": false,
+            "valueType": "boolean",
+            "readOnly": false
+        },
+        {
             "name": "glmFile",
             "displayName": "Gridlab-D model file.",
             "description": "Gridlab-D GLM file containing the power system model to be loaded into WebGME.",
