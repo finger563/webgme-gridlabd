@@ -6,6 +6,12 @@ define(['q'], function(Q) {
 	renderGLM: function(model, core, META) {
 	    var fileData = '';
 	    var root = model.root;
+	    // Includes
+	    if (root.Include_list) {
+		root.Include_list.map((obj) => {
+		    fileData += `#include "${obj.name}"\n`;
+		});
+	    }
 	    // Globals
 	    if (root.Global_list) {
 		root.Global_list.map((obj) => {

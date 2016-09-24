@@ -416,8 +416,31 @@ define([
 	    obj;
 	if (line.indexOf('#setenv') > -1)
 	    obj = self.parseVariable(line);
-	else
+	else if (line.indexOf('#set') > -1 || line.indexOf('#define') > -1) 
 	    obj = self.parseGlobal(line);
+	else if (line.indexOf('#include') > -1)
+	    obj = self.parseInclude(line);
+	return obj;
+    };
+
+
+    ImportGLM.prototype.parseInclude = function(line) {
+	// includes set by: #include "<filename>"
+	var self = this,
+	    name = null,
+	    value = null,
+	    type = null,
+	    obj,
+	    regex = /#include\s+"(\S+)"/gi,
+	    results = regex.exec(line);
+	if (results) {
+	    name = results[1];
+	}
+	obj = {
+	    name: name,
+	    base: 'Include',
+	    attributes: []
+	};
 	return obj;
     };
 
