@@ -48,6 +48,7 @@ define([
 
     ImportGLM.prototype.notify = function(level, msg) {
 	var self = this;
+	self.logData += msg + '\n';
 	if (!self.logDebug && level == 'info')
 	    return;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
@@ -82,6 +83,7 @@ define([
 
         // Default fails
         self.result.success = false;
+	self.logData = '';
 
 	// fill this out before creating the WebGME nodes
 	self.newModel = {
@@ -123,13 +125,23 @@ define([
 		return self.save('ImportGLM updated model.');
 	    })
 	    .then(function() {
+		return self.blobClient.putFile(self.modelName+'.log', self.logData);
+	    })
+	    .then(function(hash) {
+		self.result.addArtifact(hash);
+	    })
+	    .then(function() {
 		self.result.setSuccess(true);
 		callback(null, self.result);
 	    })
 	    .catch(function(err) {
-		self.logger.error('ERROR:: '+err);
-		self.result.setSuccess(false);
-		callback(null, self.result);
+		return self.blobClient.putFile(self.modelName+'.log', self.logData)
+		    .then(function(hash) {
+			self.result.addArtifact(hash);
+			self.notify('error', err);
+			self.result.setSuccess(false);
+			callback(err, self.result);
+		    });
 	    });
     };
 
@@ -170,6 +182,7 @@ define([
 	// fill out self.newModel
 	var self = this,
 	    objDict = {},
+	    objID = {},
 	    objByDepth = [],
 	    results;
 	// remove the comments
@@ -182,16 +195,18 @@ define([
 	    line_num++;
 	    var macro_regex = /^#/gm,
 		module_def_regex = /module\s+(\w+);/,
-		container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/,
+		container_regex = /(\w+)(?:\s+(\w+))?:?([\.\d]+)?\s*{/,
 		container_end_regex = /(^|[^\S]+)};?/;
 	    if (macro_regex.test(line)) {
 		// parse macros
 		var obj = self.parseMacro(line, self.newModel);
+		obj._line_def = line_num;
 		self.newModel.children.push(obj);
 	    }
 	    else if (results=module_def_regex.exec(line)) {
 		// simple module def
 		var obj = self.getObjStub(line);
+		obj._line_def = line_num;
 		obj.base = 'module';
 		obj.name = results[1];
 		var key = self.objectToKey(obj);
@@ -201,10 +216,16 @@ define([
 	    else if (container_regex.test(line)) {
 		// start object / module / class / clock / schedule
 		var obj = self.getObjStub(line);
+		obj._line_def = line_num;
 		var key = self.objectToKey(obj);
-		if (objDict[key]) // for the case of modules
-		    obj = objDict[key];
-		self.notify('info','pushing object '+key);
+		if (objDict[key]) {
+		    if (!objID[obj.type]) {
+			objID[obj.type] = 0;
+		    }
+		    obj.name += '_' + objID[obj.type];
+		    objID[obj.type]++;
+		}
+		self.notify('info','pushing '+key);
 		objByDepth.push(obj);
 	    }
 	    else if (container_end_regex.test(line)) {
@@ -212,7 +233,7 @@ define([
 		var obj = objByDepth.pop();
 		// work out parent
 		var key = self.objectToKey(obj);
-		self.notify('info', 'popped object ' + key);
+		self.notify('info', 'popped ' + key);
 		if (obj.base == 'object' && objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
@@ -286,10 +307,6 @@ define([
 		}
 	    }
 	});
-	return self.blobClient.putFile(self.newModel.name+'.json', JSON.stringify(self.newModel, null, 2))
-	    .then((hash) => {
-		self.result.addArtifact(hash);
-	    });
     };
 
     ImportGLM.prototype.convertPointerName = function(ptrName) {
@@ -348,7 +365,7 @@ define([
     }
 
     ImportGLM.prototype.getObjStub = function(line) {
-	var container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
+	var container_regex = /(\w+)(?:\s+(\w+))?:?([\.\d]+)?\s*{/gm,
 	    obj = {
 		name: null,
 		type: null,
@@ -373,6 +390,7 @@ define([
 		if (results[3])
 		    obj.name = this.parseObjectName(results[3], obj);
 	    }
+	    obj.name = obj.name || obj.type || obj.base;
 	}
 	return obj;
     };
@@ -579,14 +597,17 @@ define([
 	    attr_regex = /(\w+)\s+([^;]*);?/g,
 	    results;
 	if (results = attr_regex.exec(line)) {
+	    /*
 	    if (results[1] == 'name' && obj.name)
 		return obj;
+	    */
 	    var attr = {
 		name: results[1],
 		value: results[2].replace(/'/g,'').replace(/"/g,'')
 	    };
 	    obj.attributes.push(attr);
 	    if (attr.name == 'name') {
+		self.notify('info', 'Updating name from '+obj.name+' to '+attr.value);
 		obj.name = attr.value;
 	    }
 	}
@@ -601,6 +622,11 @@ define([
 	var self = this;
 	var base = obj.type || obj.base;
 	parentNode = parentNode || self.newModel.node;
+	var parentName = self.core.getAttribute(parentNode, 'name');
+	if ( base == null ) {
+	    self.notify('warning', 'Encountered null base object! Child of ' + parentName + ', name: ' + obj.name + ', defined on line: ' + obj._line_def);
+	    return;
+	}
 	var newNode = self.core.createNode({parent: parentNode, base: self.META[base]});
 	obj.node = newNode;
 	if (obj.attributes) {
