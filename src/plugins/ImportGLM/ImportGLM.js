@@ -411,7 +411,7 @@ define([
     ImportGLM.prototype.parseScheduleLine = function(line, obj) {
 	var self = this,
 	    id = obj.children.length,
-	    pattern = /([\s]+[\d\*\.]+[\-\.\d]*)+/gi,
+	    pattern = /([\s]+[\d\*\.]+[\-,\.\d]*)+/gi,
 	    matches = pattern.exec(line);
 	if (matches) {
 	    var splits = matches[0].split(new RegExp(" |\t|\s|;",'g')).filter(function(obj) {return obj.length > 0;});
