@@ -46,6 +46,21 @@ define([
     ImportGLM.prototype = Object.create(PluginBase.prototype);
     ImportGLM.prototype.constructor = ImportGLM;
 
+    ImportGLM.prototype.notify = function(level, msg) {
+	var self = this;
+	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
+	if (level=='error')
+	    self.logger.error(msg);
+	else if (level=='debug')
+	    self.logger.debug(msg);
+	else if (level=='info')
+	    self.logger.info(msg);
+	else if (level=='warning')
+	    self.logger.warn(msg);
+	self.createMessage(self.activeNode, msg, level);
+	self.sendNotification(prefix+msg);
+    };
+
     /**
      * Main function for the plugin to execute. This will perform the execution.
      * Notes:
@@ -125,12 +140,16 @@ define([
 	glmFile = self.removeComments(glmFile);
 	// split the file into lines
 	var lines = glmFile.split('\n');
+	var line_num = 0;
 	lines.map((line) => {
+	    self.notify('info', 'parsing line number: '+line_num+':'+line);
+	    line_num++;
 	    var macro_regex = /^#/gm,
-		module_def_regex = /module\s+(\w+);/gm,
-		container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/gm,
-		container_end_regex = /};?/gm;
+		module_def_regex = /module\s+(\w+);/,
+		container_regex = /(\w+)\s+(\w+)?:?([\.\d]+)?\s*{/,
+		container_end_regex = /(^|[^\S]+)};?/;
 	    if (macro_regex.test(line)) {
+		// parse macros
 		var obj = self.parseMacro(line, self.newModel);
 		self.newModel.children.push(obj);
 	    }
@@ -147,12 +166,14 @@ define([
 		var obj = self.getObjStub(line);
 		if (objDict[obj.name]) // for the case of modules
 		    obj = objDict[obj.name];
+		self.notify('info','pushing:'+obj.name);
 		objByDepth.push(obj);
 	    }
 	    else if (container_end_regex.test(line)) {
 		// end object / module / class / clock / schedule
 		var obj = objByDepth.pop();
 		// work out parent
+		self.notify('info', 'popped:'+obj);
 		if (obj.base == 'object' && objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
