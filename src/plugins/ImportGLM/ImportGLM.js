@@ -10,7 +10,8 @@ define([
     'text!./metadata.json',
     'plugin/PluginBase',
     'gridlabd/meta',
-    'q'
+    'q',
+    './cola'
 ], function (
     PluginConfig,
     pluginMetadata,
@@ -49,7 +50,7 @@ define([
     ImportGLM.prototype.notify = function(level, msg) {
 	var self = this;
 	self.logData += msg + '\n';
-	if (!self.logDebug && level == 'info')
+	if (!self.logDebug && level == 'debug')
 	    return;
 	var prefix = self.projectId + '::' + self.projectName + '::' + level + '::';
 	if (level=='error')
@@ -79,6 +80,11 @@ define([
         var self = this,
         nodeObject;
 
+	self.runningOnClient = false;
+        if (typeof WebGMEGlobal !== 'undefined') {
+	    self.runningOnClient = true;
+        }
+
         self.updateMETA(self.metaTypes);
 
         // Default fails
@@ -95,6 +101,9 @@ define([
 	var currentConfig = self.getCurrentConfig(),
 	glmFileHash = currentConfig.glmFile;
 	self.logDebug = currentConfig.logDebug;
+	self.iterations = currentConfig.iterations;
+	self.linkDistance = currentConfig.linkDistance;
+	self.nodeSize = currentConfig.nodeSize;
 
         // Using the coreAPI to make changes.
         nodeObject = self.activeNode;
@@ -115,6 +124,9 @@ define([
 	    })
 	    .then(function(glmFile) {
 		return self.parseObjectsFromGLM(glmFile);
+	    })
+	    .then(function() {
+		return self.layoutObjects();
 	    })
 	    .then(function() {
 		return self.createModelArtifacts();
@@ -151,14 +163,14 @@ define([
 
     ImportGLM.prototype.nameToKey = function(name, dict) {
 	var self = this;
-	self.notify('info', 'Looking up key for '+name);
+	self.notify('debug', 'Looking up key for '+name);
 	var keys = Object.keys(dict);
 	var suffix = '_' + name;
 	var objKeys = keys.filter(function(val) {return val.substr(-suffix.length)===suffix;});
 	var objKey = '';
 	if (objKeys.length)
 	    objKey = objKeys[0];
-	self.notify('info', 'Got key: '+objKey + ' for ' + name);
+	self.notify('debug', 'Got key: '+objKey + ' for ' + name);
 	return objKey;
     };
 
@@ -193,7 +205,7 @@ define([
 	var lines = glmFile.split('\n');
 	var line_num = 0;
 	lines.map((line) => {
-	    self.notify('info', 'parsing line number: '+line_num+':'+line);
+	    self.notify('debug', 'parsing line number: '+line_num+':'+line);
 	    line_num++;
 	    var macro_regex = /^#/gm,
 		module_def_regex = /module\s+(\w+);/,
@@ -227,7 +239,7 @@ define([
 		    obj.name += '_' + objID[obj.type];
 		    objID[obj.type]++;
 		}
-		self.notify('info','pushing '+key);
+		self.notify('debug','pushing '+key);
 		objByDepth.push(obj);
 	    }
 	    else if (container_end_regex.test(line)) {
@@ -235,7 +247,7 @@ define([
 		var obj = objByDepth.pop();
 		// work out parent
 		var key = self.objectToKey(obj);
-		self.notify('info', 'popped ' + key);
+		self.notify('debug', 'popped ' + key);
 		if (obj.base == 'object' && objByDepth.length > 0) {
 		    obj.parent = objByDepth[objByDepth.length-1];
 		}
@@ -269,7 +281,7 @@ define([
 	    var obj = objDict[key];
 	    var pAttr = obj.attributes.find((a) => { return a.name == 'parent'; });
 	    if (pAttr) {
-		self.notify('info', 'Updating parent for ' + self.objectToKey(obj));
+		self.notify('debug', 'Updating parent for ' + self.objectToKey(obj));
 		var parentName = pAttr.value;
 		// map from parentName (e.g. node:412) to actual name (e.g. 412)
 		parentName = parentName.replace(/\w+:/g,'');
@@ -292,19 +304,19 @@ define([
 	    var ptrNames = self.filterPointerNames(self.core.getPointerNames(metaNode));
 	    if (!ptrNames.length)
 		return;
-	    self.notify('info', 'Checking pointer attributes for ' + self.objectToKey(obj));
+	    self.notify('debug', 'Checking pointer attributes for ' + self.objectToKey(obj));
 	    for (var i = obj.attributes.length - 1; i >= 0; i--) {
 		var attr = obj.attributes[i];
-		self.notify('info', 'checking attribute ' + attr.name + ' to see if it is a pointer.');
+		self.notify('debug', 'checking attribute ' + attr.name + ' to see if it is a pointer.');
 		if (ptrNames.indexOf(attr.name) > -1) {
-		    self.notify('info', 'updating attribute ' + attr.name + ' to pointer');
+		    self.notify('debug', 'updating attribute ' + attr.name + ' to pointer');
 		    var ptrObjName = attr.value;
 		    var p = self.nameToObject(ptrObjName, objDict)
 		    obj.pointers.push({
 			name: self.convertPointerName(attr.name),
 			value: p
 		    });
-		    self.notify('info', 'pointer goes to: ' + p.name);
+		    self.notify('debug', 'pointer goes to: ' + p.name);
 		    obj.attributes.splice(i, 1);
 		}
 	    }
@@ -644,11 +656,133 @@ define([
 	    };
 	    obj.attributes.push(attr);
 	    if (attr.name == 'name') {
-		self.notify('info', 'Updating name from '+obj.name+' to '+attr.value);
+		self.notify('debug', 'Updating name from '+obj.name+' to '+attr.value);
 		obj.name = attr.value;
 	    }
 	}
 	return obj;
+    };
+
+    ImportGLM.prototype.isLink = function(obj) {
+	var src = null, dst = null;
+	for (var p in obj.pointers) {
+	    var ptr = obj.pointers[p];
+	    if (ptr.name === 'src')
+		src = ptr;
+	    else if (ptr.name === 'dst')
+		dst = ptr;
+	    else if (src && dst)
+		break;
+	}
+	return (src && dst);
+    };
+
+    ImportGLM.prototype.isNode = function(obj) {
+	var self = this;
+	return !self.isLink(obj);
+    };
+
+    ImportGLM.prototype.layoutObjects = function() {
+	var self = this;
+	// go through all of newModel's children and lay them out
+	// (only the ones which do not have both a 'src' and a 'dst'
+	// pointer
+	//var objects = self.newModel.children.filter(function(c) { return self.isNode(c); });
+	//var links = self.newModel.children.filter(function(c) { return self.isLink(c); });
+	var nodes = [];
+	var links = [];
+
+	self.notify('info','Laying out objects, note this may take a while.');
+
+	var getIndexOfObjWithAttr = function(array, attr, value) {
+	    for(var i = 0; i < array.length; i++) {
+		if(array[i][attr] === value) {
+		    return i;
+		}
+	    }
+	    return -1;
+	}
+
+	var minx = 0, miny=0;
+	if (self.newModel.children) {
+	    for (var i=0; i<self.newModel.children.length; i++) {
+		var child = self.newModel.children[i];
+		if (self.isNode(child)) {
+		    nodes.push({
+			"name":self.objectToKey(child),
+			"original": i
+		    });
+		}
+	    }
+	    self.newModel.children.map(function(child) {
+		if (self.isLink(child)) {
+		    var srcPtr = child.pointers.filter(function(p) { return p.name == 'src'; })[0];
+		    var dstPtr = child.pointers.filter(function(p) { return p.name == 'dst'; })[0];
+		    //self.notify('warning', child.name + ' has ' + srcPtr + ' and ' + dstPtr);
+		    var src = srcPtr.value;
+		    var dst = dstPtr.value;
+		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(src));
+		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(dst));
+		    if (dstIndex == -1 || srcIndex == -1) {
+			self.notify('error', 'Couldnt get src/dst for '+child.name);
+		    }
+		    //self.notify('warning', child.name + ' goes from ' + src.name + ' to ' + dst.name);
+		    links.push({
+			"source": srcIndex,
+			"target": dstIndex,
+		    });
+		}
+		else if (child.parent) {
+		    // now add visualized pointers!
+		    self.notify('debug', 'Converting parent to link for ' + child.name);
+		    var src = child;
+		    var dst = child.parent;
+		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(src));
+		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(dst));
+		    if (dstIndex == -1 || srcIndex == -1) {
+			self.notify('error', 'Couldnt get src/dst for '+child.name);
+		    }
+		    //self.notify('warning', child.name + ' goes from ' + src.name + ' to ' + dst.name);
+		    links.push({
+			"source": srcIndex,
+			"target": dstIndex,
+		    });
+		}
+	    });
+	}
+	var width = nodes.length * 5,
+	    height = nodes.length * 5;
+	var d3cola = cola.d3adaptor()
+	    .linkDistance(self.linkDistance)
+	    .avoidOverlaps(true)
+	    .defaultNodeSize(self.nodeSize)
+	    .size([width, height]);
+
+	d3cola
+	    .nodes(nodes)
+	    .links(links)         
+	    .symmetricDiffLinkLengths(10)
+	    .start(self.iterations, self.iterations, self.iterations);
+	
+	nodes.map(function(node) {
+	    if (node.x < minx)
+		minx = node.x;
+	    if (node.y < miny)
+		miny = node.y;
+	});
+
+	self.notify('debug', 'minx, miny: ' + minx + ', '+miny);
+
+	nodes.map(function(node) {
+	    var realNode = self.newModel.children[node.original];
+	    var newx = (node.x - minx) * 2 + 50, // minx,miny will always be negative
+		newy = (node.y - miny) * 2 + 50;
+	    var newPos = {x: newx, y: newy}; 
+	    self.notify('debug', 'Updating position of ' + node.name + ', ' + realNode.name + ' to ' + JSON.stringify(newPos));
+	    realNode._position = newPos;
+	});
+	self.notify('debug', 'layed out nodes: '+nodes.length);
+	self.notify('debug', 'layed out links: '+links.length);
     };
 
     // When saving the objects, need to check against META to figure out what the relevant pointers and attributes are:
@@ -668,8 +802,12 @@ define([
 	    self.notify('warning', 'Encountered null base object! Child of ' + parentName + ', name: ' + obj.name + ', defined on line: ' + obj._line_def);
 	    return;
 	}
-	self.notify('info', "Creating object " + obj.name + " of type " + base + " from " + self.META[base]);
+	self.notify('debug', "Creating object " + obj.name + " of type " + base + " from " + self.META[base]);
 	var newNode = self.core.createNode({parent: parentNode, base: self.META[base]});
+	if (obj._position) {
+	    self.notify('debug', 'Setting position of new object to '+JSON.stringify(obj._position));
+	    self.core.setRegistry(newNode, 'position', obj._position);
+	}
 	obj.node = newNode;
 	if (obj.attributes) {
 	    obj.attributes.map((attr) => {

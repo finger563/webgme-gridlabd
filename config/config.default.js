@@ -21,7 +21,7 @@ config.seedProjects.enable = true;
 config.seedProjects.basePaths = ["./src/seeds"]
 
 config.requirejsPaths.gridlabd = "./src/common/"
-
+config.requirejsPaths.cola = "./node_modules/cola"
 config.requirejsPaths.svgAssets = "./node_modules/webgme/src/client/assets"
 
 config.client.log.level = 'info'

@@ -6,6 +6,7 @@
   },
   "version": "1.0.0",
   "dependencies": {
+    "cola": "^0.1.7",
     "d3": "^3.5.17",
     "filendir": "^1.0.0",
     "fstream": "^1.0.9",
