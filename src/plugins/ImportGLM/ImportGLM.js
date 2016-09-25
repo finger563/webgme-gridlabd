@@ -157,15 +157,21 @@ define([
 	    });
     };
 
+    var delimeter = '/';
+
+    ImportGLM.prototype.objectNamePrefix = function(obj) {
+	return obj.base + delimeter + obj.type + delimeter;
+    };
+
     ImportGLM.prototype.objectToKey = function(obj) {
-	return obj.base +'_' + obj.type + '_' + obj.name;
+	return this.objectNamePrefix(obj) + obj.name;
     };
 
     ImportGLM.prototype.nameToKey = function(name, dict) {
 	var self = this;
 	self.notify('debug', 'Looking up key for '+name);
 	var keys = Object.keys(dict);
-	var suffix = '_' + name;
+	var suffix = delimeter + name;
 	var objKeys = keys.filter(function(val) {return val.substr(-suffix.length)===suffix;});
 	var objKey = '';
 	if (objKeys.length)
@@ -179,8 +185,8 @@ define([
 	var objKey = self.nameToKey(name, dict);
 	var p = dict[objKey];
 	if (!p) { // didn't find the name
-	    // map from objName (e.g. node:412) to actual name (e.g. 412)
-	    name = name.replace(/\w+:/g,'');
+	    // map from objName (e.g. node:412) to actual name (e.g. node_412)
+	    name = name.replace(/:/g,'/');
 	    objKey = self.nameToKey(name, dict);
 	    p = dict[objKey];
 	}
