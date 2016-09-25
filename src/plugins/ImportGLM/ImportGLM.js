@@ -11,7 +11,7 @@ define([
     'plugin/PluginBase',
     'gridlabd/meta',
     'q',
-    './cola'
+    './cola.min'
 ], function (
     PluginConfig,
     pluginMetadata,
@@ -283,8 +283,6 @@ define([
 	    if (pAttr) {
 		self.notify('debug', 'Updating parent for ' + self.objectToKey(obj));
 		var parentName = pAttr.value;
-		// map from parentName (e.g. node:412) to actual name (e.g. 412)
-		parentName = parentName.replace(/\w+:/g,'');
 		var p = self.nameToObject(parentName, objDict);
 		// set the parent
 		obj.parent = p;
@@ -716,37 +714,45 @@ define([
 	    }
 	    self.newModel.children.map(function(child) {
 		if (self.isLink(child)) {
-		    var srcPtr = child.pointers.filter(function(p) { return p.name == 'src'; })[0];
-		    var dstPtr = child.pointers.filter(function(p) { return p.name == 'dst'; })[0];
+		    var srcPtr = child.pointers.find(function(p) { return p.name == 'src'; });
+		    var dstPtr = child.pointers.find(function(p) { return p.name == 'dst'; });
 		    //self.notify('warning', child.name + ' has ' + srcPtr + ' and ' + dstPtr);
 		    var src = srcPtr.value;
 		    var dst = dstPtr.value;
-		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(src));
-		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(dst));
+		    var srcKey = self.objectToKey(src);
+		    var dstKey = self.objectToKey(dst);
+		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', srcKey);
+		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', dstKey);
 		    if (dstIndex == -1 || srcIndex == -1) {
 			self.notify('error', 'Couldnt get src/dst for '+child.name);
+			self.notify('error', 'Looking up '+srcKey + ' and '+dstKey);
 		    }
-		    //self.notify('warning', child.name + ' goes from ' + src.name + ' to ' + dst.name);
-		    links.push({
-			"source": srcIndex,
-			"target": dstIndex,
-		    });
+		    else {
+			links.push({
+			    "source": srcIndex,
+			    "target": dstIndex,
+			});
+		    }
 		}
 		else if (child.parent) {
 		    // now add visualized pointers!
 		    self.notify('debug', 'Converting parent to link for ' + child.name);
 		    var src = child;
 		    var dst = child.parent;
-		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(src));
-		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', self.objectToKey(dst));
+		    var srcKey = self.objectToKey(src);
+		    var dstKey = self.objectToKey(dst);
+		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', srcKey);
+		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', dstKey);
 		    if (dstIndex == -1 || srcIndex == -1) {
-			self.notify('error', 'Couldnt get src/dst for '+child.name);
+			self.notify('error', 'Couldnt get parent for '+child.name);
+			self.notify('error', 'Looking up '+srcKey + ' and '+dstKey);
 		    }
-		    //self.notify('warning', child.name + ' goes from ' + src.name + ' to ' + dst.name);
-		    links.push({
-			"source": srcIndex,
-			"target": dstIndex,
-		    });
+		    else {
+			links.push({
+			    "source": srcIndex,
+			    "target": dstIndex,
+			});
+		    }
 		}
 	    });
 	}
