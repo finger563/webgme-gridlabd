@@ -51,7 +51,7 @@ Below is a more complex example showing two communities of houses
 connected to two generators. Each house has water heaters, HVAC
 systems, and controllers.
 
-![More complex Two Community model.](./images/simpleModel.png)
+![More complex Two Community model.](./images/complexModel.png)
 
 ### UpdateGLDMeta Plugin
 

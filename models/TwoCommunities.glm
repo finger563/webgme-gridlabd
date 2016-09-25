@@ -1,0 +1,2792 @@
+#set threadcount=1;
+#set randomseed=1;
+#set relax_naming_rules=1;
+#set pauseat=2000-01-01 0:00:00;
+module residential {
+  implicit_enduses NONE;
+  ANSI_voltage_check FALSE;
+};
+module market;
+module tape;
+module powerflow;
+module climate;
+module generators;
+class auction {
+  double current_price_mean_30min;
+  double current_price_stdev_30min;
+};
+clock {
+  timezone UTC0;
+  stoptime '2000-01-02 0:00:00';
+  timestamp '2000-01-01 0:00:00';
+};
+schedule heatingsetpoint1 {
+  * 17-21 * * * 70
+  * 22-23 * * * 60
+  * 0-4 * * * 60
+  * 5 * * * 70
+  00-30 6 * * * 70
+  31-59 6 * * * 60
+  * 7-16 * * * 60
+};
+schedule waterdemand1 {
+  16-59 18 * * * 0.8
+  46-59 22 * * * 0.6
+  * 23 * * * 0
+  * 0-5 * * * 0
+  0-16 6 * * * 0
+  17-34 6 * * * 0.2
+  35-59 6 * * * 0.4
+  0-11 7 * * * 0.3
+  12-59 7 * * * 0
+  * 8-16 * * * .05
+  * 17 * * * 0
+  0-15 18 * * * 0
+  * 19-21 * * * 0
+  00-45 22 * * * 0
+};
+schedule waterdemand2 {
+  11-37 5 * * * 0.1
+  0-12 17 * * * 0.5
+  * 7-16 * * * 0.01
+  13-59 17 * * * 0
+  * 18-23 * * * 0
+  * 0-4 * * * 0
+  0-10 5 * * * .4
+  38-59 5 * * * 0.6
+  0-16 6 * * * 0.4
+  17-59 6 * * * 0
+};
+schedule waterdemand3 {
+  0-16 7 * * * 0
+  28-59 18 * * * 0
+  17-34 7 * * * 0.4
+  0-11 8 * * * 0.1
+  0-27 18 * * * 0.7
+  * 19-23 * * * 0
+  * 0-6 * * * 0
+  35-59 7 * * * 0.8
+  12-59 8 * * * 0
+  * 9-15 * * * 0.005
+  * 16 * * * 0.1
+  * 17 * * * 0.2
+};
+schedule heatingsetpoint2 {
+  00-15 7 * * * 70
+  * 8-17 * * * 60
+  * 18-22 * * * 70
+  * 23 * * * 60
+  * 0-5 * * * 60
+  * 6 * * * 70
+  16-59 7 * * * 60
+};
+schedule heatingsetpoint3 {
+  24-59 8 * * * 60
+  * 9-18 * * * 60
+  * 19-20 * * * 70
+  * 21-23 * * * 60
+  * 0-6 * * * 60
+  * 7 * * * 70
+  00-23 8 * * * 70
+};
+schedule heatingsetpoint4 {
+  00-30 18 * * * 60
+  00-30 5 * * * 60
+  46-59 21 * * * 60
+  * 22-23 * * * 60
+  * 0-4 * * * 60
+  31-59 5 * * * 70
+  * 6-7 * * * 70
+  00-30 8 * * * 70
+  31-59 8 * * * 60
+  * 9-17 * * * 60
+  31-59 18 * * * 70
+  * 19-20 * * * 70
+  00-45 21 * * * 70
+};
+schedule heatingsetpoint5 {
+  16-59 17 * * * 70
+  00-15 17 * * * 60
+  43-59 23 * * * 60
+  * 18-22 * * * 70
+  00-42 23 * * * 70
+  * 0-6 * * * 60
+  00-30 7 * * * 60
+  31-59 7 * * * 70
+  * 8 * * * 70
+  00-30 9 * * * 70
+  31-59 9 * * * 60
+  * 10-16 * * * 60
+};
+schedule ZIP1base_power {
+  30-59 05 * * * 1.731125
+  30-59 16 * * * 2.157669
+  00-29 22 * * * 2.031441
+  00-29 10 * * * 2.072382
+  30-59 20 * * * 2.178758
+  30-59 17 * * * 2.262461
+  30-59 02 * * * 1.523217
+  00-29 17 * * * 2.196733
+  30-59 15 * * * 2.029784
+  00-29 23 * * * 1.853109
+  30-59 23 * * * 1.728047
+  00-29 00 * * * 1.686360
+  30-59 00 * * * 1.616535
+  00-29 01 * * * 1.593260
+  30-59 01 * * * 1.553267
+  00-29 02 * * * 1.539935
+  00-29 03 * * * 1.517644
+  30-59 03 * * * 1.526276
+  00-29 04 * * * 1.529154
+  30-59 04 * * * 1.579583
+  00-29 05 * * * 1.596393
+  00-29 06 * * * 1.776036
+  30-59 06 * * * 1.971087
+  00-29 07 * * * 2.036104
+  30-59 07 * * * 2.123794
+  00-29 08 * * * 2.153025
+  30-59 08 * * * 2.120079
+  00-29 09 * * * 2.109097
+  30-59 09 * * * 2.081561
+  30-59 10 * * * 2.056046
+  00-29 11 * * * 2.050600
+  30-59 11 * * * 2.028199
+  00-29 12 * * * 2.020733
+  30-59 12 * * * 2.011171
+  00-29 13 * * * 2.007984
+  30-59 13 * * * 2.000226
+  00-29 14 * * * 1.997640
+  30-59 14 * * * 1.997694
+  00-29 15 * * * 1.997713
+  00-29 16 * * * 2.040474
+  00-29 18 * * * 2.284370
+  30-59 18 * * * 2.273333
+  00-29 19 * * * 2.269654
+  30-59 19 * * * 2.239386
+  00-29 20 * * * 2.229297
+  00-29 21 * * * 2.161912
+  30-59 21 * * * 2.064059
+  30-59 22 * * * 1.897692
+};
+object node:646 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases BCN;
+};
+object overhead_line_conductor:6020 {
+  resistance 0.592000;
+  geometric_mean_radius 0.00814;
+};
+object underground_line_conductor:6070 {
+  shield_resistance 0.000000;
+  shield_gmr 0.000000;
+  neutral_strands 6.000000;
+  neutral_diameter 0.0640837;
+  neutral_resistance 0.970000;
+  neutral_gmr 0.011100;
+  conductor_resistance 0.970000;
+  conductor_diameter 0.368000;
+  conductor_gmr 0.011100;
+  outer_diameter 1.060000;
+};
+object line_spacing:520 {
+  distance_CN 0.000000;
+  distance_BN 0.000000;
+  distance_AN 0.083333;
+  distance_AC 0.000000;
+  distance_BC 0.000000;
+  distance_AB 0.000000;
+};
+object node:611 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  phases CN;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name trip_line6;
+  configuration triplex_line_configuration_1;
+  to trip_meter6;
+  from trip_node6;
+};
+object climate {
+  tmyfile WA-Yakima.tmy2;
+  name Yakima WA;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_meter12;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_meter10;
+};
+object overhead_line:34 {
+  length 2500;
+  phases ABCN;
+  configuration line_configuration:300;
+  to load4;
+  from node:630;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control8;
+  market Market_1;
+  parent c2_house8;
+};
+object transformer {
+  phases AS;
+  name c2_center_tap_9;
+  configuration AS_config;
+  from c2_652;
+  to c2_trip_node9;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater4;
+  parent house4;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name trip_line9;
+  configuration triplex_line_configuration_1;
+  to trip_meter9;
+  from trip_node9;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control2;
+  market Market_1;
+  parent c2_house2;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house12;
+  parent trip_meter12;
+};
+object switch {
+  phases ABCN;
+  status CLOSED;
+  phase_C_state CLOSED;
+  phase_B_state CLOSED;
+  phase_A_state CLOSED;
+  operating_mode BANKED;
+  name community_1_switch_generator_2;
+  from g2_node3;
+  to node:630;
+};
+object switch {
+  phases ABCN;
+  name community_2_switch_generator_1;
+  status CLOSED;
+  phase_C_state CLOSED;
+  phase_B_state CLOSED;
+  phase_A_state CLOSED;
+  operating_mode BANKED;
+  from node3;
+  to c2_630;
+};
+object triplex_line_conductor {
+  geometric_mean_radius 0.0111;
+  resistance 0.97;
+  name tp_line_conductor;
+};
+object triplex_line_configuration {
+  diameter 0.368;
+  insulation_thickness 0.08;
+  name triplex_line_configuration_1;
+  conductor_N tp_line_conductor;
+  conductor_2 tp_line_conductor;
+  conductor_1 tp_line_conductor;
+};
+object switch {
+  phases ABCN;
+  name community_1_switch_generator_1;
+  status CLOSED;
+  phase_C_state CLOSED;
+  phase_B_state CLOSED;
+  phase_A_state CLOSED;
+  operating_mode BANKED;
+  to node:630;
+  from node3;
+};
+object overhead_line_conductor:6010 {
+  resistance 0.185900;
+  geometric_mean_radius 0.031300;
+};
+object overhead_line_conductor:6030 {
+  resistance 1.120000;
+  geometric_mean_radius 0.004460;
+};
+object underground_line_conductor:6060 {
+  shield_resistance 0.000000;
+  shield_gmr 0.000000;
+  neutral_strands 13.000000;
+  neutral_diameter 0.0640837;
+  neutral_resistance 14.87200;
+  neutral_gmr 0.0020800;
+  conductor_resistance 0.410000;
+  conductor_diameter 0.567000;
+  conductor_gmr 0.017100;
+  outer_diameter 1.290000;
+};
+object line_spacing:500601 {
+  distance_CN 5.0;
+  distance_AN 4.272002;
+  distance_BN 5.656854;
+  distance_BC 7.0;
+  distance_AC 4.5;
+  distance_AB 2.5;
+};
+object line_spacing:500602 {
+  distance_BN 5.0;
+  distance_AN 4.272002;
+  distance_CN 5.656854;
+  distance_BC 7.0;
+  distance_AB 4.5;
+  distance_AC 2.5;
+};
+object line_spacing:505603 {
+  distance_BN 5.0;
+  distance_CN 5.656854;
+  distance_AN 0.0;
+  distance_BC 7.0;
+  distance_AB 0.0;
+  distance_AC 0.0;
+};
+object line_spacing:505604 {
+  distance_BN 0.0;
+  distance_CN 5.0;
+  distance_AN 5.656854;
+  distance_BC 0.0;
+  distance_AB 0.0;
+  distance_AC 7.0;
+};
+object line_spacing:510 {
+  distance_CN 5.0;
+  distance_AN 0.0;
+  distance_BC 0.0;
+  distance_AB 0.0;
+  distance_AC 0.0;
+};
+object line_configuration:601 {
+  spacing line_spacing:500601;
+  conductor_N overhead_line_conductor:6020;
+  conductor_C overhead_line_conductor:6010;
+  conductor_B overhead_line_conductor:6010;
+  conductor_A overhead_line_conductor:6010;
+};
+object line_configuration:602 {
+  spacing line_spacing:500602;
+  conductor_N overhead_line_conductor:6020;
+  conductor_C overhead_line_conductor:6020;
+  conductor_B overhead_line_conductor:6020;
+  conductor_A overhead_line_conductor:6020;
+};
+object line_configuration:603 {
+  spacing line_spacing:505603;
+  conductor_N overhead_line_conductor:6030;
+  conductor_C overhead_line_conductor:6030;
+  conductor_B overhead_line_conductor:6030;
+};
+object line_configuration:604 {
+  spacing line_spacing:505604;
+  conductor_N overhead_line_conductor:6030;
+  conductor_C overhead_line_conductor:6030;
+  conductor_A overhead_line_conductor:6030;
+};
+object line_configuration:605 {
+  spacing line_spacing:510;
+  conductor_N overhead_line_conductor:6030;
+  conductor_C overhead_line_conductor:6030;
+};
+object line_spacing:515 {
+  distance_CN 0.000000;
+  distance_BN 0.000000;
+  distance_AN 0.000000;
+  distance_AC 1.000000;
+  distance_BC 0.500000;
+  distance_AB 0.500000;
+};
+object line_configuration:606 {
+  spacing line_spacing:515;
+  conductor_C underground_line_conductor:6060;
+  conductor_B underground_line_conductor:6060;
+  conductor_A underground_line_conductor:6060;
+};
+object line_configuration:607 {
+  spacing line_spacing:520;
+  conductor_N underground_line_conductor:6070;
+  conductor_A underground_line_conductor:6070;
+};
+object overhead_line:632645 {
+  length 500;
+  phases BCN;
+  configuration line_configuration:603;
+  to node:645;
+  from node:632;
+};
+object node:645 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases BCN;
+};
+object node:632 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object overhead_line:645646 {
+  length 300;
+  phases BCN;
+  configuration line_configuration:603;
+  to node:646;
+  from node:645;
+};
+object overhead_line:630632 {
+  length 2000;
+  phases ABCN;
+  configuration line_configuration:601;
+  to node:632;
+  from node:630;
+};
+object node:630 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771+0j;
+  phases ABCN;
+};
+object overhead_line:6326321 {
+  length 500;
+  phases ABCN;
+  configuration line_configuration:601;
+  to node:6321;
+  from node:632;
+};
+object node:6321 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object overhead_line:6321671 {
+  length 1500;
+  phases ABCN;
+  configuration line_configuration:601;
+  to node:671;
+  from node:6321;
+};
+object node:671 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object overhead_line:671680 {
+  length 1000;
+  phases ABCN;
+  configuration line_configuration:601;
+  to node:680;
+  from node:671;
+};
+object node:680 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object overhead_line:671684 {
+  length 300;
+  phases ACN;
+  configuration line_configuration:604;
+  to node:684;
+  from node:671;
+};
+object node:684 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ACN;
+};
+object overhead_line:684611 {
+  length 300;
+  phases CN;
+  configuration line_configuration:605;
+  to node:611;
+  from node:684;
+};
+object underground_line:684652 {
+  length 800;
+  phases AN;
+  configuration line_configuration:607;
+  to node:652;
+  from node:684;
+};
+object node:652 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases AN;
+};
+object underground_line:692675 {
+  length 500;
+  phases ABC;
+  configuration line_configuration:606;
+  to node:675;
+  from node:692;
+};
+object node:675 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node:692 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object overhead_line:632633 {
+  length 500;
+  phases ABCN;
+  configuration line_configuration:602;
+  to node:633;
+  from node:632;
+};
+object node:633 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node:6711 {
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  phases CN;
+  parent node:611;
+};
+object node:634 {
+  nominal_voltage 480.000;
+  voltage_C -240.000+415.6922j;
+  voltage_B -240.000-415.6922j;
+  voltage_A 480.000+0j;
+  phases ABCN;
+};
+object transformer {
+  phases CS;
+  name center_tap_1;
+  configuration CS_config;
+  to trip_node1;
+  from node:611;
+};
+object transformer_configuration {
+  impedance 0.006+0.0136j;
+  secondary_voltage 120.000;
+  primary_voltage 2401;
+  powerC_rating 75;
+  install_type POLETOP;
+  connect_type SINGLE_PHASE_CENTER_TAPPED;
+  name CS_config;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name trip_node1;
+};
+object transformer {
+  phases AS;
+  name center_tap_2;
+  configuration AS_config;
+  to trip_node2;
+  from node:634;
+};
+object transformer_configuration {
+  impedance 0.006+0.0136j;
+  secondary_voltage 120.000;
+  primary_voltage 2401;
+  powerA_rating 75;
+  install_type POLETOP;
+  connect_type SINGLE_PHASE_CENTER_TAPPED;
+  name AS_config;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name trip_node2;
+};
+object transformer {
+  phases BS;
+  name center_tap_3;
+  configuration BS_config;
+  to trip_node3;
+  from node:634;
+};
+object transformer_configuration {
+  impedance 0.006+0.0136j;
+  secondary_voltage 120.000;
+  primary_voltage 2401;
+  powerB_rating 75;
+  install_type POLETOP;
+  connect_type SINGLE_PHASE_CENTER_TAPPED;
+  name BS_config;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name trip_node3;
+};
+object transformer {
+  phases CS;
+  name center_tap_4;
+  configuration CS_config;
+  to trip_node4;
+  from node:634;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name trip_node4;
+};
+object transformer {
+  phases BS;
+  name center_tap_5;
+  configuration BS_config;
+  to trip_node5;
+  from node:645;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name trip_node5;
+};
+object transformer {
+  phases CS;
+  name center_tap_6;
+  configuration CS_config;
+  to trip_node6;
+  from node:645;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name trip_node6;
+};
+object transformer {
+  phases BS;
+  name center_tap_7;
+  configuration BS_config;
+  to trip_node7;
+  from node:646;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name trip_node7;
+};
+object transformer {
+  phases CS;
+  name center_tap_8;
+  configuration CS_config;
+  to trip_node8;
+  from node:646;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name trip_node8;
+};
+object transformer {
+  phases AS;
+  name center_tap_9;
+  configuration AS_config;
+  to trip_node9;
+  from node:652;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name trip_node9;
+};
+object transformer {
+  phases AS;
+  name center_tap_10;
+  configuration AS_config;
+  to trip_node10;
+  from node:675;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name trip_node10;
+};
+object transformer {
+  phases BS;
+  name center_tap_11;
+  configuration BS_config;
+  to trip_node11;
+  from node:675;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name trip_node11;
+};
+object transformer {
+  phases CS;
+  name center_tap_12;
+  configuration CS_config;
+  to trip_node12;
+  from node:675;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name trip_node12;
+};
+object transformer {
+  phases AS;
+  name center_tap_13;
+  configuration AS_config;
+  to trip_node13;
+  from node:692;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name trip_node13;
+};
+object transformer {
+  phases BS;
+  name center_tap_14;
+  configuration BS_config;
+  to trip_node14;
+  from node:692;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name trip_node14;
+};
+object transformer {
+  phases CS;
+  name center_tap_15;
+  configuration CS_config;
+  to trip_node15;
+  from node:692;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name trip_node15;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name trip_line1;
+  configuration triplex_line_configuration_1;
+  to trip_meter1;
+  from trip_node1;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name trip_meter1;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name trip_line2;
+  configuration triplex_line_configuration_1;
+  to trip_meter2;
+  from trip_node2;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name trip_meter2;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name trip_line3;
+  configuration triplex_line_configuration_1;
+  to trip_meter3;
+  from trip_node3;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name trip_meter3;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name trip_line4;
+  configuration triplex_line_configuration_1;
+  to trip_meter4;
+  from trip_node4;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name trip_meter4;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name trip_line5;
+  configuration triplex_line_configuration_1;
+  to trip_meter5;
+  from trip_node5;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name trip_meter5;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name trip_meter6;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name trip_line7;
+  configuration triplex_line_configuration_1;
+  to trip_meter7;
+  from trip_node7;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name trip_meter7;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name trip_line8;
+  configuration triplex_line_configuration_1;
+  to trip_meter8;
+  from trip_node8;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name trip_meter8;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name trip_meter9;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name trip_line10;
+  configuration triplex_line_configuration_1;
+  to trip_meter10;
+  from trip_node10;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name trip_meter10;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name trip_line11;
+  configuration triplex_line_configuration_1;
+  to trip_meter11;
+  from trip_node11;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name trip_meter11;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name trip_line12;
+  configuration triplex_line_configuration_1;
+  to trip_meter12;
+  from trip_node12;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name trip_meter12;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name trip_line13;
+  configuration triplex_line_configuration_1;
+  to trip_meter13;
+  from trip_node13;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name trip_meter13;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name trip_line14;
+  configuration triplex_line_configuration_1;
+  to trip_meter14;
+  from trip_node14;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name trip_meter14;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name trip_line15;
+  configuration triplex_line_configuration_1;
+  to trip_meter15;
+  from trip_node15;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name trip_meter15;
+};
+object switch:671692 {
+  status CLOSED;
+  phases ABCN;
+  to node:692;
+  from node:671;
+};
+object transformer_configuration:400 {
+  reactance 0.02;
+  resistance 0.011;
+  secondary_voltage 480;
+  primary_voltage 4160;
+  power_rating 500;
+  install_type PADMOUNT;
+  connect_type WYE_WYE;
+};
+object transformer:633634 {
+  phases ABCN;
+  configuration transformer_configuration:400;
+  to node:634;
+  from node:633;
+};
+object capacitor {
+  nominal_voltage 2401.7771;
+  switchC CLOSED;
+  switchB CLOSED;
+  switchA CLOSED;
+  dwell_time 0.0;
+  time_delay 0.0;
+  control_level INDIVIDUAL;
+  capacitor_C 0.300 MVAr;
+  capacitor_B 0.300 MVAr;
+  capacitor_A 0.300 MVAr;
+  voltage_set_low 1950.0;
+  voltage_set_high 2500.0;
+  control VOLT;
+  phases_connected ABCN;
+  pt_phase ABCN;
+  name CAP1;
+  phases ABCN;
+  parent node:675;
+};
+object capacitor {
+  nominal_voltage 2401.7771;
+  switchC CLOSED;
+  switchB CLOSED;
+  switchA CLOSED;
+  dwell_time 0.0;
+  time_delay 300.0;
+  control_level INDIVIDUAL;
+  capacitor_C 0.250 MVAr;
+  capacitor_B 0.250 MVAr;
+  capacitor_A 0.250 MVAr;
+  voltage_set_low 2050.0;
+  voltage_set_high 2600.0;
+  control VOLT;
+  phases_connected ABCN;
+  pt_phase ABCN;
+  name CAP2;
+  phases ABCN;
+  parent node:675;
+};
+object regulator_configuration:6506321 {
+  tap_pos_C 10;
+  tap_pos_B 7;
+  tap_pos_A 9;
+  Control REMOTE_NODE;
+  regulation 0.10;
+  lower_taps 16;
+  raise_taps 16;
+  dwell_time 0.0;
+  time_delay 0.0;
+  band_width 80.0;
+  band_center 2000.000;
+  connect_type WYE_WYE;
+};
+object auction {
+  init_stdev 0;
+  init_price 100;
+  warmup 0;
+  fixed_price 100;
+  special_mode BUYERS_ONLY;
+  verbose TRUE;
+  period 900;
+  unit MW;
+  name Market_1;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control1;
+  market Market_1;
+  parent house1;
+};
+object house {
+  air_temperature 72;
+  thermostat_deadband random.normal (2,.5);
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house1;
+  parent trip_meter1;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater1;
+  parent house1;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control2;
+  market Market_1;
+  parent house2;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house2;
+  parent trip_meter2;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater2;
+  parent house2;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control3;
+  market Market_1;
+  parent house3;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house3;
+  parent trip_meter3;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater3;
+  parent house3;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control4;
+  market Market_1;
+  parent house4;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house4;
+  parent trip_meter4;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control5;
+  market Market_1;
+  parent house5;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house5;
+  parent trip_meter5;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater5;
+  parent house5;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control6;
+  market Market_1;
+  parent house6;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house6;
+  parent trip_meter6;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater6;
+  parent house6;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control7;
+  market Market_1;
+  parent house7;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house7;
+  parent trip_meter7;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater7;
+  parent house7;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control8;
+  market Market_1;
+  parent house8;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house8;
+  parent trip_meter8;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater8;
+  parent house8;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control9;
+  market Market_1;
+  parent house9;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house9;
+  parent trip_meter9;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater9;
+  parent house9;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control10;
+  market Market_1;
+  parent house10;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house10;
+  parent trip_meter10;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater10;
+  parent house10;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control11;
+  market Market_1;
+  parent house11;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house11;
+  parent trip_meter11;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater11;
+  parent house11;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control12;
+  market Market_1;
+  parent house12;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater12;
+  parent house12;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control13;
+  market Market_1;
+  parent house13;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house13;
+  parent trip_meter13;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater13;
+  parent house13;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control14;
+  market Market_1;
+  parent house14;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house14;
+  parent trip_meter14;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater14;
+  parent house14;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name cool_control15;
+  market Market_1;
+  parent house15;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name house15;
+  parent trip_meter15;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name waterheater15;
+  parent house15;
+};
+object multi_recorder {
+  name multi_recorder0;
+  limit 60;
+  interval 60;
+  file IEEE_13_Node_With_Houses.csv;
+  property community_1_switch_generator_1:real_power,trip_meter1:measured_real_power,trip_meter2:measured_real_power,trip_meter3:measured_real_power,trip_meter4:measured_real_power,trip_meter5:measured_real_power,trip_meter6:measured_real_power,trip_meter7:measured_real_power,trip_meter8:measured_real_power,trip_meter9:measured_real_power,trip_meter10:measured_real_power,trip_meter11:measured_real_power,trip_meter12:measured_real_power,trip_meter13:measured_real_power,trip_meter14:measured_real_power,trip_meter15:measured_real_power;
+};
+object switch {
+  phases ABCN;
+  status CLOSED;
+  phase_C_state CLOSED;
+  phase_B_state CLOSED;
+  phase_A_state CLOSED;
+  operating_mode BANKED;
+  name community_2_switch_generator_2;
+  to c2_630;
+  from g2_node3;
+};
+object node {
+  name c2_646;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases BCN;
+};
+object node {
+  name c2_611;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  phases CN;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name c2_trip_line6;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node6;
+  to c2_trip_meter6;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater4;
+  parent c2_house4;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name c2_trip_line9;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node9;
+  to c2_trip_meter9;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house12;
+  parent c2_trip_meter12;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house15;
+  parent c2_trip_meter15;
+};
+object transformer {
+  phases CS;
+  name c2_center_tap_8;
+  from c2_646;
+  configuration CS_config;
+  to c2_trip_node8;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_node8;
+};
+object overhead_line {
+  name c2_632645;
+  length 500;
+  phases BCN;
+  configuration line_configuration:603;
+  to c2_645;
+  from c2_632;
+};
+object overhead_line {
+  name c2_630632;
+  length 2000;
+  phases ABCN;
+  configuration line_configuration:601;
+  to c2_632;
+  from c2_630;
+};
+object overhead_line {
+  name c2_6326321;
+  length 500;
+  phases ABCN;
+  configuration line_configuration:601;
+  from c2_632;
+  to c2_6321;
+};
+object overhead_line {
+  name c2_6321671;
+  length 1500;
+  phases ABCN;
+  configuration line_configuration:601;
+  from c2_6321;
+  to c2_671;
+};
+object overhead_line {
+  name c2_671680;
+  length 1000;
+  phases ABCN;
+  configuration line_configuration:601;
+  from c2_671;
+  to c2_680;
+};
+object overhead_line {
+  name c2_671684;
+  length 300;
+  phases ACN;
+  configuration line_configuration:604;
+  from c2_671;
+  to c2_684;
+};
+object overhead_line {
+  name c2_684611;
+  length 300;
+  phases CN;
+  to c2_611;
+  configuration line_configuration:605;
+  from c2_684;
+};
+object underground_line {
+  name c2_684652;
+  length 800;
+  phases AN;
+  configuration line_configuration:607;
+  from c2_684;
+  to c2_652;
+};
+object underground_line {
+  name c2_692675;
+  length 500;
+  phases ABC;
+  configuration line_configuration:606;
+  to c2_675;
+  from c2_692;
+};
+object overhead_line {
+  name c2_632633;
+  length 500;
+  phases ABCN;
+  configuration line_configuration:602;
+  from c2_632;
+  to c2_633;
+};
+object transformer {
+  phases CS;
+  name c2_center_tap_1;
+  from c2_611;
+  configuration CS_config;
+  to c2_trip_node1;
+};
+object transformer {
+  phases AS;
+  name c2_center_tap_2;
+  configuration AS_config;
+  from c2_634;
+  to c2_trip_node2;
+};
+object transformer {
+  phases BS;
+  name c2_center_tap_3;
+  configuration BS_config;
+  from c2_634;
+  to c2_trip_node3;
+};
+object transformer {
+  phases CS;
+  name c2_center_tap_4;
+  configuration CS_config;
+  from c2_634;
+  to c2_trip_node4;
+};
+object transformer {
+  phases BS;
+  name c2_center_tap_5;
+  configuration BS_config;
+  from c2_645;
+  to c2_trip_node5;
+};
+object transformer {
+  phases CS;
+  name c2_center_tap_6;
+  configuration CS_config;
+  from c2_645;
+  to c2_trip_node6;
+};
+object transformer {
+  phases AS;
+  name c2_center_tap_10;
+  configuration AS_config;
+  from c2_675;
+  to c2_trip_node10;
+};
+object transformer {
+  phases BS;
+  name c2_center_tap_11;
+  configuration BS_config;
+  from c2_675;
+  to c2_trip_node11;
+};
+object transformer {
+  phases CS;
+  name c2_center_tap_12;
+  configuration CS_config;
+  from c2_675;
+  to c2_trip_node12;
+};
+object transformer {
+  phases AS;
+  name c2_center_tap_13;
+  configuration AS_config;
+  from c2_692;
+  to c2_trip_node13;
+};
+object transformer {
+  phases BS;
+  name c2_center_tap_14;
+  configuration BS_config;
+  from c2_692;
+  to c2_trip_node14;
+};
+object transformer {
+  phases CS;
+  name c2_center_tap_15;
+  configuration CS_config;
+  from c2_692;
+  to c2_trip_node15;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name c2_trip_line1;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node1;
+  to c2_trip_meter1;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name c2_trip_line2;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node2;
+  to c2_trip_meter2;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name c2_trip_line3;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node3;
+  to c2_trip_meter3;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name c2_trip_line4;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node4;
+  to c2_trip_meter4;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name c2_trip_line5;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node5;
+  to c2_trip_meter5;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name c2_trip_line7;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node7;
+  to c2_trip_meter7;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name c2_trip_line8;
+  from c2_trip_node8;
+  configuration triplex_line_configuration_1;
+  to c2_trip_meter8;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name c2_trip_line10;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node10;
+  to c2_trip_meter10;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name c2_trip_line11;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node11;
+  to c2_trip_meter11;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name c2_trip_line12;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node12;
+  to c2_trip_meter12;
+};
+object triplex_line {
+  length 0;
+  phases AS;
+  name c2_trip_line13;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node13;
+  to c2_trip_meter13;
+};
+object triplex_line {
+  length 0;
+  phases BS;
+  name c2_trip_line14;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node14;
+  to c2_trip_meter14;
+};
+object triplex_line {
+  length 0;
+  phases CS;
+  name c2_trip_line15;
+  configuration triplex_line_configuration_1;
+  from c2_trip_node15;
+  to c2_trip_meter15;
+};
+object switch {
+  name c2_671692;
+  status CLOSED;
+  phases ABCN;
+  from c2_671;
+  to c2_692;
+};
+object transformer {
+  name c2_633634;
+  phases ABCN;
+  configuration transformer_configuration:400;
+  from c2_633;
+  to c2_634;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater15;
+  parent c2_house15;
+};
+object node {
+  name c2_645;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases BCN;
+};
+object node {
+  name c2_632;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_630;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771+0j;
+  phases ABCN;
+};
+object node {
+  name c2_6321;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_671;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_680;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_684;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ACN;
+};
+object node {
+  name c2_652;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases AN;
+};
+object node {
+  name c2_675;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_692;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_633;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  voltage_B -1200.8886-2080.000j;
+  voltage_A 2401.7771;
+  phases ABCN;
+};
+object node {
+  name c2_6711;
+  nominal_voltage 2401.7771;
+  voltage_C -1200.8886+2080.000j;
+  phases CN;
+  parent c2_611;
+};
+object node {
+  name c2_634;
+  nominal_voltage 480.000;
+  voltage_C -240.000+415.6922j;
+  voltage_B -240.000-415.6922j;
+  voltage_A 480.000+0j;
+  phases ABCN;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_node1;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_node2;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_node3;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_node4;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_node5;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_node6;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_node7;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_node9;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_node10;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_node11;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_node12;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_node13;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_node14;
+};
+object triplex_node {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_node15;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_meter1;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_meter2;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_meter3;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_meter4;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_meter5;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_meter6;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_meter7;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_meter8;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_meter9;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_meter11;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases AS;
+  name c2_trip_meter13;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases BS;
+  name c2_trip_meter14;
+};
+object triplex_meter {
+  nominal_voltage 120;
+  phases CS;
+  name c2_trip_meter15;
+};
+object capacitor {
+  nominal_voltage 2401.7771;
+  switchC CLOSED;
+  switchB CLOSED;
+  switchA CLOSED;
+  dwell_time 0.0;
+  time_delay 0.0;
+  control_level INDIVIDUAL;
+  capacitor_C 0.300 MVAr;
+  capacitor_B 0.300 MVAr;
+  capacitor_A 0.300 MVAr;
+  voltage_set_low 1950.0;
+  voltage_set_high 2500.0;
+  control VOLT;
+  phases_connected ABCN;
+  pt_phase ABCN;
+  name c2_CAP1;
+  phases ABCN;
+  parent c2_675;
+};
+object capacitor {
+  nominal_voltage 2401.7771;
+  switchC CLOSED;
+  switchB CLOSED;
+  switchA CLOSED;
+  dwell_time 0.0;
+  time_delay 300.0;
+  control_level INDIVIDUAL;
+  capacitor_C 0.250 MVAr;
+  capacitor_B 0.250 MVAr;
+  capacitor_A 0.250 MVAr;
+  voltage_set_low 2050.0;
+  voltage_set_high 2600.0;
+  control VOLT;
+  phases_connected ABCN;
+  pt_phase ABCN;
+  name c2_CAP2;
+  phases ABCN;
+  parent c2_675;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control1;
+  market Market_1;
+  parent c2_house1;
+};
+object house {
+  air_temperature 72;
+  thermostat_deadband random.normal (2,.5);
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house1;
+  parent c2_trip_meter1;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater1;
+  parent c2_house1;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house2;
+  parent c2_trip_meter2;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater2;
+  parent c2_house2;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control3;
+  market Market_1;
+  parent c2_house3;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house3;
+  parent c2_trip_meter3;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater3;
+  parent c2_house3;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control4;
+  market Market_1;
+  parent c2_house4;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house4;
+  parent c2_trip_meter4;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control5;
+  market Market_1;
+  parent c2_house5;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house5;
+  parent c2_trip_meter5;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater5;
+  parent c2_house5;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control6;
+  market Market_1;
+  parent c2_house6;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house6;
+  parent c2_trip_meter6;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater6;
+  parent c2_house6;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control7;
+  market Market_1;
+  parent c2_house7;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house7;
+  parent c2_trip_meter7;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater7;
+  parent c2_house7;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house8;
+  parent c2_trip_meter8;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater8;
+  parent c2_house8;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control9;
+  market Market_1;
+  parent c2_house9;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house9;
+  parent c2_trip_meter9;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater9;
+  parent c2_house9;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control10;
+  market Market_1;
+  parent c2_house10;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house10;
+  parent c2_trip_meter10;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater10;
+  parent c2_house10;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control11;
+  market Market_1;
+  parent c2_house11;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house11;
+  parent c2_trip_meter11;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater11;
+  parent c2_house11;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control12;
+  market Market_1;
+  parent c2_house12;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater12;
+  parent c2_house12;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control13;
+  market Market_1;
+  parent c2_house13;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house13;
+  parent c2_trip_meter13;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater13;
+  parent c2_house13;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control14;
+  market Market_1;
+  parent c2_house14;
+};
+object house {
+  air_temperature 72;
+  cooling_setpoint random.normal (80,2);
+  floor_area random.normal(1750,400);
+  name c2_house14;
+  parent c2_trip_meter14;
+};
+object waterheater {
+  water_demand 10;
+  location INSIDE;
+  name c2_waterheater14;
+  parent c2_house14;
+};
+object controller {
+  range_high 5;
+  range_low 0;
+  ramp_high 2;
+  ramp_low 2;
+  load hvac_load;
+  total total_load;
+  demand cooling_demand;
+  setpoint cooling_setpoint;
+  target air_temperature;
+  control_mode RAMP;
+  standard_deviation_target current_price_stdev_30min;
+  average_target current_price_mean_30min;
+  period 900;
+  bid_mode ON;
+  name c2_cool_control15;
+  market Market_1;
+  parent c2_house15;
+};
+object overhead_line {
+  name c2_645646;
+  length 300;
+  phases BCN;
+  from c2_645;
+  to c2_646;
+  configuration line_configuration:603;
+};
+object transformer {
+  name c2_center_tap_7;
+  phases BS;
+  from c2_646;
+  to c2_trip_node7;
+  configuration BS_config;
+};
+object auction {
+  init_stdev 0;
+  init_price 100;
+  warmup 0;
+  fixed_price 100;
+  special_mode BUYERS_ONLY;
+  verbose TRUE;
+  period 900;
+  unit MW;
+  name Market_2;
+};
+object overhead_line_conductor:101 {
+  resistance 0.592;
+  geometric_mean_radius 0.00814;
+};
+object overhead_line {
+  name c2_34;
+  length 2500;
+  phases ABCN;
+  from c2_630;
+  configuration line_configuration:300;
+  to c2_load4;
+};
+object node {
+  nominal_voltage 7200;
+  voltage_C -3599.779+6235.000j;
+  voltage_B -3599.779-6235.000j;
+  voltage_A +7199.558+0.000j;
+  phases ABCN;
+  name node2;
+};
+object node {
+  nominal_voltage 2400;
+  voltage_C -1200.889+2080.000j;
+  voltage_B -1200.889-2080.000j;
+  voltage_A +2401.777+0.000j;
+  phases ABCN;
+  name node3;
+};
+object overhead_line_conductor:100 {
+  resistance 0.306;
+  geometric_mean_radius 0.0244;
+};
+object line_spacing:200 {
+  distance_CN 5.0;
+  distance_BN 4.272002;
+  distance_AN 5.656854;
+  distance_AC 7.0;
+  distance_BC 4.5;
+  distance_AB 2.5;
+};
+object line_configuration:300 {
+  spacing line_spacing:200;
+  conductor_N overhead_line_conductor:101;
+  conductor_B overhead_line_conductor:100;
+  conductor_A overhead_line_conductor:100;
+  conductor_C overhead_line_conductor:100;
+};
+object transformer:23 {
+  phases ABCN;
+  to node3;
+  from node2;
+  configuration transformer_configuration:400;
+};
+object overhead_line:12 {
+  length 2000;
+  phases ABCN;
+  configuration line_configuration:300;
+  to node2;
+  from generator_1;
+};
+object load {
+  nominal_voltage 2400;
+  constant_power_C +1800000.000+871779.789j;
+  constant_power_B +1800000.000+871779.789j;
+  constant_power_A +1800000.000+871779.789j;
+  voltage_C -1200.889+2080.000j;
+  voltage_B -1200.889-2080.000j;
+  voltage_A +2401.777+0.000j;
+  phases ABCN;
+  name c2_load4;
+};
+object transformer_configuration:400 {
+  reactance 0.06;
+  resistance 0.01;
+  secondary_voltage 4160;
+  primary_voltage 12470;
+  powerC_rating 2000;
+  powerB_rating 2000;
+  powerA_rating 2000;
+  power_rating 6000;
+  connect_type 1;
+};
+object node {
+  nominal_voltage 7200;
+  voltage_C -3599.779+6235.000j;
+  voltage_B -3599.779-6235.000j;
+  voltage_A +7199.558+0.000j;
+  phases ABCN;
+  name generator_1;
+};
+object load {
+  nominal_voltage 2400;
+  constant_power_C +1800000.000+871779.789j;
+  constant_power_B +1800000.000+871779.789j;
+  constant_power_A +1800000.000+871779.789j;
+  voltage_C -1200.889+2080.000j;
+  voltage_B -1200.889-2080.000j;
+  voltage_A +2401.777+0.000j;
+  phases ABCN;
+  name load4;
+};
+object transformer {
+  name g2_23;
+  phases ABCN;
+  configuration transformer_configuration:400;
+  from g2_node2;
+  to g2_node3;
+};
+object overhead_line {
+  name g2_12;
+  length 2000;
+  phases ABCN;
+  configuration line_configuration:300;
+  from generator_2;
+  to g2_node2;
+};
+object node {
+  nominal_voltage 7200;
+  voltage_C -3599.779+6235.000j;
+  voltage_B -3599.779-6235.000j;
+  voltage_A +7199.558+0.000j;
+  phases ABCN;
+  name generator_2;
+};
+object node {
+  nominal_voltage 7200;
+  voltage_C -3599.779+6235.000j;
+  voltage_B -3599.779-6235.000j;
+  voltage_A +7199.558+0.000j;
+  phases ABCN;
+  name g2_node2;
+};
+object node {
+  nominal_voltage 2400;
+  voltage_C -1200.889+2080.000j;
+  voltage_B -1200.889-2080.000j;
+  voltage_A +2401.777+0.000j;
+  phases ABCN;
+  name g2_node3;
+};
