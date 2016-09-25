@@ -3,6 +3,21 @@
 Metamodel, visualization, and model generators for gridlab-d in
 WebGME.
 
+- [Using Webgme-gridlabd](#using-webgme-gridlabd)
+  - [WebGME Interface](#webgme-interface)
+  - [META](#meta)
+  - [Models](#models)
+  - [Plugins](#plugins)
+    - [UpdateGLDMeta](#updategldmeta-plugin)
+    - [ImportGLM](#importglm-plugin)
+    - [GenerateGLM](#generateglm-plugin)
+    - [SimulateWithGridlabD](#simulatewithgridlabd-plugin)
+    - [SimulateTES](#simulatetes-plugin)
+    - [SimulateTESCluster](#simulatetescluster-plugin)
+- [Importing a Gridlab-D Model](#importing-a-gridlab-d-model)
+- [Creating a Gridlab-D Model from Scratch](#creating-a-gridlab-d-model-from-scratch)
+- [Rendering (Serializing) a Gridlab-D Model](#rendering-serializing-a-gridlab-d-model)
+
 ## Using webgme-gridlabd
 
 ### WebGME interface
@@ -53,7 +68,9 @@ systems, and controllers.
 
 ![More complex Two Community model.](./images/complexModel.png)
 
-### UpdateGLDMeta Plugin
+### Plugins
+
+#### UpdateGLDMeta Plugin
 
 The UpdateGLDMeta plugin is useful for automatically updating or
 extending the webgme gridlabd meta language with information about the
@@ -83,7 +100,7 @@ that svg to be the icon for that type of object. In this way it is
 very easy to create a useful graphical modeling language for gridlab-d
 with a minimal amount of effort.
 
-### ImportGLM Plugin
+#### ImportGLM Plugin
 
 From the root level, you can run the ImportGLM plugin which takes as
 input an uploaded GLM file. The plugin parses this file and creates
@@ -91,13 +108,13 @@ webgme objects in accordance with the current webgme meta. This means
 that any relevant meta types for that model should be present in the
 meta.
 
-### GenerateGLM Plugin
+#### GenerateGLM Plugin
 
 The GenerateGLM plugin performs the reverse transform of the ImportGLM
 plugin, allowing the user to serialize their webgme gridlabd model out
 into a simulatable GLM file.
 
-### SimulateWithGridlabD Plugin
+#### SimulateWithGridlabD Plugin
 
 The SimulateWithGridlabD plugin provides the user the ability to
 automatically test their gridlabd model. It assumes the user has run
@@ -106,7 +123,12 @@ so then it executes that model in GridlabD (which must be installed on
 the server) and provides the stdout / stderr back to the user for
 inspection.
 
-### SimulateTES Plugin
+#### SimulateTES Plugin
 
-### SimulateTESCluster Plugin
+#### SimulateTESCluster Plugin
 
+## Importing a Gridlab-D Model
+
+## Creating a Gridlab-D Model from Scratch
+
+## Rendering (Serializing) a Gridlab-D Model
