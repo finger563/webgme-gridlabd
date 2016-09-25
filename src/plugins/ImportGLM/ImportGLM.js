@@ -389,6 +389,10 @@ define([
 	    }
 	    else if (obj.base == 'object') {
 		obj.type = results[2];
+		obj.attributes.push({
+		    name: 'Type',
+		    value: obj.type
+		});
 		if (results[3])
 		    obj.name = this.parseObjectName(results[3], obj);
 	    }
@@ -653,13 +657,18 @@ define([
     
     ImportGLM.prototype.saveObject = function(obj, parentNode) {
 	var self = this;
-	var base = obj.type || obj.base;
+	var base = obj.type;
+	if (!self.META[base])
+	    base = obj.base;
+	if (!self.META[base])
+	    base = "Object";
 	parentNode = parentNode || self.newModel.node;
 	var parentName = self.core.getAttribute(parentNode, 'name');
 	if ( base == null ) {
 	    self.notify('warning', 'Encountered null base object! Child of ' + parentName + ', name: ' + obj.name + ', defined on line: ' + obj._line_def);
 	    return;
 	}
+	self.notify('info', "Creating object " + obj.name + " of type " + base + " from " + self.META[base]);
 	var newNode = self.core.createNode({parent: parentNode, base: self.META[base]});
 	obj.node = newNode;
 	if (obj.attributes) {

@@ -113,7 +113,7 @@ define(['q'], function(Q) {
 		if (core.isTypeOf(child.node, META.Object)) {
 		    var nameRegex = /[a-zA-Z\-_]/g;
 		    var nameTest = nameRegex.exec(child.name);
-		    fileData += `object ${child.type}`;
+		    fileData += `object ${child.Type}`;
 		    if (!nameTest)
 			fileData += `:${child.name}`;
 		    fileData += ` \{\n`;
