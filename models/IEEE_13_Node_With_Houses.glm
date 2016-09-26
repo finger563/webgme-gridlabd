@@ -4,20 +4,13 @@
 #set threadcount=1;
 #set randomseed=1;
 #set relax_naming_rules=1;
-//#set pauseat='2000-01-01 0:00:01'
 #define stylesheet=http://gridlab-d.svn.sourceforge.net/viewvc/gridlab-d/trunk/core/gridlabd-2_0
 
 clock {
 	timestamp '2000-01-01 0:00:00';
 	stoptime '2000-01-01 1:00:00';
-	timezone UTC0;//CST6;//EST+8EDT;
+	timezone EST+8EDT;
 }
-
-// TODO: Make sure this is all we need
-
-// ADDED MODULES HERE:
-module market;
-module climate;
 
 module tape;
 //module generators;
@@ -292,7 +285,8 @@ object line_spacing:510 {
 	distance_BC 0.0;
 	distance_AN 0.0;
 	distance_CN 5.0;
-	distance_BN 0.0;}
+	distance_BN 0.0;
+	}
 
 object line_configuration:601 {
 	conductor_A overhead_line_conductor:6010;
@@ -1185,606 +1179,321 @@ object regulator:650630 {
 	configuration regulator_configuration:6506321;
 }
 
-// Added climate here
-object climate {
-	name "Yakima WA";
-	tmyfile "WA-Yakima.tmy2";
-}
-
-// Added auction here before the definitions of all the houses which
-// use the auction
-
-class auction {
-    double current_price_mean_30min;
-    double current_price_stdev_30min;
-}
-
-// TODO: Figure out what the unit is
-// TODO: Figure out what special_mode is
-
-object auction {
-    name Market_1;
-    unit MW;
-    period 900;
-    verbose TRUE;
-    special_mode BUYERS_ONLY;
-    fixed_price 100;
-    warmup 0;
-    init_price 100;
-    init_stdev 0;
-}
-
 // House 1
-object house: {
+object house:..20 {
 	parent trip_meter1;
-    name house1;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint4+random.normal(0,4);
+	heating_setpoint heatingsetpoint4+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
 	thermostat_deadband random.normal (2,.5);
-    air_temperature 72;
-    object controller {
-        name cool_control1;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater1;
-    parent house1;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand1*random.normal(1,.2);
+	};
 }
 
 // House 2
-object house: {
+object house:..20 {
 	parent trip_meter2;
-    name house2;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint2+random.normal(0,4);
+	heating_setpoint heatingsetpoint2+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control2;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater2;
-    parent house2;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
 
 // House 3
-object house: {
+object house:..20 {
 	parent trip_meter3;
-    name house3;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint2+random.normal(0,4);
+	heating_setpoint heatingsetpoint2+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control3;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater3;
-    parent house3;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand2*random.normal(1,.2);
+	};
 }
 
 // House 4
-object house: {
+object house:..20 {
 	parent trip_meter4;
-    name house4;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint5+random.normal(0,4);
+	heating_setpoint heatingsetpoint5+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control4;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater4;
-    parent house4;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
 
 // House 5
-object house: {
+object house:..20 {
 	parent trip_meter5;
-    name house5;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint2+random.normal(0,4);
+	heating_setpoint heatingsetpoint2+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control5;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater5;
-    parent house5;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
 
 // House 6
-object house: {
+object house:..20 {
 	parent trip_meter6;
-    name house6;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint3+random.normal(0,4);
+	heating_setpoint heatingsetpoint3+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control6;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater6;
-    parent house6;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand1*random.normal(1,.2);
+	};
 }
 
 // House 7
-object house: {
+object house:..20 {
 	parent trip_meter7;
-    name house7;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint5+random.normal(0,4);
+	heating_setpoint heatingsetpoint5+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control7;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater7;
-    parent house7;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand2*random.normal(1,.2);
+	};
 }
 
 // House 8
-object house: {
+object house:..20 {
 	parent trip_meter8;
-    name house8;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint2+random.normal(0,4);
+	heating_setpoint heatingsetpoint2+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control8;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater8;
-    parent house8;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand2*random.normal(1,.2);
+	};
 }
 
 // House 9
-object house: {
+object house:..20 {
 	parent trip_meter9;
-    name house9;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint5+random.normal(0,4);
+	heating_setpoint heatingsetpoint5+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control9;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater9;
-    parent house9;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
 
 // House 10
-object house: {
+object house:..20 {
 	parent trip_meter10;
-    name house10;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint4+random.normal(0,4);
+	heating_setpoint heatingsetpoint4+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control10;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater10;
-    parent house10;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
 
 // House 11
-object house: {
+object house:..20 {
 	parent trip_meter11;
-    name house11;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint2+random.normal(0,4);
+	heating_setpoint heatingsetpoint2+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control11;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater11;
-    parent house11;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand2*random.normal(1,.2);
+	};
 }
 
 // House 12
-object house: {
+object house:..20 {
 	parent trip_meter12;
-    name house12;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint1+random.normal(0,4);
+	heating_setpoint heatingsetpoint1+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control12;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater12;
-    parent house12;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
 
 // House 13
-object house: {
+object house:..20 {
 	parent trip_meter13;
-    name house13;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint3+random.normal(0,4);
+	heating_setpoint heatingsetpoint3+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control13;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
-}
-
-object waterheater {
-    name waterheater13;
-    parent house13;
-    location INSIDE;
-    water_demand 10;
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand2*random.normal(1,.2);
+	};
 }
 
 // House 14
-object house: {
+object house:..20 {
 	parent trip_meter14;
-    name house14;
 	floor_area random.normal(1750,400);
-	//heating_setpoint heatingsetpoint4+random.normal(0,4);
+	heating_setpoint heatingsetpoint4+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control14;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand1*random.normal(1,.2);
+	};
 }
-
- object waterheater {
-    name waterheater14;
-    parent house14;
-    location INSIDE;
-    water_demand 10;
-};
-
-// In the Market Controller House example, they
-// use a controller in the house which has an embedded market
-// in it.  The controller responds to the market by adjusting its
-// loads.  Because the pricing for the controller comes directly from
-// the market, if we don't want to use their economic modeling (i.e.
-// their controllers) but instead want to use our own, we should
-// skip this step entirely and keep the economic data out of GLD.
-
-// In the market (which is of object type auction), they use a fixed_price
-// schedule for setting/simulating cost.  If we change it to be static
-// and set the schedule externally through the server interface, that may serve
-// our needs
 
 // House 15
-object house {
+object house:..20 {
 	parent trip_meter15;
-    name house15;
 	floor_area random.normal(1750,400);
-    // can't use heatingsetpoint (schedule) otherwise the schedule overwrites
-    // any value I send to it
-	//heating_setpoint 60;  //heatingsetpoint2+random.normal(0,4);
+	heating_setpoint heatingsetpoint2+random.normal(0,4);
 	cooling_setpoint random.normal (80,2);
-    air_temperature 72;
-    object controller {
-        name cool_control15;			
-        market Market_1;
-        bid_mode ON;			
-        period 900;
-        average_target current_price_mean_30min;
-        standard_deviation_target current_price_stdev_30min;		
-        control_mode RAMP;
-        target air_temperature;
-        // this normally changes according to schedule, can be used to control demand
-        setpoint cooling_setpoint;
-        demand cooling_demand;
-        total total_load;
-        load hvac_load;
-        //slider_setting 0; //set to 0 or ramps will be overwritten
-        ramp_low 2;
-        ramp_high 2;
-        range_low 0;
-        range_high 5;
-    };
+	object ZIPload {
+		base_power ZIP1base_power*random.normal(1,.25);
+		power_fraction 0.2;
+		impedance_fraction 0.3;
+		current_fraction 0.5;
+		power_pf 0.9;
+		current_pf 0.6;
+		impedance_pf 0.8;
+	};
+	object waterheater {
+		location INSIDE;
+		water_demand waterdemand3*random.normal(1,.2);
+	};
 }
-
-object waterheater {
-    name waterheater15;
-    parent house15;
-    location INSIDE;
-    water_demand 10;
-}
-
 
 object multi_recorder {
 	property trip_meter1:measured_real_power,trip_meter2:measured_real_power,trip_meter3:measured_real_power,trip_meter4:measured_real_power,trip_meter5:measured_real_power,trip_meter6:measured_real_power,trip_meter7:measured_real_power,trip_meter8:measured_real_power,trip_meter9:measured_real_power,trip_meter10:measured_real_power,trip_meter11:measured_real_power,trip_meter12:measured_real_power,trip_meter13:measured_real_power,trip_meter14:measured_real_power,trip_meter15:measured_real_power;
