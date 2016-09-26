@@ -3,22 +3,6 @@
 Metamodel, visualization, and model generators for gridlab-d in
 WebGME.
 
-- [Using Webgme-gridlabd](#using-webgme-gridlabd)
-  - [WebGME Interface](#webgme-interface)
-  - [META](#meta)
-  - [Models](#models)
-  - [Plugins](#plugins)
-    - [UpdateGLDMeta](#updategldmeta-plugin)
-    - [ImportGLM](#importglm-plugin)
-    - [GenerateGLM](#generateglm-plugin)
-    - [SimulateWithGridlabD](#simulatewithgridlabd-plugin)
-    - [SimulateTES](#simulatetes-plugin)
-    - [SimulateTESCluster](#simulatetescluster-plugin)
-- [Importing a Gridlab-D Model](#importing-a-gridlab-d-model)
-- [Creating a Gridlab-D Model from Scratch](#creating-a-gridlab-d-model-from-scratch)
-
-## Using webgme-gridlabd
-
 This document covers how to use the WebGME modeling environment for
 creating, importing, updating, and rendering (serializing) Gridlab-D
 models (GLM format).
@@ -29,7 +13,20 @@ GLM files. Users who have questions about what a specific attribute of
 a specific Gridlab-D object type means are referred to the
 [Gridlab-D Wiki](http://gridlab-d.sourceforge.net/wiki/index.php/Main_Page).
 
-### WebGME interface
+**Table of Contents:**
+- [WebGME Interface](#webgme-interface)
+- [META](#meta)
+- [Models](#models)
+- [Plugins](#plugins)
+  - [UpdateGLDMeta](#updategldmeta-plugin)
+  - [ImportGLM](#importglm-plugin)
+  - [GenerateGLM](#generateglm-plugin)
+  - [SimulateWithGridlabD](#simulatewithgridlabd-plugin)
+  - [SimulateTES](#simulatetes-plugin)
+  - [SimulateTESCluster](#simulatetescluster-plugin)
+- [Creating a Gridlab-D Model from Scratch](#creating-a-gridlab-d-model-from-scratch)
+
+## WebGME interface
 
 The webgme interface allows the visual creation and editing of models,
 where the top level (ROOT) of the webgme interface can contain models,
@@ -46,7 +43,7 @@ and each model represents a GLM (gridlabd model).
 
 ![Root view showing models and language.](./images/models.png)
 
-### META
+## META
 
 The meta for webgme-gridlabd is broken up into many parts, with the
 base meta (GridlabD) being the only hand-crafted part of the meta. The
@@ -67,7 +64,7 @@ may be necessary to better visualize the meta).
 
 ![Example imported powerflow meta.](./images/powerflowMeta.png)
 
-### Models
+## Models
 
 Within a model, you have the ability to create nodes, links between
 nodes (e.g. overhead lines, transformers), schedules, loads, etc. just
@@ -86,12 +83,12 @@ systems, and controllers.
 
 ![More complex Two Community model.](./images/complexModel.png)
 
-### Plugins
+## Plugins
 
 This section describes the plugins available to the user for
 interacting with the webgme client / server.
 
-#### UpdateGLDMeta Plugin
+### UpdateGLDMeta Plugin
 
 **Location**: `ROOT`
 
@@ -126,7 +123,7 @@ that svg to be the icon for that type of object. In this way it is
 very easy to create a useful graphical modeling language for gridlab-d
 with a minimal amount of effort.
 
-#### ImportGLM Plugin
+### ImportGLM Plugin
 
 **Location**: `ROOT`
 
@@ -146,7 +143,7 @@ vice versa if the model is too sparsely packed. If the model is not
 laid out well (many crossing connections for instance), then increase
 the number of iterations.
 
-#### GenerateGLM Plugin
+### GenerateGLM Plugin
 
 **Location**: `Model`
 
@@ -154,7 +151,7 @@ The GenerateGLM plugin performs the reverse transform of the ImportGLM
 plugin, allowing the user to serialize their webgme gridlabd model out
 into a simulatable GLM file.
 
-#### SimulateWithGridlabD Plugin
+### SimulateWithGridlabD Plugin
 
 **Location**: `Model`
 
@@ -163,7 +160,7 @@ automatically test their gridlabd model. It executes that model in
 GridlabD (which must be installed on the server) and provides the
 stdout / stderr back to the user for inspection.
 
-#### SimulateTES Plugin
+### SimulateTES Plugin
 
 **Location**: `Model`
 
@@ -176,7 +173,7 @@ power system.
 **Note**: this plugin is designed to be run solely from the
   `TwoCommunities` model.
 
-#### SimulateTESCluster Plugin
+### SimulateTESCluster Plugin
 
 **Location**: `Model`
 
