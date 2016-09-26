@@ -16,7 +16,6 @@ WebGME.
     - [SimulateTESCluster](#simulatetescluster-plugin)
 - [Importing a Gridlab-D Model](#importing-a-gridlab-d-model)
 - [Creating a Gridlab-D Model from Scratch](#creating-a-gridlab-d-model-from-scratch)
-- [Rendering (Serializing) a Gridlab-D Model](#rendering-serializing-a-gridlab-d-model)
 
 ## Using webgme-gridlabd
 
