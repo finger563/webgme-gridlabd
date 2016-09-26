@@ -24,10 +24,10 @@ This document covers how to use the WebGME modeling environment for
 creating, importing, updating, and rendering (serializing) Gridlab-D
 models (GLM format).
 
-Note, this document does not describe how Gridlab-D works, merely how
-the WebGME interface works for importing, creating, and rendering GLM
-files. Users who have questions about what a specific attribute of a
-specific Gridlab-D object type means are referred to the
+**Note**: this document does not describe how Gridlab-D works, merely
+how the WebGME interface works for importing, creating, and rendering
+GLM files. Users who have questions about what a specific attribute of
+a specific Gridlab-D object type means are referred to the
 [Gridlab-D Wiki](http://gridlab-d.sourceforge.net/wiki/index.php/Main_Page).
 
 ### WebGME interface
