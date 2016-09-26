@@ -20,11 +20,30 @@ WebGME.
 
 ## Using webgme-gridlabd
 
+This document covers how to use the WebGME modeling environment for
+creating, importing, updating, and rendering (serializing) Gridlab-D
+models (GLM format).
+
+Note, this document does not describe how Gridlab-D works, merely how
+the WebGME interface works for importing, creating, and rendering GLM
+files. Users who have questions about what a specific attribute of a
+specific Gridlab-D object type means are referred to the
+[Gridlab-D Wiki](http://gridlab-d.sourceforge.net/wiki/index.php/Main_Page).
+
 ### WebGME interface
 
 The webgme interface allows the visual creation and editing of models,
 where the top level (ROOT) of the webgme interface can contain models,
 and each model represents a GLM (gridlabd model).
+
+**Note**: since the WebGME interface is designed to graphically model
+  and represent `GLM` files, ancillary files which a single GLM file
+  can include are not directly modeled. To capture those files as part
+  of the webgme model, please create an `Include` object (with the
+  name of the file as the name of the object) and upload the relevant
+  file sa the new `Include` object's `file` attribute (by clicking on
+  the attribute). Then when a user wants to access that file they can
+  simply click on that attribute to download it from the server.
 
 ![Root view showing models and language.](./images/models.png)
 
@@ -70,11 +89,19 @@ systems, and controllers.
 
 ### Plugins
 
+This section describes the plugins available to the user for
+interacting with the webgme client / server.
+
 #### UpdateGLDMeta Plugin
+
+**Location**: `ROOT`
 
 The UpdateGLDMeta plugin is useful for automatically updating or
 extending the webgme gridlabd meta language with information about the
-supported types from the current (or a selected) version of gridlabd. The plugin takes as input a type specification file ([example](./gld_schema/powerflow.cpp)) which can be automatically generated from gridlab-d in the following way:
+supported types from the current (or a selected) version of
+gridlabd. The plugin takes as input a type specification file
+([example](./gld_schema/powerflow.cpp)) which can be automatically
+generated from gridlab-d in the following way:
 
 ``` bash
 gridlabd --modhelp ${module_name} > ${module_name}.cpp
@@ -102,13 +129,27 @@ with a minimal amount of effort.
 
 #### ImportGLM Plugin
 
+**Location**: `ROOT`
+
 From the root level, you can run the ImportGLM plugin which takes as
 input an uploaded GLM file. The plugin parses this file and creates
 webgme objects in accordance with the current webgme meta. This means
 that any relevant meta types for that model should be present in the
 meta.
 
+The plugin supports auto-layout of the imported models. For the
+auto-layout code, the plugin takes input parameters specifying the
+number of iterations of the layout code, the length of the connections
+and the size of the objects to be laid out. For the most part, these
+parameters need not be changed from their default values. If the model
+is too densely packed, then increase the size / length parameters, and
+vice versa if the model is too sparsely packed. If the model is not
+laid out well (many crossing connections for instance), then increase
+the number of iterations.
+
 #### GenerateGLM Plugin
+
+**Location**: `Model`
 
 The GenerateGLM plugin performs the reverse transform of the ImportGLM
 plugin, allowing the user to serialize their webgme gridlabd model out
@@ -116,19 +157,62 @@ into a simulatable GLM file.
 
 #### SimulateWithGridlabD Plugin
 
+**Location**: `Model`
+
 The SimulateWithGridlabD plugin provides the user the ability to
-automatically test their gridlabd model. It assumes the user has run
-the GenerateGLM plugin on that model on the server previously, and if
-so then it executes that model in GridlabD (which must be installed on
-the server) and provides the stdout / stderr back to the user for
-inspection.
+automatically test their gridlabd model. It executes that model in
+GridlabD (which must be installed on the server) and provides the
+stdout / stderr back to the user for inspection.
 
 #### SimulateTES Plugin
 
+**Location**: `Model`
+
+This plugin uses a a set of docker containers on the server to simuate
+a Transactive Energy System (TES) using CPSWT as the backbone for
+allowing distributed, coordinated simulation of reactive market
+controllers, reactive demand controllers, communications network, and
+power system.
+
+**Note**: this plugin is designed to be run solely from the
+  `TwoCommunities` model.
+
 #### SimulateTESCluster Plugin
 
-## Importing a Gridlab-D Model
+**Location**: `Model`
+
+This plugin uses a cluster of VMs to simuate a Transactive Energy
+System (TES) using CPSWT as the backbone for allowing distributed,
+coordinated simulation of reactive market controllers, reactive demand
+controllers, communications network, and power system.
+
+**Note**: this plugin is designed to be run solely from the
+  `TwoCommunities` model.
 
 ## Creating a Gridlab-D Model from Scratch
 
-## Rendering (Serializing) a Gridlab-D Model
+If the user does not wish to import or modify an existing power system
+model, they are free to create one from scratch by dragging a `Model`
+object from the part browser into the `ROOT` level of the
+project. Having done so, they can double-click to enter their new
+model. Once inside the model, they are free to again drag and drop any
+objects from the part browser into the active area of the model. Once
+created, these objects may be selected (upon which point their
+attributes will be displayed and editable within the attribute
+pane). The editable attributes for an object are derived from the
+`META` for that object, which was loaded as described in the
+[UpdateGLDMeta section](#updategldmeta-plugin). A complete list of all
+possible attributes for all possible types of objects is outside the
+scope of this README, so users interested in which attributes have
+which physical meaning are referred to the
+[Gridlab-D Wiki](http://gridlab-d.sourceforge.net/wiki/index.php/Main_Page),
+where they can find the reference documentation for specific object
+types, e.g. for `powerflow` objects:
+[Powerflow User Guide](http://gridlab-d.sourceforge.net/wiki/index.php/Power_Flow_User_Guide).
+
+**Note**: Some capabilities of GLD currently only have limited
+  support. The ability to define new object types on the fly within a
+  GLM is not possible within the WebGME interface. However, the
+  importer is able to parse, create, and serialize any such custom
+  object types it finds. This feature may be supported in the future
+  depending on users' needs and more discussion with GLD developers.
