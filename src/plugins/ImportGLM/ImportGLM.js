@@ -137,23 +137,32 @@ define([
 		return self.save('ImportGLM updated model.');
 	    })
 	    .then(function() {
-		return self.blobClient.putFile(self.modelName+'.log', self.logData);
-	    })
-	    .then(function(hash) {
-		self.result.addArtifact(hash);
+		if (self.logDebug) {
+		    return self.blobClient.putFile(self.modelName+'.log', self.logData)
+			.then(function(hash) {
+			    self.result.addArtifact(hash);
+			});
+		}
 	    })
 	    .then(function() {
 		self.result.setSuccess(true);
 		callback(null, self.result);
 	    })
 	    .catch(function(err) {
-		return self.blobClient.putFile(self.modelName+'.log', self.logData)
-		    .then(function(hash) {
-			self.result.addArtifact(hash);
-			self.notify('error', err);
-			self.result.setSuccess(false);
-			callback(err, self.result);
-		    });
+		if (self.logDebug) {
+		    return self.blobClient.putFile(self.modelName+'.log', self.logData)
+			.then(function(hash) {
+			    self.result.addArtifact(hash);
+			    self.notify('error', err);
+			    self.result.setSuccess(false);
+			    callback(err, self.result);
+			});
+		}
+		else {
+		    self.notify('error', err);
+		    self.result.setSuccess(false);
+		    callback(err, self.result);
+		}
 	    });
     };
 
@@ -190,16 +199,14 @@ define([
 	    objKey = self.nameToKey(name, dict);
 	    p = dict[objKey];
 	}
-	if (!p) {
-	    self.notify('error', "Couldn't get object by name: " + name);
-	}
 	return p;
     };
 
-    ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
+   ImportGLM.prototype.parseObjectsFromGLM = function(glmFile) {
 	// fill out self.newModel
 	var self = this,
 	    objDict = {},
+	displayNameDict = {},
 	    objID = {},
 	    objByDepth = [],
 	    results;
@@ -243,6 +250,7 @@ define([
 			objID[obj.type] = 0;
 		    }
 		    obj.name += '_' + objID[obj.type];
+		    obj.displayName = obj.name;
 		    objID[obj.type]++;
 		}
 		self.notify('debug','pushing '+key);
@@ -260,6 +268,10 @@ define([
 		// add to model
 		self.newModel.children.push(obj);
 		objDict[key] = obj;
+		if (obj.displayName) {
+		    var key = self.objectNamePrefix(obj) + obj.displayName;
+		    displayNameDict[key] = obj;
+		}
 	    }
 	    else if (line.length > 0 && objByDepth.length){
 		var obj = objByDepth[objByDepth.length - 1];
@@ -290,6 +302,13 @@ define([
 		self.notify('debug', 'Updating parent for ' + self.objectToKey(obj));
 		var parentName = pAttr.value;
 		var p = self.nameToObject(parentName, objDict);
+		if (!p) {
+		    p = self.nameToObject(parentName, displayNameDict);
+		    if (!p) {
+			self.notify('error', JSON.stringify(Object.keys(displayNameDict)));
+			throw new String("Couldn't get parent " + parentName);
+		    }
+		}
 		// set the parent
 		obj.parent = p;
 		// remove the parent attribute
@@ -316,6 +335,13 @@ define([
 		    self.notify('debug', 'updating attribute ' + attr.name + ' to pointer');
 		    var ptrObjName = attr.value;
 		    var p = self.nameToObject(ptrObjName, objDict)
+		    if (!p) {
+			p = self.nameToObject(ptrObjName, displayNameDict);
+			if (!p) {
+			    self.notify('error', JSON.stringify(Object.keys(displayNameDict)));
+			    throw new String("Couldn't get pointer " + ptrObjName);
+			}
+		    }
 		    obj.pointers.push({
 			name: self.convertPointerName(attr.name),
 			value: p
@@ -386,6 +412,7 @@ define([
 	var container_regex = /(\w+)(?:\s+(\w+))?:?([\.\d]+)?\s*{/gm,
 	    obj = {
 		name: null,
+		displayName: null,
 		type: null,
 		base: null,
 		parent: null,
@@ -409,8 +436,10 @@ define([
 		    name: 'Type',
 		    value: obj.type
 		});
-		if (results[3])
+		if (results[3]) {
 		    obj.name = this.parseObjectName(results[3], obj);
+		    obj.displayName = obj.name;
+		}
 	    }
 	    obj.name = obj.name || obj.type || obj.base;
 	}
@@ -714,6 +743,7 @@ define([
 		if (self.isNode(child)) {
 		    nodes.push({
 			"name":self.objectToKey(child),
+			"displayName": self.objectNamePrefix(child) + child.name,
 			"original": i
 		    });
 		}
@@ -725,19 +755,35 @@ define([
 		    //self.notify('warning', child.name + ' has ' + srcPtr + ' and ' + dstPtr);
 		    var src = srcPtr.value;
 		    var dst = dstPtr.value;
-		    var srcKey = self.objectToKey(src);
-		    var dstKey = self.objectToKey(dst);
-		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', srcKey);
-		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', dstKey);
-		    if (dstIndex == -1 || srcIndex == -1) {
-			self.notify('error', 'Couldnt get src/dst for '+child.name);
-			self.notify('error', 'Looking up '+srcKey + ' and '+dstKey);
+		    // can only handle layout of nodes and links, not links to links
+		    if ( self.isNode(src) && self.isNode(dst) ) { 
+			var srcKey = self.objectToKey(src);
+			var dstKey = self.objectToKey(dst);
+			var srcIndex = getIndexOfObjWithAttr(nodes, 'name', srcKey);
+			var dstIndex = getIndexOfObjWithAttr(nodes, 'name', dstKey);
+			if (dstIndex == -1 || srcIndex == -1) {
+			    if (srcIndex == -1) {
+				srcKey = self.objectNamePrefix(src) + src.displayName;
+				srcIndex = getIndexOfObjWithAttr(nodes, 'displayName', srcKey);
+			    }
+			    if (dstIndex == -1) {
+				dstKey = self.objectNamePrefix(dst) + dst.displayName;
+				dstIndex = getIndexOfObjWithAttr(nodes, 'displayName', dstKey);
+			    }
+			    if (dstIndex == -1 || srcIndex == -1) {
+				self.notify('error', 'Couldnt get src/dst for '+child.name);
+				self.notify('error', 'Looking up '+srcKey + ' and '+dstKey + ' '+srcIndex + ' ' + dstIndex);
+			    }
+			}
+			else {
+			    links.push({
+				"source": srcIndex,
+				"target": dstIndex,
+			    });
+			}
 		    }
 		    else {
-			links.push({
-			    "source": srcIndex,
-			    "target": dstIndex,
-			});
+			self.notify('warning', 'Can only layout links between nodes, not links between links. ' +src.name+ ' may not be laid out well.');
 		    }
 		}
 		else if (child.parent) {
@@ -745,19 +791,35 @@ define([
 		    self.notify('debug', 'Converting parent to link for ' + child.name);
 		    var src = child;
 		    var dst = child.parent;
-		    var srcKey = self.objectToKey(src);
-		    var dstKey = self.objectToKey(dst);
-		    var srcIndex = getIndexOfObjWithAttr(nodes, 'name', srcKey);
-		    var dstIndex = getIndexOfObjWithAttr(nodes, 'name', dstKey);
-		    if (dstIndex == -1 || srcIndex == -1) {
-			self.notify('error', 'Couldnt get parent for '+child.name);
-			self.notify('error', 'Looking up '+srcKey + ' and '+dstKey);
+		    // can only handle layout of nodes and links, not links to links
+		    if ( self.isNode(src) && self.isNode(dst) ) { 
+			var srcKey = self.objectToKey(src);
+			var dstKey = self.objectToKey(dst);
+			var srcIndex = getIndexOfObjWithAttr(nodes, 'name', srcKey);
+			var dstIndex = getIndexOfObjWithAttr(nodes, 'name', dstKey);
+			if (dstIndex == -1 || srcIndex == -1) {
+			    if (srcIndex == -1) {
+				srcKey = self.objectNamePrefix(src) + src.displayName;
+				srcIndex = getIndexOfObjWithAttr(nodes, 'displayName', srcKey);
+			    }
+			    if (dstIndex == -1) {
+				dstKey = self.objectNamePrefix(dst) + dst.displayName;
+				dstIndex = getIndexOfObjWithAttr(nodes, 'displayName', dstKey);
+			    }
+			    if (dstIndex == -1 || srcIndex == -1) {			    
+				self.notify('error', 'Couldnt layout parent for '+child.name);
+				self.notify('error', 'Looking up '+srcKey + ' and '+dstKey + ', indices: '+srcIndex + ' ' + dstIndex);
+			    }
+			}
+			else {
+			    links.push({
+				"source": srcIndex,
+				"target": dstIndex,
+			    });
+			}
 		    }
 		    else {
-			links.push({
-			    "source": srcIndex,
-			    "target": dstIndex,
-			});
+			self.notify('warning', 'Can only layout links between nodes, not links between links. ' +src.name+ ' may not be laid out well.');
 		    }
 		}
 	    });

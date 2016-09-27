@@ -5,6 +5,8 @@ var config = require('./config.webgme'),
 
 config.server.port = 8081;
 
+config.storage.keyType = 'rand160Bits';
+
 // line router
 config.client.defaultConnectionRouter = 'basic'
 
