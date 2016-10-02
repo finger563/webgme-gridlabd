@@ -1,0 +1,8 @@
+[
+  {
+    "id": "FormulaEditor",
+    "title": "FormulaEditor",
+    "panel": "panels/FormulaEditor/FormulaEditorPanel",
+    "DEBUG_ONLY": false
+  }
+]

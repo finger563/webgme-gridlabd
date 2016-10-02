@@ -30,10 +30,36 @@
       "AttributeConverter": {
         "src": "src/addons/AttributeConverter"
       }
-    }
+    },
+    "visualizers": {},
+    "decorators": {
+      "HLADecorator": {
+        "src": "src/decorators/HLADecorator"
+      }
+    },
+    "layouts": {},
+    "seeds": {}
   },
   "dependencies": {
-    "plugins": {},
-    "addons": {}
+    "plugins": {
+      "GenFORMULA": {
+        "project": "formula",
+        "path": "node_modules/formula/src/plugins/GenFORMULA"
+      }
+    },
+    "addons": {},
+    "visualizers": {
+      "FormulaEditor": {
+        "src": "panels/FormulaEditor/FormulaEditorPanel",
+        "title": "FormulaEditor",
+        "panel": "src/visualizers/panels/FormulaEditor",
+        "secondary": false,
+        "widget": "src/visualizers/widgets/FormulaEditor",
+        "project": "formula"
+      }
+    },
+    "decorators": {},
+    "layouts": {},
+    "seeds": {}
   }
 }

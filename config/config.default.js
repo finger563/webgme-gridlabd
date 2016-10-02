@@ -1,3 +1,4 @@
+
 'use strict';
 
 var config = require('./config.webgme'),
@@ -21,6 +22,7 @@ config.plugin.allowBrowserExecution = true;
 // Seeds
 config.seedProjects.enable = true;
 config.seedProjects.basePaths = ["./src/seeds"]
+config.seedProjects.defaultProject = "guest+GridlabD"
 
 config.requirejsPaths.gridlabd = "./src/common/"
 config.requirejsPaths.cola = "./node_modules/cola"
