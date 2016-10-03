@@ -83,6 +83,12 @@ systems, and controllers.
 
 ![More complex Two Community model.](./images/complexModel.png)
 
+Finally, here is a very large (comparatively) model which was created 
+and automatically laid out using the [ImportGLM](#importglm-plugin) 
+plugin, from the [Taxonomy Feeder R1-12.47 model](https://sourceforge.net/p/gridlab-d/code/HEAD/tree/trunk/models/taxonomy_feeder_R1-12.47-1.glm) in the Gridlab-D source code repository.
+
+![Very Large 5000 Node Model.](./images/VeryLargeModel.png)
+
 ## Plugins
 
 This section describes the plugins available to the user for
