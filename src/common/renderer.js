@@ -4,8 +4,13 @@ define(['q'], function(Q) {
     'use strict';
     return {
 	renderGLM: function(model, core, META) {
+	    var self = this;
 	    var fileData = '';
 	    var root = model.root;
+
+	    // used for ensuring children are serialized after parents
+	    self.serializedObjects = [];
+
 	    // Includes
 	    if (root.Include_list) {
 		root.Include_list.map((obj) => {
@@ -109,48 +114,61 @@ define(['q'], function(Q) {
 	    }
 	    // Objects
 	    root.childPaths.map((childPath) => {
-		var child = model.objects[childPath];
-		if (core.isTypeOf(child.node, META.Object)) {
-		    var nameRegex = /[a-zA-Z\-_]/g;
-		    var nameTest = nameRegex.exec(child.name);
-		    if (child.meta_type) {
-			fileData += `object ${child.meta_type}`;
-		    }
-		    else {
-			fileData += `object ${child.type}`;
-		    }
-		    if (!nameTest)
-			fileData += `:${child.name}`;
-		    fileData += ` \{\n`;
-		    for (var attr in child.attributes) {
-			if (child.attributes[attr]) {
-			    if (attr == 'name' && !nameTest) {
-				continue;
-			    }
-			    if (attr == 'meta_type') {
-				continue;
-			    }
-			    fileData += `  ${attr} ${child.attributes[attr]};\n`;
-			}
-		    }
-		    for (var ptr in child.pointers) {
-			var ptrObj = model.objects[child.pointers[ptr]];
-			if (ptrObj) {
-			    var ptrName = ptr;
-			    if (ptr == 'src' || ptr == 'dst') {
-				ptrName = (ptr == 'src') ? 'from' : 'to';
-			    }
-			    var nameRegex = /[a-zA-Z\-_]/g;
-			    if (!nameRegex.exec(ptrObj.name))
-				fileData += `  ${ptrName} ${ptrObj.type}:${ptrObj.name};\n`;
-			    else
-				fileData += `  ${ptrName} ${ptrObj.name};\n`;
-			}
-		    }
-		    fileData += `\};\n`;
-		}
+		fileData += self.renderObject(model, core, META, childPath);
 	    });
 	    return fileData;
+	},
+	renderObject: function(model, core, META, childPath) {
+	    var self = this;
+	    var child = model.objects[childPath];
+	    var ptrData = '';
+	    var childData = '';
+	    if (self.serializedObjects.indexOf(childPath) == -1 && core.isTypeOf(child.node, META.Object)) {
+		console.log('Rendering: ' + child.name);
+		var nameRegex = /[a-zA-Z\-_]/g;
+		var nameTest = nameRegex.exec(child.name);
+		if (child.meta_type) {
+		    childData += `object ${child.meta_type}`;
+		}
+		else {
+		    childData += `object ${child.type}`;
+		}
+		if (!nameTest)
+		    childData += `:${child.name}`;
+		childData += ` \{\n`;
+		for (var attr in child.attributes) {
+		    if (child.attributes[attr]) {
+			if (attr == 'name' && !nameTest) {
+			    continue;
+			}
+			if (attr == 'meta_type') {
+			    continue;
+			}
+			childData += `  ${attr} ${child.attributes[attr]};\n`;
+		    }
+		}
+		for (var ptr in child.pointers) {
+		    var ptrPath = child.pointers[ptr];
+		    var ptrObj = model.objects[ptrPath];
+		    if (ptrObj) {
+			if (self.serializedObjects.indexOf(ptrPath) == -1) {
+			    ptrData += self.renderObject(model, core, META, ptrPath);
+			}
+			var ptrName = ptr;
+			if (ptr == 'src' || ptr == 'dst') {
+			    ptrName = (ptr == 'src') ? 'from' : 'to';
+			}
+			var nameRegex = /[a-zA-Z\-_]/g;
+			if (!nameRegex.exec(ptrObj.name))
+			    childData += `  ${ptrName} ${ptrObj.type}:${ptrObj.name};\n`;
+			else
+			    childData += `  ${ptrName} ${ptrObj.name};\n`;
+		    }
+		}
+		childData += `\};\n`;
+		self.serializedObjects.push(childPath);
+	    }
+	    return ptrData + childData;
 	},
     }
 });
