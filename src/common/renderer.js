@@ -127,7 +127,7 @@ define(['q'], function(Q) {
 			    if (attr == 'name' && !nameTest) {
 				continue;
 			    }
-			    if (attr == 'Type') {
+			    if (attr == 'meta_type') {
 				continue;
 			    }
 			    fileData += `  ${attr} ${child.attributes[attr]};\n`;
