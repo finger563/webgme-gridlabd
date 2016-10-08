@@ -71,7 +71,7 @@
             "name": "returnZip",
             "displayName": "Return the Logs?",
             "description": "Adds the output logs to the results of the plugin.",
-            "value": "true",
+            "value": true,
             "valueType": "boolean",
             "readOnly": false
         }

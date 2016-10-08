@@ -11,6 +11,7 @@ define([
     'plugin/PluginBase',
     'gridlabd/meta',
     'gridlabd/modelLoader',
+    'gridlabd/renderer',
     'q'
 ], function (
     PluginConfig,
@@ -18,6 +19,7 @@ define([
     PluginBase,
     MetaTypes,
     loader,
+    renderer,
     Q) {
     'use strict';
 
@@ -139,16 +141,16 @@ define([
 	self.fileData = renderer.renderGLM(self.powerModel, self.core, self.META);
     };
 
-    SimulateTESCluster.prototype.writeInputs = function() {
+    SimulateWithGridlabD.prototype.writeInputs = function() {
 	var self = this,
 	    basePath = self.root_dir,
-	    inputFiles = {
-		"model.glm": self.fileData,
-	    },
+	    inputFiles = {},
 	    fs = require('fs'),
 	    path = require('path'),
 	    filendir = require('filendir');
 	
+	inputFiles[self.fileName] = self.fileData;
+
 	self.notify('info', 'Creating input files');
 
 	var fileNames = Object.keys(inputFiles);

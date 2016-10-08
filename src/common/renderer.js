@@ -84,7 +84,7 @@ define(['q'], function(Q) {
 		    for (var attr in clock.attributes) {
 			if (attr == 'name' || clock.attributes[attr].length == 0)
 			    continue;
-			if (clock.attributes[attr].indexOf(' ') > -1)
+			if (clock.attributes[attr].indexOf(' ') > -1 || clock.attributes[attr].indexOf('+') > -1)
 			    fileData += `  ${attr} '${clock.attributes[attr]}';\n`;
 			else
 			    fileData += `  ${attr} ${clock.attributes[attr]};\n`;
@@ -113,13 +113,21 @@ define(['q'], function(Q) {
 		if (core.isTypeOf(child.node, META.Object)) {
 		    var nameRegex = /[a-zA-Z\-_]/g;
 		    var nameTest = nameRegex.exec(child.name);
-		    fileData += `object ${child.Type}`;
+		    if (child.Type) {
+			fileData += `object ${child.Type}`;
+		    }
+		    else {
+			fileData += `object ${child.type}`;
+		    }
 		    if (!nameTest)
 			fileData += `:${child.name}`;
 		    fileData += ` \{\n`;
 		    for (var attr in child.attributes) {
 			if (child.attributes[attr]) {
 			    if (attr == 'name' && !nameTest) {
+				continue;
+			    }
+			    if (attr == 'Type') {
 				continue;
 			    }
 			    fileData += `  ${attr} ${child.attributes[attr]};\n`;
