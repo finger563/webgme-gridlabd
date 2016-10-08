@@ -433,7 +433,7 @@ define([
 	    else if (obj.base == 'object') {
 		obj.type = results[2];
 		obj.attributes.push({
-		    name: 'Type',
+		    name: 'meta_type',
 		    value: obj.type
 		});
 		if (results[3]) {

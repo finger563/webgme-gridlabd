@@ -19,6 +19,7 @@
     "ssh2": "^0.5.2",
     "tar": "^2.2.1",
     "underscore": "^1.8.3",
+    "unzip": "^0.1.11",
     "webgme": "^2.0.0"
   },
   "devDependencies": {
