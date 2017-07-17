@@ -4,7 +4,7 @@
 var config = require('./config.webgme'),
     validateConfig = require('webgme/config/validator');
 
-config.server.port = 80;
+config.server.port = 8082;
 
 config.storage.keyType = 'rand160Bits';
 
