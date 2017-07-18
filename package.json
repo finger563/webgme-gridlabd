@@ -1,5 +1,5 @@
 {
-  "name": "gridlabd",
+  "name": "webgme-gridlabd",
   "scripts": {
     "start": "node app.js",
     "test": "node ./node_modules/mocha/bin/mocha --recursive test"
@@ -9,7 +9,7 @@
     "cola": "^0.1.7",
     "d3": "^3.5.17",
     "filendir": "^1.0.0",
-    "formula": "webgme/formula",
+    "formula": "github:webgme/formula",
     "fstream": "^1.0.9",
     "http": "0.0.0",
     "jsdom": "^9.1.0",
@@ -26,5 +26,30 @@
     "mocha": "^2.2.5",
     "rimraf": "^2.4.0",
     "chai": "^3.0.0"
-  }
+  },
+  "description": "Metamodel, visualization, and model generators for gridlab-d in WebGME. Allows graphical model-driven development and simulation of power grids and power generation / transmission / distribution / storage systems.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finger563/webgme-gridlabd.git"
+  },
+  "keywords": [
+    "webgme",
+    "webgme-domain",
+    "gridlabd",
+    "power",
+    "powerflow",
+    "simulation",
+    "modeling",
+    "powergrid"
+  ],
+  "author": "William Emfinger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finger563/webgme-gridlabd/issues"
+  },
+  "homepage": "https://github.com/finger563/webgme-gridlabd#readme"
 }
