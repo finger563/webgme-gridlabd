@@ -6,22 +6,27 @@
  */
 
 define([
+    'js/Constants',
+    'text!assets/decoratorSVGList.json',
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
-    'svgAssets/decoratorSVG',
+    'js/Utils/SvgManager',
     'gridlabd/meta',
     'q'
 ], function (
+    CONSTANTS,
+    DecoratorSVGList,
     PluginConfig,
     pluginMetadata,
     PluginBase,
-    svgList,
+    svgManager,
     MetaTypes,
     Q) {
     'use strict';
 
     pluginMetadata = JSON.parse(pluginMetadata);
+    DecoratorSVGList = JSON.parse(DecoratorSVGList);
 
     /**
      * Initializes a new instance of UpdateGLDMeta.
@@ -367,11 +372,12 @@ define([
 
 	// position the node based on the position of the most recently created node on that sheet
 	this.core.setRegistry(node, 'position', {x: 100, y: prevY})
+	//var iconName = CONSTANTS.ASSETS_DECORATOR_SVG_FOLDER + name + '.svg';
 	var iconName = 'svgs/' + name + '.svg';
-	if (svgList.DecoratorSVGIconList.indexOf(iconName) > -1) {
+	if ( DecoratorSVGList.indexOf( iconName ) > -1 ) {
 	    this.core.setRegistry(node, 'SVGIcon', iconName);
-	    this.core.setRegistry(node, 'decorator', 'SVGDecorator');
 	}
+	this.core.setRegistry(node, 'decorator', 'SVGDecorator');
 	prevY += 100;
 
 	// set the attributes
