@@ -30,7 +30,7 @@ config.requirejsPaths.svgAssets = "./node_modules/webgme/src/client/assets"
 
 config.client.log.level = 'info'
 
-config.visualization.svgDirs = ["./src/svgs"] 
+config.visualization.svgDirs.push("./src/svgs");
 
 validateConfig(config);
 module.exports = config;
