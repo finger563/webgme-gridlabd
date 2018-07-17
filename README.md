@@ -1,5 +1,15 @@
 # webgme-gridlabd
 
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/documentation-wiki-blue.svg?style=flat-square)](https://github.com/finger563/webgme-gridlabd/wiki)
+[![npm](https://img.shields.io/npm/v/webgme-gridlabd.svg)](https://www.npmjs.com/package/webgme-gridlabd)
+[![npm](https://img.shields.io/npm/dm/webgme-gridlabd.svg)](https://www.npmjs.com/package/webgme-gridlabd)
+[![npm](https://img.shields.io/npm/dt/webgme-gridlabd.svg)](https://www.npmjs.com/package/webgme-gridlabd)
+
+[![gridlabd.collaborative-design.org](https://img.shields.io/website-up-down-green-red/https/tes.collaborative-design.org/profile/login.svg?label=tes.collaborative-design.org)](https://tes.collaborative-design.org)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/finger563)
+
 Metamodel, visualization, and model generators for gridlab-d in
 WebGME.
 
