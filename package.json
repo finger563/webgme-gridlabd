@@ -4,7 +4,7 @@
     "start": "node app.js",
     "test": "node ./node_modules/mocha/bin/mocha --recursive test"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "cola": "^0.1.7",
     "d3": "^3.5.17",
